@@ -1,8 +1,10 @@
 #include "game.h"
 #include "Resource/resourcemanager.h"
+#include "utils/spriterender.h"
 #include "Scene/scene.h"
 
 Scene* scene;
+SpriteRenderer* littlewindow;
 //Terrian* plane;
 
 Game::Game(GLuint width, GLuint height) : State(GAME_ACTIVE), Width(width), Height(height) {
@@ -15,9 +17,19 @@ Game::~Game() {
 
 void Game::Init() {
     ResourceManager::LoadShader("../src/shader/scene.vert", "../src/shader/scene.frag", NULL, "scene");
+    ResourceManager::LoadShader("../src/shader/sprite.vert", "../src/shader/sprite.frag", NULL, "sprite");
     //ResourceManager::LoadShader("../src/shader/terrian.vert", "../src/shader/terrian.frag", NULL, "terrian");
 
+    ResourceManager::LoadTexture("../resource/image/awesomeface.png", GL_RGBA, "awesomeface");
+    ResourceManager::GetShader("sprite").use();
+    ResourceManager::GetShader("sprite").setInt("image", 0);
+
+    littlewindow = new SpriteRenderer(ResourceManager::GetShader("sprite"));
+
     scene = new Scene(glm::vec3(0.0f), ResourceManager::GetShader("scene"));
+
+    scene->map_shader.use();
+
     scene->generate_scene();
     //plane = new Terrian(ResourceManager::GetShader("terrian"));
 }
@@ -50,6 +62,12 @@ void Game::Render() {
         scene->map_shader.use();
         scene->map_shader.setMat4("PVMatrix", PVMatrix);
         scene->draw();
+
+        Texture2D face = ResourceManager::GetTexture("awesomeface");
+        littlewindow->shader.use();
+        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
+        littlewindow->DrawSprite(scene->HeightMap, glm::vec3(-1.0f), glm::vec3(0.5f));
+
 //        plane->shader.use();
 //        plane->shader.setMat4("PVMatrix", PVMatrix);
 //        plane->Render();

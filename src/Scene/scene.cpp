@@ -123,9 +123,12 @@ void Scene::draw() {
 //        printf("\n");
     }
     glBindVertexArray(0);
+
+    HeightMap = this->Generate_HeightMap();
 }
 
 void Scene::UpdateChunks() {
+    this->debugflag = false;
     Direction dir = ORIGIN_POS;
     GLint Chunkx, Chunkz, Meshx, Meshz;
     GetLocationbyCamera(Chunkx, Chunkz, Meshx, Meshz);
@@ -134,6 +137,7 @@ void Scene::UpdateChunks() {
         cur_Submesh = cur_Chunk->submesh[Meshx][Meshz];
         return ;
     }
+    this->debugflag = true;
     if(Chunkx > cur_Chunk->pos_x){
         this->offset += glm::vec3(CHUNK_LENGTH, 0.0f, 0.0f);
         for(GLint i = 0; i < CHUNK_SIZE; i++) {
@@ -218,4 +222,33 @@ void Scene::GetLocationbyCamera(GLint &cx, GLint &cz, GLint &mx, GLint &mz) {
         mz = static_cast<GLint>(position.z / MESH_LENGTH + 0.5f) + MESH_RADIUS;
     else
         mz = static_cast<GLint>(position.z / MESH_LENGTH - 0.5f) + MESH_RADIUS;
+}
+
+Texture2D Scene::Generate_HeightMap() {
+    GLint p = 0;
+    GLfloat* data = new GLfloat[CHUNK_SIZE * CHUNK_SIZE * MESH_SIZE * MESH_SIZE];
+    for(GLint i = 0; i < CHUNK_SIZE; i++){
+        for(GLint j = 0; j < MESH_SIZE; j++){
+            for(GLint k = 0; k < CHUNK_SIZE; k++){
+                if(this->debugflag == true) {
+                    for (GLint h = 0; h < MESH_SIZE; h++) {
+                        printf("%.3lf ", chunk[i][k]->height[j][h]);
+                    }
+                }
+                memcpy(data + p, chunk[i][k]->height[j], sizeof(GLfloat) * MESH_SIZE);
+                p += MESH_SIZE;
+            }
+            if(this->debugflag == true) {
+                printf("\n");
+            }
+//            for(GLint k = 0; k < CHUNK_SIZE * MESH_SIZE; k++){
+//                data[p] = 1.0f * (k) / (CHUNK_SIZE * MESH_SIZE);
+//                p++;
+//            }
+        }
+    }
+    if(this->debugflag == true) {
+        printf("\n===============================\n");
+    }
+    return ResourceManager::MakeTexture(CHUNK_SIZE * MESH_SIZE, CHUNK_SIZE * MESH_SIZE, GL_RED, data, "HeightMap");
 }

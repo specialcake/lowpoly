@@ -23,6 +23,7 @@ public:
     Texture2D();
 //    Texture2D(const GLchar *filepath);
     void Generate(GLuint width, GLuint height, unsigned char* data);
+    void Generatefloat(GLuint width, GLuint height, GLfloat* data);
     void Bind() const;
 };
 

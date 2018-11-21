@@ -7,6 +7,7 @@ uniform mat4 PVMatrix;
 uniform mat4 model;
 void main() {
     Vertex = vec3(model * vec4(aVertex, 1.0f));
-    gl_Position = PVMatrix * model * vec4(aVertex, 1.0f);
+//    gl_Position = PVMatrix * model * vec4(aVertex, 1.0f);
+    gl_Position = PVMatrix * model * vec4(aVertex.x, 0.0f, aVertex.z, 1.0f);
 //    gl_Position = gl_Position.zyxw;
 }

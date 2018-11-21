@@ -31,6 +31,7 @@ public:
     static Shader GetShader(std::string name);
 
     static Texture2D LoadTexture(const GLchar *file, GLuint format, std::string name);
+    static Texture2D MakeTexture(const GLuint width, const GLuint height, GLuint format, GLfloat* data, std::string name);
     static Texture2D GetTexture(std::string name);
 
     static Model* LoadModel(const GLchar *file, std::string name);

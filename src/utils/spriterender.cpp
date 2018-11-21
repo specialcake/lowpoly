@@ -26,10 +26,8 @@ void SpriteRenderer::DrawSprite(Texture2D &texture, glm::vec3 position, glm::vec
     this->shader.setMat4("model", model);
     this->shader.setVec3("spriteColor", color);
 
-    if(color.r < 0.0f){
-        glActiveTexture(GL_TEXTURE0);
-        texture.Bind();
-    }
+    glActiveTexture(GL_TEXTURE0);
+    texture.Bind();
 
     glBindVertexArray(this->quadVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -40,13 +38,13 @@ void SpriteRenderer::initRenderData() {
     GLuint VBO;
     GLfloat vertices[] = {
         // Pos      // Tex
-        1.0f, 1.0f, 0.0f, 1.0f,
+        1.0f, 1.0f, 1.0f, 1.0f,
         1.0f, 0.0f, 1.0f, 0.0f,
-        0.0f, 1.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f, 1.0f,
 
         0.0f, 1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f, 1.0f,
-        0.0f, 0.0f, 1.0f, 0.0f
+        1.0f, 0.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 0.0f
     };
 
     glGenVertexArrays(1, &this->quadVAO);

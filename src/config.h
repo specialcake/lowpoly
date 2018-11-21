@@ -40,7 +40,7 @@ enum Direction{
 #define TERRIAN_HEIGHT 32
 #define TERRIAN_SPRITE_WIDTH 0.25
 #define TERRIAN_SPRITE_HEIGHT 0.25
-#define MAX_HEIGHT 2.0f
+#define MAX_HEIGHT 1.0f
 
 //Value
 #define PI 3.1415926535f
