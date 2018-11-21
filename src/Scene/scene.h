@@ -30,8 +30,8 @@ public:
     Noise* generator;
     Texture2D HeightMap;
 
-    Shader map_shader, water_shader;
-    GLuint VAO, VBO;
+    Shader map_shader, map_instance_shader, water_shader;
+    GLuint VAO, VBO, instanceVAO, instanceVBO;
     std::vector<GLfloat> vertices;
 
     Scene(glm::vec3 initpos, Shader shader);

@@ -18,18 +18,19 @@ Game::~Game() {
 void Game::Init() {
     ResourceManager::LoadShader("../src/shader/scene.vert", "../src/shader/scene.frag", NULL, "scene");
     ResourceManager::LoadShader("../src/shader/sprite.vert", "../src/shader/sprite.frag", NULL, "sprite");
+    ResourceManager::LoadShader("../src/shader/instancescene.vert", "../src/shader/instancescene.frag", NULL, "instancescene");
     //ResourceManager::LoadShader("../src/shader/terrian.vert", "../src/shader/terrian.frag", NULL, "terrian");
 
     ResourceManager::LoadTexture("../resource/image/awesomeface.png", GL_RGBA, "awesomeface");
     ResourceManager::GetShader("sprite").use();
     ResourceManager::GetShader("sprite").setInt("image", 0);
+    ResourceManager::GetShader("instancescene").use();
+    ResourceManager::GetShader("instancescene").setInt("HeightMap", 0);
 
     littlewindow = new SpriteRenderer(ResourceManager::GetShader("sprite"));
 
     scene = new Scene(glm::vec3(0.0f), ResourceManager::GetShader("scene"));
-
-    scene->map_shader.use();
-
+    scene->map_instance_shader = ResourceManager::GetShader("instancescene");
     scene->generate_scene();
     //plane = new Terrian(ResourceManager::GetShader("terrian"));
 }
@@ -59,8 +60,11 @@ void Game::Render() {
         glm::mat4 view = ResourceManager::camera.GetViewMatrix();
         glm::mat4 PVMatrix = projection * view;
 
-        scene->map_shader.use();
-        scene->map_shader.setMat4("PVMatrix", PVMatrix);
+//        scene->map_shader.use();
+//        scene->map_shader.setMat4("PVMatrix", PVMatrix);
+//        scene->draw();
+        scene->map_instance_shader.use();
+        scene->map_instance_shader.setMat4("PVMatrix", PVMatrix);
         scene->draw();
 
         Texture2D face = ResourceManager::GetTexture("awesomeface");

@@ -103,6 +103,28 @@ void Scene::InitBuffer() {
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
+
+    GLfloat instance_vertices[] = {
+            1.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 1.0f,
+
+            0.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 0.0f
+    };
+    glGenVertexArrays(1, &this->instanceVAO);
+    glGenBuffers(1, &this->instanceVBO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, this->instanceVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(instance_vertices), &instance_vertices, GL_STATIC_DRAW);
+
+    glBindVertexArray(this->instanceVAO);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
 }
 
 void Scene::generate_scene() {
@@ -113,18 +135,27 @@ void Scene::generate_scene() {
     }
 }
 void Scene::draw() {
-    this->map_shader.setVec3("land_color", LAND_COLOR);
-    glBindVertexArray(this->VAO);
-    for(GLint i = 0; i < CHUNK_SIZE; i++) {
-        for (GLint j = 0; j < CHUNK_SIZE; j++) {
-//            printf("[%d, %d] ", chunk[i][j]->pos_x, chunk[i][j]->pos_z);
-            chunk[i][j]->draw_map();
-        }
-//        printf("\n");
-    }
-    glBindVertexArray(0);
+//    this->map_shader.setVec3("land_color", LAND_COLOR);
+//    glBindVertexArray(this->VAO);
+//    for(GLint i = 0; i < CHUNK_SIZE; i++) {
+//        for (GLint j = 0; j < CHUNK_SIZE; j++) {
+////            printf("[%d, %d] ", chunk[i][j]->pos_x, chunk[i][j]->pos_z);
+//            chunk[i][j]->draw_map();
+//        }
+////        printf("\n");
+//    }
+//    glBindVertexArray(0);
 
     HeightMap = this->Generate_HeightMap();
+    glActiveTexture(0);
+    this->HeightMap.Bind();
+    this->map_instance_shader.setVec3("land_color", LAND_COLOR);
+    this->map_instance_shader.setFloat("scalefactor", MESH_LENGTH);
+    this->map_instance_shader.setVec3("scene_offset", this->offset);
+
+    glBindVertexArray(this->instanceVAO);
+    glDrawArraysInstanced(GL_TRIANGLES, 0, 6, MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE);
+    glBindVertexArray(0);
 }
 
 void Scene::UpdateChunks() {
@@ -246,6 +277,9 @@ Texture2D Scene::Generate_HeightMap() {
 //                p++;
 //            }
         }
+    }
+    for(GLint i = 0; i < CHUNK_SIZE * CHUNK_SIZE * MESH_SIZE * MESH_SIZE; i++){
+        data[i] = data[i] * 0.5f + 0.5f;
     }
     if(this->debugflag == true) {
         printf("\n===============================\n");
