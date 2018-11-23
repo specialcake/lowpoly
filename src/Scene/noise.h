@@ -27,6 +27,7 @@ private:
     glm::vec2* G;
     GLint* P;
 
+    glm::vec2 processer(glm::vec2 p);
     GLfloat default_noise(glm::vec2 p);
     GLfloat perlin_noise(glm::vec2 p);
     glm::vec2 get_vector(glm::vec2 p);

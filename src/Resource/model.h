@@ -22,6 +22,7 @@ public:
     std::vector<Texture> textures_loaded;
     std::vector<Mesh> meshes;
     std::string directory;
+    GLfloat minx, maxx, miny, maxy, minz, maxz, cx, cy, cz;
 
     Model(){};
     Model(const char *path);

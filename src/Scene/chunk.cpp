@@ -41,9 +41,11 @@ void Chunk::recycle(GLint x, GLint z) {
         for(int j = 0; j <= MESH_SIZE; j++){
             this->submesh[i][j]->recycle(i, j);
             this->height[i][j] = this->parent->generator->Generate(this->submesh[i][j]->get_Position());
+//            this->height[i][j] = (this->height[i][j] * 0.5f + 0.3f) * MAX_HEIGHT;
             this->submesh[i][j]->MeshType = LAND;
         }
     }
+    this->generate_water();
 }
 
 void Chunk::generate_map() {
@@ -52,6 +54,7 @@ void Chunk::generate_map() {
     for(GLint i = 0; i <= MESH_SIZE; i++) {
         for(GLint j = 0; j <= MESH_SIZE; j++) {
             this->height[i][j] = this->parent->generator->Generate(this->submesh[i][j]->get_Position());
+//            this->height[i][j] = (this->height[i][j] * 0.5f + 0.3f) * MAX_HEIGHT;
             this->submesh[i][j]->MeshType = LAND;
         }
     }
@@ -67,6 +70,17 @@ void Chunk::generate_map() {
 //        debugflag = false;
     }
 }
+void Chunk::generate_water() {
+    for(GLint i = 0; i < MESH_SIZE; i++) {
+        for(GLint j = 0; j < MESH_SIZE; j++) {
+            if(this->height[i][j] <= SEA_LEVEL
+               || this->height[i][j + 1] <= SEA_LEVEL
+               || this->height[i + 1][j] <= SEA_LEVEL
+               || this->height[i + 1][j + 1] <= SEA_LEVEL)
+                this->submesh[i][j]->MeshType = WATER;
+        }
+    }
+}
 
 void Chunk::draw_map() {
     for(GLint i = 0; i < MESH_SIZE; i++) {
@@ -74,4 +88,17 @@ void Chunk::draw_map() {
             this->submesh[i][j]->draw_map();
         }
     }
+}
+
+void Chunk::draw_water() {
+    int a = 0;
+    for(GLint i = 0; i < MESH_SIZE; i++) {
+        for(GLint j = 0; j < MESH_SIZE; j++) {
+            if(this->submesh[i][j]->MeshType == WATER) {
+                this->submesh[i][j]->draw_water();
+                a++;
+            }
+        }
+    }
+//    std::cout << a << std::endl;
 }

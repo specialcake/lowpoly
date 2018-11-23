@@ -38,7 +38,7 @@ public:
     ~Scene();
     void Initialize();
     void InitBuffer();
-    void draw();
+    void draw(glm::mat4 PVMatrix);
     void generate_scene();
 
     void UpdateChunks();

@@ -3,6 +3,7 @@
 //
 #include "mesh.h"
 #include "shader.h"
+#include "../utils/tools.h"
 #include "../config.h"
 #include <string>
 #include <vector>
@@ -60,6 +61,7 @@ void Mesh::Draw(Shader shader) {
     else{
         shader.setInt("texture_diffuse1_exist", 0);
         shader.setVec4("texture_diffuse1_color", this->color);
+//        Tools::PrintVec4(this->color);
     }
     glBindVertexArray(VAO);
 //    std::cout << indices.size() << std::endl;

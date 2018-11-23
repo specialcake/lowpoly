@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <cassert>
 #include "noise.h"
 #include "../utils/tools.h"
 #include "../config.h"
@@ -10,12 +11,12 @@
 Noise::Noise(GLint size) : size(size) {
     P = new GLint[size];
     G = new glm::vec2[size];
-    for(GLint i = 0; i < size; i++) {
-        P[i] = i;
-        if(i != 0) Tools::swap(P[i], P[rand() % i]);
-        GLfloat theta = Tools::random(0, 2 * PI);
-        G[i] = glm::vec2(cos(theta), sin(theta));
-    }
+//    for(GLint i = 0; i < size; i++) {
+//        P[i] = i;
+//        if(i != 0) Tools::swap(P[i], P[rand() % i]);
+//        GLfloat theta = Tools::random(0, 2 * PI);
+//        G[i] = glm::vec2(cos(theta), sin(theta));
+//    }
     P[0] = 2; P[1] = 3; P[2] = 15; P[3] = 26; P[4] = 11;
     P[5] = 14; P[6] = 4; P[7] = 19; P[8] = 1; P[9] = 22;
     P[10] = 27; P[11] = 23; P[12] = 6; P[13] = 12; P[14] = 18;
@@ -46,8 +47,8 @@ Noise::~Noise() {
     delete[] G;
 }
 
-GLfloat Noise::Generate(glm::vec3 loc) {
-    glm::vec2 p = glm::vec2(loc.x, loc.z);
+glm::vec2 Noise::processer(glm::vec2 p) {
+
 //    Tools::PrintVec2(p);
 //    printf("====>");
     GLint i;
@@ -79,6 +80,11 @@ GLfloat Noise::Generate(glm::vec3 loc) {
                 p.y -= i * size;
         }
     }
+    return p;
+}
+
+GLfloat Noise::Generate(glm::vec3 loc) {
+    glm::vec2 p = glm::vec2(loc.x, loc.z);
 //    Tools::PrintVec2(p);
 //    GLfloat ret = default_noise(p);
 //    printf("height => %.3lf\n", ret);
@@ -94,6 +100,34 @@ GLfloat Noise::Generate(glm::vec3 loc) {
 //    }
 }
 GLfloat Noise::default_noise(glm::vec2 p) {
+    GLfloat ret = 0.0f;
+//    printf("%f\n", ret);
+    GLfloat A = 1.0f;
+
+    for(GLint i = 0; i < 5; i++){
+        p = processer(p);
+        ret += A * perlin_noise(p);
+        p = 2.0f * p;
+    }
+//
+//    ret += 1.0000f * perlin_noise(p); p = 2.0f * p;
+//    printf("%f\n", ret);
+//    ret += 0.5000f * perlin_noise(p); p = 2.0f * p;
+//    printf("%f\n", ret);
+//    ret += 0.2500f * perlin_noise(p); p = 2.0f * p;
+//    printf("%f\n", ret);
+//    ret += 0.1250f * perlin_noise(p); p = 2.0f * p;
+//    printf("%f\n", ret);
+//    ret += 0.0625f * perlin_noise(p); p = 2.0f * p;
+//    printf("%f\n", ret);
+    return ret;
+//    p = p * 4.0f;
+    ret += 1.0000f * abs(perlin_noise(p)); p = 2.0f * p;
+    ret += 0.5000f * abs(perlin_noise(p)); p = 2.0f * p;
+    ret += 0.2500f * abs(perlin_noise(p)); p = 2.0f * p;
+    ret += 0.1250f * abs(perlin_noise(p)); p = 2.0f * p;
+    ret += 0.0625f * abs(perlin_noise(p)); p = 2.0f * p;
+    return ret;
     return perlin_noise(p);
 }
 
@@ -111,6 +145,7 @@ GLfloat Noise::perlin_noise(glm::vec2 p) {
 
 glm::vec2 Noise::get_vector(glm::vec2 p) {
     GLint x = static_cast<GLint>(p.x), y = static_cast<GLint>(p.y);
+    assert(x >= 0 && y >= 0);
     return G[(x + P[y]) % size];
 }
 

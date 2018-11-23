@@ -11,15 +11,19 @@
 #define SCREEN_HEIGHT 900
 
 //Scene
-#define SCENE_LENGTH 27.0f
-#define CHUNK_SIZE 5
-#define CHUNK_RADIUS 2
+#define SCENE_LENGTH 53.0f
+#define CHUNK_SIZE 7
+#define CHUNK_RADIUS 3
 #define CHUNK_LENGTH (SCENE_LENGTH / CHUNK_SIZE)
-#define MESH_SIZE 5
-#define MESH_RADIUS 2
+#define MESH_SIZE 7
+#define MESH_RADIUS 3
 #define MESH_LENGTH (CHUNK_LENGTH / MESH_SIZE)
 #define OBJECT_TYPE_NUMBER 2
 #define LAND_COLOR glm::vec3(0.543f, 0.836f, 0.25f)
+#define SEA_COLOR glm::vec3(0.106f, 0.863f, 1.0f)
+#define MAX_HEIGHT 2.0f
+#define NOISE_SIZE 29
+#define SEA_LEVEL 0.55f
 enum Meshtype{
     LAND,
     WATER
@@ -31,16 +35,6 @@ enum Direction{
     MOVE_ZPOS,
     MOVE_ZNEG
 };
-
-//Terrian
-#define NOISE_SIZE 29
-#define NOISE_WIDTH 8
-#define NOISE_HEIGHT 8
-#define TERRIAN_WIDTH 32
-#define TERRIAN_HEIGHT 32
-#define TERRIAN_SPRITE_WIDTH 0.25
-#define TERRIAN_SPRITE_HEIGHT 0.25
-#define MAX_HEIGHT 1.0f
 
 //Value
 #define PI 3.1415926535f

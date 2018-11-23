@@ -131,10 +131,12 @@ void Scene::generate_scene() {
     for(GLint i = 0; i < CHUNK_SIZE; i++) {
         for (GLint j = 0; j < CHUNK_SIZE; j++) {
             chunk[i][j]->generate_map();
+            chunk[i][j]->generate_water();
         }
     }
+    std::cout << this->chunk[0][0]->height[0][0] << std::endl;
 }
-void Scene::draw() {
+void Scene::draw(glm::mat4 PVMatrix) {
 //    this->map_shader.setVec3("land_color", LAND_COLOR);
 //    glBindVertexArray(this->VAO);
 //    for(GLint i = 0; i < CHUNK_SIZE; i++) {
@@ -145,16 +147,31 @@ void Scene::draw() {
 ////        printf("\n");
 //    }
 //    glBindVertexArray(0);
-
+    this->map_instance_shader.use();
     HeightMap = this->Generate_HeightMap();
     glActiveTexture(0);
     this->HeightMap.Bind();
+    this->map_instance_shader.setMat4("PVMatrix", PVMatrix);
     this->map_instance_shader.setVec3("land_color", LAND_COLOR);
     this->map_instance_shader.setFloat("scalefactor", MESH_LENGTH);
     this->map_instance_shader.setVec3("scene_offset", this->offset);
+    this->map_instance_shader.setInt("scene_size", MESH_SIZE * CHUNK_SIZE);
 
     glBindVertexArray(this->instanceVAO);
     glDrawArraysInstanced(GL_TRIANGLES, 0, 6, MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE);
+    glBindVertexArray(0);
+
+    this->water_shader.use();
+    this->water_shader.setMat4("PVMatrix", PVMatrix);
+    this->water_shader.setVec3("water_color", SEA_COLOR);
+    this->water_shader.setFloat("scalefactor", MESH_LENGTH);
+    this->water_shader.setFloat("water_height", SEA_LEVEL);
+    glBindVertexArray(this->VAO);
+    for(GLint i = 0; i < CHUNK_SIZE; i++) {
+        for (GLint j = 0; j < CHUNK_SIZE; j++) {
+            chunk[i][j]->draw_water();
+        }
+    }
     glBindVertexArray(0);
 }
 
@@ -279,7 +296,8 @@ Texture2D Scene::Generate_HeightMap() {
         }
     }
     for(GLint i = 0; i < CHUNK_SIZE * CHUNK_SIZE * MESH_SIZE * MESH_SIZE; i++){
-        data[i] = data[i] * 0.5f + 0.5f;
+        data[i] = data[i] * 0.5f + 0.45f;
+        data[i] = SEA_LEVEL - data[i] + SEA_LEVEL;
     }
     if(this->debugflag == true) {
         printf("\n===============================\n");

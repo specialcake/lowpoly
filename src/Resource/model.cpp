@@ -7,10 +7,19 @@
 #include "../config.h"
 #include <stb_image.h>
 #include <iostream>
+#include <cmath>
 #include <map>
 
 Model::Model(const char *path) {
+    maxx = maxy = maxz = -10000000.0f;
+    minx = miny = minz = 10000000.0f;
     loadModel(path);
+    cx = (minx + maxx) / 2.0f;
+    cy = (miny + maxy) / 2.0f;
+    cz = (minz + maxz) / 2.0f;
+    printf("x: %f, y: %f, z: %f\n", cx, cy, cz);
+    printf("min x: %f, y: %f, z: %f\n", minx ,miny, minz);
+    printf("max x: %f, y: %f, z: %f\n", maxx, maxy, maxz);
 }
 void Model::Draw(Shader shader) {
     for(unsigned int i = 0; i < meshes.size(); i++){
@@ -27,8 +36,8 @@ void Model::loadModel(std::string path) {
     }
     directory = path.substr(0, path.find_last_of('/'));
     processNode(scene->mRootNode, scene);
-//    std::cout << "textureloaded : " << this->textures_loaded.size() << std::endl;
-//    std::cout << "meshesloaded : " << this->meshes.size() << std::endl;
+    std::cout << "textureloaded : " << this->textures_loaded.size() << std::endl;
+    std::cout << "meshesloaded : " << this->meshes.size() << std::endl;
 }
 
 void Model::processNode(aiNode *node, const aiScene *scene) {
@@ -58,6 +67,9 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene) {
             v.TexCoords = glm::vec2(0.0f, 0.0f);
         }
         vertices.push_back(v);
+
+        minx = glm::min(minx, v.Position.x); miny = glm::min(miny, v.Position.y); minz = glm::min(minz, v.Position.z);
+        maxx = glm::max(maxx, v.Position.x); maxy = glm::max(maxy, v.Position.y); maxz = glm::max(maxz, v.Position.z);
     }
     for(unsigned int i = 0; i < mesh->mNumFaces; i++){
         aiFace face = mesh->mFaces[i];

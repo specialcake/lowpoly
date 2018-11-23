@@ -58,7 +58,9 @@ void Submesh::draw_map() {
 }
 
 void Submesh::draw_water() {
-
+    static Scene* top_scene = this->parent->parent;
+    top_scene->water_shader.setVec3("meshoffset", this->get_Position());
+    glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
 glm::vec3 Submesh::get_Position() {
