@@ -12,18 +12,18 @@
 
 //Scene
 #define SCENE_LENGTH 53.0f
-#define CHUNK_SIZE 3
-#define CHUNK_RADIUS 1
+#define CHUNK_SIZE 7
+#define CHUNK_RADIUS 3
 #define CHUNK_LENGTH (SCENE_LENGTH / CHUNK_SIZE)
-#define MESH_SIZE 3
-#define MESH_RADIUS 1
+#define MESH_SIZE 7
+#define MESH_RADIUS 3
 #define MESH_LENGTH (CHUNK_LENGTH / MESH_SIZE)
 #define OBJECT_TYPE_NUMBER 2
 #define LAND_COLOR glm::vec3(0.543f, 0.836f, 0.25f)
 #define SEA_COLOR glm::vec3(0.106f, 0.863f, 1.0f)
 #define MAX_HEIGHT 2.0f
 #define NOISE_SIZE 29
-#define SEA_LEVEL 0.15f
+#define SEA_LEVEL 0.01f
 enum Meshtype{
     LAND,
     WATER

@@ -105,7 +105,7 @@ GLfloat Noise::default_noise(glm::vec2 p) {
 //            Tools::PrintVec2(p);
 //            printf("==> %f\n", ret);
 //        }
-        p = 2.0f * p;
+        p = 2.0f * p; A = 0.5f * A;
     }
 //    debug_flag = false;
 //    ret += 1.0000f * perlin_noise(p); p = 2.0f * p;

@@ -82,13 +82,13 @@ void Scene::Initialize() {
 void Scene::InitBuffer() {
     this->vertices = {
             // Pos
-            1.0f, 0.0f, 1.0f,
-            1.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 1.0f,
+            1.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 1.0f,
 
-            0.0f, 0.0f, 1.0f,
-            1.0f, 0.0f, 0.0f,
-            0.0f, 0.0f, 0.0f
+            0.0f, 1.0f,
+            1.0f, 0.0f,
+            0.0f, 0.0f
     };
 
     glGenVertexArrays(1, &this->VAO);
@@ -99,7 +99,7 @@ void Scene::InitBuffer() {
 
     glBindVertexArray(this->VAO);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -161,18 +161,22 @@ void Scene::draw(glm::mat4 PVMatrix) {
     glDrawArraysInstanced(GL_TRIANGLES, 0, 6, MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE);
     glBindVertexArray(0);
 
-//    this->water_shader.use();
-//    this->water_shader.setMat4("PVMatrix", PVMatrix);
-//    this->water_shader.setVec3("water_color", SEA_COLOR);
-//    this->water_shader.setFloat("scalefactor", MESH_LENGTH);
-//    this->water_shader.setFloat("water_height", SEA_LEVEL);
-//    glBindVertexArray(this->VAO);
+    this->water_shader.use();
+    this->water_shader.setMat4("PVMatrix", PVMatrix);
+    this->water_shader.setVec3("water_color", SEA_COLOR);
+    this->water_shader.setFloat("scalefactor", MESH_LENGTH);
+    this->water_shader.setVec3("scene_offset", this->offset);
+    this->water_shader.setInt("scene_size", MESH_SIZE * CHUNK_SIZE);
+    this->water_shader.setFloat("water_height", SEA_LEVEL);
+
+    glBindVertexArray(this->VAO);
+    glDrawArraysInstanced(GL_TRIANGLES, 0, 6, MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE);
+    glBindVertexArray(0);
 //    for(GLint i = 0; i < CHUNK_SIZE; i++) {
 //        for (GLint j = 0; j < CHUNK_SIZE; j++) {
 //            chunk[i][j]->draw_water();
 //        }
 //    }
-//    glBindVertexArray(0);
 }
 
 void Scene::UpdateChunks() {
@@ -280,7 +284,7 @@ Texture2D Scene::Generate_HeightMap() {
     for(GLint i = 0; i < CHUNK_SIZE; i++){
         for(GLint j = 0; j < MESH_SIZE; j++){
             for(GLint k = 0; k < CHUNK_SIZE; k++){
-                if(this->debugflag == true) {
+                if(this->debugflag) {
                     for (GLint h = 0; h < MESH_SIZE; h++) {
                         printf("%.3lf ", chunk[i][k]->height[j][h]);
                     }
@@ -292,7 +296,7 @@ Texture2D Scene::Generate_HeightMap() {
                 p += MESH_SIZE;
             }
             p++;
-            if(this->debugflag == true) {
+            if(this->debugflag) {
                 printf("\n");
             }
         }
@@ -302,7 +306,7 @@ Texture2D Scene::Generate_HeightMap() {
         p += MESH_SIZE;
     }
     p++;
-    if(this->debugflag == true) {
+    if(this->debugflag) {
         printf("------------------------------------\n");
         for(int i = 0; i < len; i++){
             for(int j = 0; j < len; j++){
@@ -315,7 +319,7 @@ Texture2D Scene::Generate_HeightMap() {
 //        data[i] = data[i] * 0.5f + 0.50f;
 //        data[i] = SEA_LEVEL - data[i] + SEA_LEVEL;
 //    }
-    if(this->debugflag == true) {
+    if(this->debugflag) {
         printf("\n===============================\n");
     }
     return ResourceManager::MakeTexture(CHUNK_SIZE * MESH_SIZE + 1, CHUNK_SIZE * MESH_SIZE + 1, GL_RED, data, "HeightMap");

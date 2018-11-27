@@ -65,14 +65,14 @@ void Game::Render() {
         glm::mat4 view = ResourceManager::camera.GetViewMatrix();
         glm::mat4 PVMatrix = projection * view;
 
-        scene->map_shader.use();
-        scene->map_shader.setMat4("PVMatrix", PVMatrix);
+//        scene->map_shader.use();
+//        scene->map_shader.setMat4("PVMatrix", PVMatrix);
         scene->draw(PVMatrix);
 
 //        Texture2D face = ResourceManager::GetTexture("awesomeface");
         littlewindow->shader.use();
         littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
-        littlewindow->DrawSprite(scene->HeightMap, glm::vec3(-1.0f), glm::vec3(0.5f));
+        littlewindow->DrawSprite(scene->HeightMap, glm::vec3(0.5f), glm::vec3(0.5f));
 
 
         Model* mymodel = ResourceManager::GetModel("crystal");
