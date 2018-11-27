@@ -85,21 +85,15 @@ glm::vec2 Noise::processer(glm::vec2 p) {
 
 GLfloat Noise::Generate(glm::vec3 loc) {
     glm::vec2 p = glm::vec2(loc.x, loc.z);
+    p *= 0.01f;
 //    Tools::PrintVec2(p);
 //    GLfloat ret = default_noise(p);
 //    printf("height => %.3lf\n", ret);
 //    return ret;
     return default_noise(p);
-
-//    for(GLint i = 0; i < width; i++){
-//        for(GLint j = 0; j < height; j++){
-//            noise[i][j] = default_noise(glm::vec2(i + Tools::random01(), j + Tools::random01()));
-////            std::cout << noise[i][j] << ' ';
-//        }
-////        std::cout << std::endl;
-//    }
 }
 GLfloat Noise::default_noise(glm::vec2 p) {
+//    static bool debug_flag = true;
     GLfloat ret = 0.0f;
 //    printf("%f\n", ret);
     GLfloat A = 1.0f;
@@ -107,9 +101,13 @@ GLfloat Noise::default_noise(glm::vec2 p) {
     for(GLint i = 0; i < 5; i++){
         p = processer(p);
         ret += A * perlin_noise(p);
+//        if(debug_flag == true){
+//            Tools::PrintVec2(p);
+//            printf("==> %f\n", ret);
+//        }
         p = 2.0f * p;
     }
-//
+//    debug_flag = false;
 //    ret += 1.0000f * perlin_noise(p); p = 2.0f * p;
 //    printf("%f\n", ret);
 //    ret += 0.5000f * perlin_noise(p); p = 2.0f * p;
@@ -132,9 +130,24 @@ GLfloat Noise::default_noise(glm::vec2 p) {
 }
 
 GLfloat Noise::perlin_noise(glm::vec2 p) {
+//    static bool debug_flag = true;
     glm::vec2 pi = glm::floor(p);
     glm::vec2 pf = p - pi;
     glm::vec2 w = pf * pf * pf * (6.0f * pf * pf - 15.0f * pf + 10.0f);
+
+//    GLfloat vala = glm::dot(get_vector(pi + glm::vec2(0.0f, 0.0f)), pf - glm::vec2(0.0f, 0.0f));
+//    GLfloat valb = glm::dot(get_vector(pi + glm::vec2(1.0f, 0.0f)), pf - glm::vec2(1.0f, 0.0f));
+//    GLfloat valc = glm::dot(get_vector(pi + glm::vec2(0.0f, 1.0f)), pf - glm::vec2(0.0f, 1.0f));
+//    GLfloat vald = glm::dot(get_vector(pi + glm::vec2(1.0f, 1.0f)), pf - glm::vec2(1.0f, 1.0f));
+//
+//    if(debug_flag == true){
+//        printf("======\n");
+//        Tools::PrintVec4(glm::vec4(vala, valb, valc, vald));
+//        printf("======\n");
+//    }
+//    debug_flag = false;
+//
+//    return glm::mix(glm::mix(vala, valb, w.x), glm::mix(valc, vald, w.x), w.y);
 
     return glm::mix(glm::mix(glm::dot(get_vector(pi + glm::vec2(0.0f, 0.0f)), pf - glm::vec2(0.0f, 0.0f)),
                              glm::dot(get_vector(pi + glm::vec2(1.0f, 0.0f)), pf - glm::vec2(1.0f, 0.0f)), w.x),
@@ -145,8 +158,8 @@ GLfloat Noise::perlin_noise(glm::vec2 p) {
 
 glm::vec2 Noise::get_vector(glm::vec2 p) {
     GLint x = static_cast<GLint>(p.x), y = static_cast<GLint>(p.y);
-    assert(x >= 0 && y >= 0);
-    return G[(x + P[y]) % size];
+//    assert(x >= 0 && y >= 0);
+    return G[(x + P[y % size]) % size];
 }
 
 //void Noise::DebugInitial(Shader shader) {

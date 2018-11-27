@@ -51,6 +51,7 @@ void Chunk::recycle(GLint x, GLint z) {
 void Chunk::generate_map() {
     static bool debugflag = false;
     memset(this->height, 0, sizeof(this->height));
+//    if(this->pos_x != 4 || this->pos_z != 0) return ;
     for(GLint i = 0; i <= MESH_SIZE; i++) {
         for(GLint j = 0; j <= MESH_SIZE; j++) {
             this->height[i][j] = this->parent->generator->Generate(this->submesh[i][j]->get_Position());
@@ -78,8 +79,10 @@ void Chunk::generate_water() {
                || this->height[i + 1][j] <= SEA_LEVEL
                || this->height[i + 1][j + 1] <= SEA_LEVEL)
                 this->submesh[i][j]->MeshType = WATER;
+//            printf("(%d, %d) ", i, j);
         }
     }
+//    printf("\n");
 }
 
 void Chunk::draw_map() {

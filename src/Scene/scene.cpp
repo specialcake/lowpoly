@@ -161,18 +161,18 @@ void Scene::draw(glm::mat4 PVMatrix) {
     glDrawArraysInstanced(GL_TRIANGLES, 0, 6, MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE);
     glBindVertexArray(0);
 
-    this->water_shader.use();
-    this->water_shader.setMat4("PVMatrix", PVMatrix);
-    this->water_shader.setVec3("water_color", SEA_COLOR);
-    this->water_shader.setFloat("scalefactor", MESH_LENGTH);
-    this->water_shader.setFloat("water_height", SEA_LEVEL);
-    glBindVertexArray(this->VAO);
-    for(GLint i = 0; i < CHUNK_SIZE; i++) {
-        for (GLint j = 0; j < CHUNK_SIZE; j++) {
-            chunk[i][j]->draw_water();
-        }
-    }
-    glBindVertexArray(0);
+//    this->water_shader.use();
+//    this->water_shader.setMat4("PVMatrix", PVMatrix);
+//    this->water_shader.setVec3("water_color", SEA_COLOR);
+//    this->water_shader.setFloat("scalefactor", MESH_LENGTH);
+//    this->water_shader.setFloat("water_height", SEA_LEVEL);
+//    glBindVertexArray(this->VAO);
+//    for(GLint i = 0; i < CHUNK_SIZE; i++) {
+//        for (GLint j = 0; j < CHUNK_SIZE; j++) {
+//            chunk[i][j]->draw_water();
+//        }
+//    }
+//    glBindVertexArray(0);
 }
 
 void Scene::UpdateChunks() {
@@ -274,7 +274,9 @@ void Scene::GetLocationbyCamera(GLint &cx, GLint &cz, GLint &mx, GLint &mz) {
 
 Texture2D Scene::Generate_HeightMap() {
     GLint p = 0;
-    GLfloat* data = new GLfloat[CHUNK_SIZE * CHUNK_SIZE * MESH_SIZE * MESH_SIZE];
+    GLint limit = CHUNK_SIZE * CHUNK_SIZE * MESH_SIZE * MESH_SIZE + CHUNK_SIZE * MESH_SIZE * 2 + 1;
+    GLint len = CHUNK_SIZE * CHUNK_SIZE + 1;
+    GLfloat* data = new GLfloat[limit];
     for(GLint i = 0; i < CHUNK_SIZE; i++){
         for(GLint j = 0; j < MESH_SIZE; j++){
             for(GLint k = 0; k < CHUNK_SIZE; k++){
@@ -282,25 +284,39 @@ Texture2D Scene::Generate_HeightMap() {
                     for (GLint h = 0; h < MESH_SIZE; h++) {
                         printf("%.3lf ", chunk[i][k]->height[j][h]);
                     }
+                    if(k == CHUNK_SIZE - 1){
+                        printf("%.3lf", chunk[i][k]->height[j][MESH_SIZE]);
+                    }
                 }
-                memcpy(data + p, chunk[i][k]->height[j], sizeof(GLfloat) * MESH_SIZE);
+                memcpy(data + p, chunk[i][k]->height[j], sizeof(GLfloat) * (MESH_SIZE + 1));
                 p += MESH_SIZE;
             }
+            p++;
             if(this->debugflag == true) {
                 printf("\n");
             }
-//            for(GLint k = 0; k < CHUNK_SIZE * MESH_SIZE; k++){
-//                data[p] = 1.0f * (k) / (CHUNK_SIZE * MESH_SIZE);
-//                p++;
-//            }
         }
     }
-    for(GLint i = 0; i < CHUNK_SIZE * CHUNK_SIZE * MESH_SIZE * MESH_SIZE; i++){
-        data[i] = data[i] * 0.5f + 0.45f;
-        data[i] = SEA_LEVEL - data[i] + SEA_LEVEL;
+    for(GLint i = 0; i < CHUNK_SIZE; i++){
+        memcpy(data + p, chunk[CHUNK_SIZE - 1][i]->height[MESH_SIZE], sizeof(GLfloat) * (MESH_SIZE + 1));
+        p += MESH_SIZE;
     }
+    p++;
+    if(this->debugflag == true) {
+        printf("------------------------------------\n");
+        for(int i = 0; i < len; i++){
+            for(int j = 0; j < len; j++){
+                printf("%.3lf ", data[i * len + j]);
+            }
+            printf("\n");
+        }
+    }
+//    for(GLint i = 0; i < limit; i++){
+//        data[i] = data[i] * 0.5f + 0.50f;
+//        data[i] = SEA_LEVEL - data[i] + SEA_LEVEL;
+//    }
     if(this->debugflag == true) {
         printf("\n===============================\n");
     }
-    return ResourceManager::MakeTexture(CHUNK_SIZE * MESH_SIZE, CHUNK_SIZE * MESH_SIZE, GL_RED, data, "HeightMap");
+    return ResourceManager::MakeTexture(CHUNK_SIZE * MESH_SIZE + 1, CHUNK_SIZE * MESH_SIZE + 1, GL_RED, data, "HeightMap");
 }
