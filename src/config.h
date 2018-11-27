@@ -21,9 +21,9 @@
 #define OBJECT_TYPE_NUMBER 2
 #define LAND_COLOR glm::vec3(0.543f, 0.836f, 0.25f)
 #define SEA_COLOR glm::vec3(0.106f, 0.863f, 1.0f)
-#define MAX_HEIGHT 2.0f
+#define MAX_HEIGHT 4.0f
 #define NOISE_SIZE 29
-#define SEA_LEVEL 0.01f
+#define SEA_LEVEL 0.2f
 enum Meshtype{
     LAND,
     WATER
@@ -44,7 +44,7 @@ enum Direction{
 #define PITCH 0.0f
 #define MIN_PITCH -89.5f
 #define MAX_PITCH 89.5f
-#define SPEED 5.0f
+#define SPEED 10.0f
 #define YAW_SPEED 2.0f
 #define SENSITIVITY 0.1f
 #define ZOOM 45.0f

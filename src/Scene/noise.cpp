@@ -85,12 +85,14 @@ glm::vec2 Noise::processer(glm::vec2 p) {
 
 GLfloat Noise::Generate(glm::vec3 loc) {
     glm::vec2 p = glm::vec2(loc.x, loc.z);
-    p *= 0.01f;
+    p *= 0.1f;
 //    Tools::PrintVec2(p);
-//    GLfloat ret = default_noise(p);
+    GLfloat ret = default_noise(p);
 //    printf("height => %.3lf\n", ret);
-//    return ret;
-    return default_noise(p);
+    ret = ret * 0.5f + 0.25f;
+    ret *= 2.5f;
+//    ret = pow(ret, 2.23);
+    return ret;
 }
 GLfloat Noise::default_noise(glm::vec2 p) {
 //    static bool debug_flag = true;
@@ -157,6 +159,10 @@ GLfloat Noise::perlin_noise(glm::vec2 p) {
 }
 
 glm::vec2 Noise::get_vector(glm::vec2 p) {
+//    p = glm::vec2(dot(p, glm::vec2(127.1f, 311.7f)),
+//                  dot(p, glm::vec2(269.5f, 183.3f)));
+//
+//    return -1.0f + 2.0f * fract(sin(p) * 43758.5453123f);
     GLint x = static_cast<GLint>(p.x), y = static_cast<GLint>(p.y);
 //    assert(x >= 0 && y >= 0);
     return G[(x + P[y % size]) % size];

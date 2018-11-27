@@ -135,6 +135,7 @@ void Scene::generate_scene() {
         }
     }
     std::cout << this->chunk[0][0]->height[0][0] << std::endl;
+//    this->chunk[0][0]->height[1][1] = 3.0f;
 }
 void Scene::draw(glm::mat4 PVMatrix) {
 //    this->map_shader.setVec3("land_color", LAND_COLOR);
@@ -306,21 +307,21 @@ Texture2D Scene::Generate_HeightMap() {
         p += MESH_SIZE;
     }
     p++;
-    if(this->debugflag) {
-        printf("------------------------------------\n");
-        for(int i = 0; i < len; i++){
-            for(int j = 0; j < len; j++){
-                printf("%.3lf ", data[i * len + j]);
-            }
-            printf("\n");
-        }
-    }
-//    for(GLint i = 0; i < limit; i++){
-//        data[i] = data[i] * 0.5f + 0.50f;
-//        data[i] = SEA_LEVEL - data[i] + SEA_LEVEL;
+//    if(this->debugflag) {
+//        printf("------------------------------------\n");
+//        for(int i = 0; i < len; i++){
+//            for(int j = 0; j < len; j++){
+//                printf("%.3lf ", data[i * len + j]);
+//            }
+//            printf("\n");
+//        }
 //    }
-    if(this->debugflag) {
-        printf("\n===============================\n");
-    }
+////    for(GLint i = 0; i < limit; i++){
+////        data[i] = data[i] * 0.5f + 0.50f;
+////        data[i] = SEA_LEVEL - data[i] + SEA_LEVEL;
+////    }
+//    if(this->debugflag) {
+//        printf("\n===============================\n");
+//    }
     return ResourceManager::MakeTexture(CHUNK_SIZE * MESH_SIZE + 1, CHUNK_SIZE * MESH_SIZE + 1, GL_RED, data, "HeightMap");
 }
