@@ -13,6 +13,7 @@ void main() {
     float deltax = idx - scene_size / 2.0f, deltay = idy - scene_size / 2.0f;
     vec3 pos = vec3(aVertex.x + deltax, 0.0f, aVertex.y + deltay) * scalefactor;
     pos.y = texture(HeightMap, vec2((idy + aVertex.y + 0.5f) / (scene_size + 1.0f), (idx + aVertex.x + 0.5f) / (scene_size + 1.0f))).r;
+    pos.y *= 10.0f;
     height = pos.y;
     gl_Position = PVMatrix * vec4(pos + scene_offset, 1.0f);
 }

@@ -90,8 +90,8 @@ GLfloat Noise::Generate(glm::vec3 loc) {
     GLfloat ret = default_noise(p);
 //    printf("height => %.3lf\n", ret);
     ret = ret * 0.5f + 0.25f;
-    ret *= 2.5f;
-//    ret = pow(ret, 2.23);
+    ret *= 3.0f;
+    ret = pow(ret, 2.23);
     return ret;
 }
 GLfloat Noise::default_noise(glm::vec2 p) {
