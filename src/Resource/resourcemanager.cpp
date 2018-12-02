@@ -43,6 +43,21 @@ Texture2D ResourceManager::MakeTexture(const GLuint width, const GLuint height, 
     Textures[name] = texture;
     return texture;
 }
+Texture2D ResourceManager::MakeTexture(const GLuint width, const GLuint height, GLuint format, glm::vec3* data, std::string name) {
+    if(Textures.count(name)){
+        glDeleteTextures(1, &Textures[name].ID);
+    }
+    Texture2D texture;
+    texture.Internal_Format = texture.Image_Format = format;
+    if(data != nullptr){
+        texture.Generatevec3(static_cast<GLuint>(width), static_cast<GLuint>(height), data);
+    }
+    else{
+        std::cout << "Can not make texture: " << std::endl;
+    }
+    Textures[name] = texture;
+    return texture;
+}
 Texture2D ResourceManager::GetTexture(std::string name) {
     return Textures[name];
 }

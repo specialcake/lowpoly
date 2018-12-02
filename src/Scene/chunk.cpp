@@ -46,6 +46,7 @@ void Chunk::recycle(GLint x, GLint z) {
         }
     }
     this->generate_water();
+    this->generate_normal();
 }
 
 void Chunk::generate_map() {
@@ -83,6 +84,19 @@ void Chunk::generate_water() {
         }
     }
 //    printf("\n");
+}
+void Chunk::generate_normal() {
+    for(GLint i = 0; i < MESH_SIZE; i++) {
+        for(GLint j = 0; j < MESH_SIZE; j++) {
+            glm::vec3 v1 = glm::vec3(0.0f, height[i][j + 1] - height[i][j], MESH_LENGTH);
+            glm::vec3 v2 = glm::vec3(MESH_LENGTH, height[i + 1][j] - height[i][j], 0.0f);
+            normal[0][i][j] = glm::normalize(glm::cross(v1, v2));
+
+            v1 = glm::vec3(0.0f, height[i + 1][j] - height[i + 1][j + 1], -MESH_LENGTH);
+            v2 = glm::vec3(-MESH_LENGTH, height[i][j + 1] - height[i + 1][j + 1], 0.0f);
+            normal[1][i][j] = glm::normalize(glm::cross(v1, v2));
+        }
+    }
 }
 
 void Chunk::draw_map() {

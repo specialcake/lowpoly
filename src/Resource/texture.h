@@ -6,6 +6,7 @@
 #define BREAKOUT_TEXTURE_H
 
 #include <glad/glad.h>
+#include <glm/glm.hpp>
 
 class Texture2D {
 public:
@@ -24,6 +25,7 @@ public:
 //    Texture2D(const GLchar *filepath);
     void Generate(GLuint width, GLuint height, unsigned char* data);
     void Generatefloat(GLuint width, GLuint height, GLfloat* data);
+    void Generatevec3(GLuint width, GLuint height, glm::vec3* data);
     void Bind() const;
 };
 

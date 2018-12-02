@@ -91,6 +91,7 @@ GLfloat Noise::Generate(glm::vec3 loc) {
 //    printf("height => %.3lf\n", ret);
     ret = ret * 0.5f + 0.25f;
     ret *= 3.0f;
+    if(ret < 0.0f) ret = 0.0f;
     ret = pow(ret, 2.23);
     return ret;
 }

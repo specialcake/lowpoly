@@ -105,13 +105,13 @@ void Scene::InitBuffer() {
     glBindVertexArray(0);
 
     GLfloat instance_vertices[] = {
-            1.0f, 1.0f,
-            1.0f, 0.0f,
-            0.0f, 1.0f,
+            1.0f, 1.0f, 1.0f,
+            1.0f, 0.0f, 1.0f,
+            0.0f, 1.0f, 1.0f,
 
-            0.0f, 1.0f,
-            1.0f, 0.0f,
-            0.0f, 0.0f
+            0.0f, 1.0f, -1.0f,
+            1.0f, 0.0f, -1.0f,
+            0.0f, 0.0f, -1.0f
     };
     glGenVertexArrays(1, &this->instanceVAO);
     glGenBuffers(1, &this->instanceVBO);
@@ -121,7 +121,9 @@ void Scene::InitBuffer() {
 
     glBindVertexArray(this->instanceVAO);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)(2 * sizeof(GLfloat)));
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -132,26 +134,23 @@ void Scene::generate_scene() {
         for (GLint j = 0; j < CHUNK_SIZE; j++) {
             chunk[i][j]->generate_map();
             chunk[i][j]->generate_water();
+            chunk[i][j]->generate_normal();
         }
     }
     std::cout << this->chunk[0][0]->height[0][0] << std::endl;
     this->chunk[0][0]->height[1][1] = 3.0f;
 }
 void Scene::draw(glm::mat4 PVMatrix) {
-//    this->map_shader.setVec3("land_color", LAND_COLOR);
-//    glBindVertexArray(this->VAO);
-//    for(GLint i = 0; i < CHUNK_SIZE; i++) {
-//        for (GLint j = 0; j < CHUNK_SIZE; j++) {
-////            printf("[%d, %d] ", chunk[i][j]->pos_x, chunk[i][j]->pos_z);
-//            chunk[i][j]->draw_map();
-//        }
-////        printf("\n");
-//    }
-//    glBindVertexArray(0);
     this->map_instance_shader.use();
     HeightMap = this->Generate_HeightMap();
-    glActiveTexture(0);
+    NormalMap0 = this->Generate_NormalMap(0);
+    NormalMap1 = this->Generate_NormalMap(1);
+    glActiveTexture(GL_TEXTURE0);
     this->HeightMap.Bind();
+    glActiveTexture(GL_TEXTURE1);
+    this->NormalMap0.Bind();
+    glActiveTexture(GL_TEXTURE2);
+    this->NormalMap1.Bind();
     this->map_instance_shader.setMat4("PVMatrix", PVMatrix);
     this->map_instance_shader.setVec3("land_color", LAND_COLOR);
     this->map_instance_shader.setFloat("scalefactor", MESH_LENGTH);
@@ -178,6 +177,7 @@ void Scene::draw(glm::mat4 PVMatrix) {
 //            chunk[i][j]->draw_water();
 //        }
 //    }
+    glActiveTexture(GL_TEXTURE0);
 }
 
 void Scene::UpdateChunks() {
@@ -281,7 +281,7 @@ Texture2D Scene::Generate_HeightMap() {
     GLint p = 0;
     GLint limit = CHUNK_SIZE * CHUNK_SIZE * MESH_SIZE * MESH_SIZE + CHUNK_SIZE * MESH_SIZE * 2 + 1;
     GLint len = CHUNK_SIZE * CHUNK_SIZE + 1;
-    GLfloat* data = new GLfloat[limit];
+    static GLfloat* data = new GLfloat[limit];
     for(GLint i = 0; i < CHUNK_SIZE; i++){
         for(GLint j = 0; j < MESH_SIZE; j++){
             for(GLint k = 0; k < CHUNK_SIZE; k++){
@@ -323,4 +323,22 @@ Texture2D Scene::Generate_HeightMap() {
 //        printf("\n===============================\n");
 //    }
     return ResourceManager::MakeTexture(CHUNK_SIZE * MESH_SIZE + 1, CHUNK_SIZE * MESH_SIZE + 1, GL_RED, data, "HeightMap");
+}
+Texture2D Scene::Generate_NormalMap(int th) {
+    GLint p = 0;
+    GLint limit = CHUNK_SIZE * CHUNK_SIZE * MESH_SIZE * MESH_SIZE;
+    GLuint len = CHUNK_SIZE * MESH_SIZE;
+    static glm::vec3* data = new glm::vec3[limit];
+    for(GLint i = 0; i < CHUNK_SIZE; i++){
+        for(GLint j = 0; j < MESH_SIZE; j++){
+            for(GLint k = 0; k < CHUNK_SIZE; k++){
+                memcpy(data + p, chunk[i][k]->normal[th][j], sizeof(glm::vec3) * (MESH_SIZE));
+                p += MESH_SIZE;
+            }
+        }
+    }
+//    for(GLint i = 0; i < limit; i++){
+//        data[i] = glm::vec3(1.0f * th);
+//    }
+    return ResourceManager::MakeTexture(len, len, GL_RGB, data, "NormalMap" + std::to_string(th));
 }
