@@ -138,10 +138,10 @@ void Scene::generate_scene() {
         }
     }
     std::cout << this->chunk[0][0]->height[0][0] << std::endl;
-    this->chunk[0][0]->height[1][1] = 3.0f;
+//    this->chunk[0][0]->height[1][1] = 3.0f;
 }
 void Scene::draw(glm::mat4 PVMatrix) {
-    this->map_instance_shader.use();
+    map_instance_shader.use();
     HeightMap = this->Generate_HeightMap();
     NormalMap0 = this->Generate_NormalMap(0);
     NormalMap1 = this->Generate_NormalMap(1);
@@ -151,23 +151,48 @@ void Scene::draw(glm::mat4 PVMatrix) {
     this->NormalMap0.Bind();
     glActiveTexture(GL_TEXTURE2);
     this->NormalMap1.Bind();
-    this->map_instance_shader.setMat4("PVMatrix", PVMatrix);
-    this->map_instance_shader.setVec3("land_color", LAND_COLOR);
-    this->map_instance_shader.setFloat("scalefactor", MESH_LENGTH);
-    this->map_instance_shader.setVec3("scene_offset", this->offset);
-    this->map_instance_shader.setInt("scene_size", MESH_SIZE * CHUNK_SIZE);
+    map_instance_shader.setMat4("PVMatrix", PVMatrix);
+    map_instance_shader.setVec3("viewPos", ResourceManager::camera.Position);
+    map_instance_shader.setVec3("land_color", LAND_COLOR);
+    map_instance_shader.setVec3("rock_color", ROCK_COLOR);
+    map_instance_shader.setFloat("scalefactor", MESH_LENGTH);
+    map_instance_shader.setVec3("scene_offset", this->offset);
+    map_instance_shader.setInt("scene_size", MESH_SIZE * CHUNK_SIZE);
+
+    map_instance_shader.setVec3("dirLight.direction", glm::vec3(-1.0f, -4.0f, 1.0f));
+    map_instance_shader.setVec3("dirLight.ambient", glm::vec3(0.5f));
+    map_instance_shader.setVec3("dirLight.diffuse", glm::vec3(0.5f));
+    map_instance_shader.setVec3("dirLight.specular", glm::vec3(0.0f));
+
+    map_instance_shader.setVec3("pointLights[0].position", glm::vec3(0.0f, 3.0f, -2.0f));
+    map_instance_shader.setVec3("pointLights[0].ambient", glm::vec3(0.2f));
+    map_instance_shader.setVec3("pointLights[0].diffuse", glm::vec3(0.5f));
+    map_instance_shader.setVec3("pointLights[0].specular", glm::vec3(0.0f));
+    map_instance_shader.setFloat("pointLights[0].constant", 1.0f);
+    map_instance_shader.setFloat("pointLights[0].linear", 0.09f);
+    map_instance_shader.setFloat("pointLights[0].quadratic", 0.032f);
+//    struct PointLight{
+//        vec3 position;
+//        vec3 ambient;
+//        vec3 diffuse;
+//        vec3 specular;
+//
+//        float constant;
+//        float linear;
+//        float quadratic;
+//    };
 
     glBindVertexArray(this->instanceVAO);
     glDrawArraysInstanced(GL_TRIANGLES, 0, 6, MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE);
     glBindVertexArray(0);
 
-    this->water_shader.use();
-    this->water_shader.setMat4("PVMatrix", PVMatrix);
-    this->water_shader.setVec3("water_color", SEA_COLOR);
-    this->water_shader.setFloat("scalefactor", MESH_LENGTH);
-    this->water_shader.setVec3("scene_offset", this->offset);
-    this->water_shader.setInt("scene_size", MESH_SIZE * CHUNK_SIZE);
-    this->water_shader.setFloat("water_height", SEA_LEVEL);
+    water_shader.use();
+    water_shader.setMat4("PVMatrix", PVMatrix);
+    water_shader.setVec3("water_color", SEA_COLOR);
+    water_shader.setFloat("scalefactor", MESH_LENGTH);
+    water_shader.setVec3("scene_offset", this->offset);
+    water_shader.setInt("scene_size", MESH_SIZE * CHUNK_SIZE);
+    water_shader.setFloat("water_height", SEA_LEVEL);
 
     glBindVertexArray(this->VAO);
     glDrawArraysInstanced(GL_TRIANGLES, 0, 6, MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE);

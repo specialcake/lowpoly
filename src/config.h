@@ -21,6 +21,7 @@
 #define OBJECT_TYPE_NUMBER 2
 #define LAND_COLOR glm::vec3(0.543f, 0.836f, 0.25f)
 #define SEA_COLOR glm::vec3(0.106f, 0.863f, 1.0f)
+#define ROCK_COLOR glm::vec3(0.522f, 0.522f, 0.522f)
 #define MAX_HEIGHT 4.0f
 #define NOISE_SIZE 29
 #define SEA_LEVEL 0.10f

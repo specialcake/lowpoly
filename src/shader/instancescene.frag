@@ -2,24 +2,21 @@
 out vec4 FragColor;
 
 in float height;
-in vec3 normal;
-//in vec2 NormalTexCoord;
-//in float TriangleType;
+in vec3 Normal;
+in vec3 FragPos;
+in vec3 aFragColor;
 
-uniform vec3 land_color;
+//uniform vec3 land_color;
 
 void main() {
-    vec3 lightPos = vec3(1.0f, -1.0f, 4.0f);
-    float ambientStrength = 0.1;
-
-//    vec3 normal = vec3(1.0f, 1.0f, 1.0f);
-//    if(TriangleType > 0.0f)
-//        normal = texture(NormalMap0, NormalTexCoord).rgb;
-//    else
-//        normal = texture(NormalMap1, NormalTexCoord).rgb;
-//    normal = (normal - 0.5f) * 2.0f;
-//    FragColor = vec4((height + 0.1f) * land_color, 1.0f);
-    FragColor = vec4(normal, 1.0f);
+//    float ambientStrength = 0.8;
+//    vec3 lightPos = vec3(1.0f, 4.0f, -1.0f);
+//    vec3 lightDir = normalize(lightPos - FragPos);
+//    float diffuseStrength = max(dot(Normal, lightDir), 0.0);
+//
+//    FragColor = vec4(Normal, 1.0f);
+//    FragColor = vec4(land_color * (ambientStrength + diffuseStrength), 1.0f);
+    FragColor = vec4(aFragColor, 1.0f);
 //    FragColor = vec4(0.0f, height * 0.5f + 0.5f, 0.0f, 1.0f);
 //	FragColor = vec4(0.0f, height, 0.0f, 1.0f);
 //	FragColor = vec4(1.0f);
