@@ -164,23 +164,13 @@ void Scene::draw(glm::mat4 PVMatrix) {
     map_instance_shader.setVec3("dirLight.diffuse", glm::vec3(0.5f));
     map_instance_shader.setVec3("dirLight.specular", glm::vec3(0.0f));
 
-    map_instance_shader.setVec3("pointLights[0].position", glm::vec3(0.0f, 3.0f, -2.0f));
+    map_instance_shader.setVec3("pointLights[0].position", glm::vec3(0.0f, 1.0f, -14.0f));
     map_instance_shader.setVec3("pointLights[0].ambient", glm::vec3(0.2f));
     map_instance_shader.setVec3("pointLights[0].diffuse", glm::vec3(0.5f));
     map_instance_shader.setVec3("pointLights[0].specular", glm::vec3(0.0f));
     map_instance_shader.setFloat("pointLights[0].constant", 1.0f);
-    map_instance_shader.setFloat("pointLights[0].linear", 0.09f);
-    map_instance_shader.setFloat("pointLights[0].quadratic", 0.032f);
-//    struct PointLight{
-//        vec3 position;
-//        vec3 ambient;
-//        vec3 diffuse;
-//        vec3 specular;
-//
-//        float constant;
-//        float linear;
-//        float quadratic;
-//    };
+    map_instance_shader.setFloat("pointLights[0].linear", 0.045f);
+    map_instance_shader.setFloat("pointLights[0].quadratic", 0.0075f);
 
     glBindVertexArray(this->instanceVAO);
     glDrawArraysInstanced(GL_TRIANGLES, 0, 6, MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE);
@@ -188,20 +178,29 @@ void Scene::draw(glm::mat4 PVMatrix) {
 
     water_shader.use();
     water_shader.setMat4("PVMatrix", PVMatrix);
-    water_shader.setVec3("water_color", SEA_COLOR);
-    water_shader.setFloat("scalefactor", MESH_LENGTH);
-    water_shader.setVec3("scene_offset", this->offset);
-    water_shader.setInt("scene_size", MESH_SIZE * CHUNK_SIZE);
+    map_instance_shader.setVec3("viewPos", ResourceManager::camera.Position);
     water_shader.setFloat("water_height", SEA_LEVEL);
+    water_shader.setFloat("scalefactor", MESH_LENGTH);
+    water_shader.setInt("scene_size", MESH_SIZE * CHUNK_SIZE);
+    water_shader.setVec3("scene_offset", this->offset);
+    water_shader.setVec3("water_color", SEA_COLOR);
+
+    water_shader.setVec3("dirLight.direction", glm::vec3(-1.0f, -4.0f, 1.0f));
+    water_shader.setVec3("dirLight.ambient", glm::vec3(0.5f));
+    water_shader.setVec3("dirLight.diffuse", glm::vec3(0.5f));
+    water_shader.setVec3("dirLight.specular", glm::vec3(0.0f));
+
+    water_shader.setVec3("pointLights[0].position", glm::vec3(0.0f, 1.0f, -14.0f));
+    water_shader.setVec3("pointLights[0].ambient", glm::vec3(0.2f));
+    water_shader.setVec3("pointLights[0].diffuse", glm::vec3(0.5f));
+    water_shader.setVec3("pointLights[0].specular", glm::vec3(0.0f));
+    water_shader.setFloat("pointLights[0].constant", 1.0f);
+    water_shader.setFloat("pointLights[0].linear", 0.045f);
+    water_shader.setFloat("pointLights[0].quadratic", 0.0075f);
 
     glBindVertexArray(this->VAO);
     glDrawArraysInstanced(GL_TRIANGLES, 0, 6, MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE);
     glBindVertexArray(0);
-//    for(GLint i = 0; i < CHUNK_SIZE; i++) {
-//        for (GLint j = 0; j < CHUNK_SIZE; j++) {
-//            chunk[i][j]->draw_water();
-//        }
-//    }
     glActiveTexture(GL_TEXTURE0);
 }
 

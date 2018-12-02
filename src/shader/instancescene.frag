@@ -1,9 +1,9 @@
 #version 330 core
 out vec4 FragColor;
 
-in float height;
-in vec3 Normal;
-in vec3 FragPos;
+//in float height;
+//in vec3 Normal;
+//in vec3 FragPos;
 in vec3 aFragColor;
 
 //uniform vec3 land_color;
