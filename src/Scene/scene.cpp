@@ -337,8 +337,8 @@ Texture2D Scene::Generate_NormalMap(int th) {
             }
         }
     }
-//    for(GLint i = 0; i < limit; i++){
-//        data[i] = glm::vec3(1.0f * th);
-//    }
+    for(GLint i = 0; i < limit; i++){
+        data[i] = data[i] * 0.5f + 0.5f;
+    }
     return ResourceManager::MakeTexture(len, len, GL_RGB, data, "NormalMap" + std::to_string(th));
 }
