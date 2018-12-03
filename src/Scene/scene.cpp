@@ -22,45 +22,13 @@ void Scene::Initialize() {
         for(GLint j = 0; j < CHUNK_SIZE; j++) {
             this->chunk[i][j] = new Chunk(i, j);
             this->chunk[i][j]->parent = this;
-//            if(i + 1 != CHUNK_SIZE)
-//                this->chunk[i][j]->xPos = this->chunk[i + 1][j];
-//            if(i != 0)
-//                this->chunk[i][j]->xNeg = this->chunk[i - 1][j];
-//            if(j + 1 != CHUNK_SIZE)
-//                this->chunk[i][j]->zPos = this->chunk[i][j + 1];
-//            if(j != 0)
-//                this->chunk[i][j]->zNeg = this->chunk[i][j - 1];
         }
     }
-
-//    for(GLint i = 0; i < CHUNK_SIZE; i++) {
-//        for(GLint j = 0; j < CHUNK_SIZE; j++) {
-//            if(i + 1 != CHUNK_SIZE){
-////                this->chunk[i][j]->xPos = this->chunk[i + 1][j];
-//                for(GLint k = 0; k < CHUNK_SIZE; k++){
-//                    this->chunk[i][j]->submesh[MESH_SIZE - 1][k]->xPos = this->chunk[i][j]->xPos->submesh[0][k];
-//                }
-//            }
-//            if(i != 0){
-////                this->chunk[i][j]->xNeg = this->chunk[i - 1][j];
-//                for(GLint k = 0; k < CHUNK_SIZE; k++){
-//                    this->chunk[i][j]->submesh[0][k]->xNeg = this->chunk[i][j]->xNeg->submesh[MESH_SIZE - 1][k];
-//                }
-//            }
-//            if(j + 1 != CHUNK_SIZE) {
-////                this->chunk[i][j]->zPos = this->chunk[i][j + 1];
-//                for (GLint k = 0; k < CHUNK_SIZE; k++) {
-//                    this->chunk[i][j]->submesh[k][MESH_SIZE - 1]->zPos = this->chunk[i][j]->zPos->submesh[k][0];
-//                }
-//            }
-//            if(j != 0){
-////                this->chunk[i][j]->zNeg = this->chunk[i][j - 1];
-//                for(GLint k = 0; k < CHUNK_SIZE; k++){
-//                    this->chunk[i][j]->submesh[k][0]->zNeg = this->chunk[i][j]->zNeg->submesh[k][MESH_SIZE - 1];
-//                }
-//            }
-//        }
-//    }
+    for(GLint i = 0; i < CHUNK_SIZE; i++) {
+        for(GLint j = 0; j < CHUNK_SIZE; j++) {
+            this->UpdateNeighbor(i, j);
+        }
+    }
 
     this->cur_Chunk = this->chunk[CHUNK_RADIUS][CHUNK_RADIUS];
     this->cur_Submesh = this->cur_Chunk->submesh[MESH_RADIUS][MESH_RADIUS];
@@ -159,9 +127,9 @@ void Scene::draw(glm::mat4 PVMatrix) {
     map_instance_shader.setVec3("scene_offset", this->offset);
     map_instance_shader.setInt("scene_size", MESH_SIZE * CHUNK_SIZE);
 
-    map_instance_shader.setVec3("dirLight.direction", glm::vec3(-1.0f, -4.0f, 1.0f));
+    map_instance_shader.setVec3("dirLight.direction", glm::vec3(-1.0f, -1.0f, 1.0f));
     map_instance_shader.setVec3("dirLight.ambient", glm::vec3(0.5f));
-    map_instance_shader.setVec3("dirLight.diffuse", glm::vec3(0.5f));
+    map_instance_shader.setVec3("dirLight.diffuse", glm::vec3(0.7f));
     map_instance_shader.setVec3("dirLight.specular", glm::vec3(0.0f));
 
     map_instance_shader.setVec3("pointLights[0].position", glm::vec3(0.0f, 1.0f, -14.0f));
@@ -175,6 +143,24 @@ void Scene::draw(glm::mat4 PVMatrix) {
     glBindVertexArray(this->instanceVAO);
     glDrawArraysInstanced(GL_TRIANGLES, 0, 6, MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE);
     glBindVertexArray(0);
+
+//    Shader normvis = ResourceManager::GetShader("normvis");
+//    normvis.use();
+//    glActiveTexture(GL_TEXTURE0);
+//    this->HeightMap.Bind();
+//    glActiveTexture(GL_TEXTURE1);
+//    this->NormalMap0.Bind();
+//    glActiveTexture(GL_TEXTURE2);
+//    this->NormalMap1.Bind();
+//    normvis.setMat4("PVMatrix", PVMatrix);
+//    normvis.setMat4("projection", glm::perspective(glm::radians(ResourceManager::camera.Zoom), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f));
+//    normvis.setMat4("view", ResourceManager::camera.GetViewMatrix());
+//    normvis.setFloat("scalefactor", MESH_LENGTH);
+//    normvis.setVec3("scene_offset", this->offset);
+//    normvis.setInt("scene_size", MESH_SIZE * CHUNK_SIZE);
+//    glBindVertexArray(this->instanceVAO);
+//    glDrawArraysInstanced(GL_TRIANGLES, 0, 6, MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE);
+//    glBindVertexArray(0);
 
     water_shader.use();
     water_shader.setMat4("PVMatrix", PVMatrix);
@@ -269,7 +255,28 @@ void Scene::UpdateChunks() {
     }
     cur_Chunk = this->chunk[CHUNK_RADIUS][CHUNK_RADIUS];
     cur_Submesh = cur_Chunk->submesh[MESH_RADIUS][MESH_RADIUS];
+
+    for(GLint i = 0; i < CHUNK_SIZE; i++) {
+        this->UpdateNeighbor(0, i);
+        this->UpdateNeighbor(1, i);
+        this->UpdateNeighbor(i, 0);
+        this->UpdateNeighbor(i, 1);
+        this->UpdateNeighbor(CHUNK_SIZE - 1, i);
+        this->UpdateNeighbor(CHUNK_SIZE - 2, i);
+        this->UpdateNeighbor(i, CHUNK_SIZE - 1);
+        this->UpdateNeighbor(i, CHUNK_SIZE - 2);
+    }
 //    UpdateChunk(dir);
+}
+void Scene::UpdateNeighbor(GLint x, GLint y) {
+    if(x > 0) chunk[x][y]->xNeg = chunk[x - 1][y];
+    else chunk[x][y]->xNeg = nullptr;
+    if(y > 0) chunk[x][y]->zNeg = chunk[x][y - 1];
+    else chunk[x][y]->zNeg = nullptr;
+    if(x < CHUNK_SIZE - 1) chunk[x][y]->xPos = chunk[x + 1][y];
+    else chunk[x][y]->xPos = nullptr;
+    if(y < CHUNK_SIZE - 1) chunk[x][y]->zPos = chunk[x][y + 1];
+    else chunk[x][y]->zPos = nullptr;
 }
 
 void Scene::GetLocationbyCamera(GLint &cx, GLint &cz, GLint &mx, GLint &mz) {

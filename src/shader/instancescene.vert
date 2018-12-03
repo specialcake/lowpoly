@@ -74,17 +74,6 @@ void main() {
         aFragColor = rock_color * factory;
     else
         aFragColor = land_color * factory;
-//    float ambientStrength = 0.5;
-//    vec3 lightPos = vec3(1.0f, 4.0f, -1.0f);
-//    vec3 lightDir = normalize(lightPos - FragPos);
-//    lightDir = normalize(vec3(-1.0f, -4.0f, 1.0f));
-//    float diffuseStrength = max(dot(Normal, lightDir), 0.0);
-////    diffuseStrength *= 0.1f;
-//
-//    if(height > 1.0f)
-//        aFragColor = rock_color * (ambientStrength + diffuseStrength);
-//    else
-//        aFragColor = max(height, 0.5) * land_color * (ambientStrength + diffuseStrength);
 }
 
 vec3 CalcParallelLight(ParallelLight light, vec3 normal, vec3 viewDir){

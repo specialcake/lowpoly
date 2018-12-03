@@ -21,17 +21,23 @@ void Game::Init() {
     ResourceManager::LoadShader("../src/shader/instancescene.vert", "../src/shader/instancescene.frag", NULL, "instancescene");
     ResourceManager::LoadShader("../src/shader/water.vert", "../src/shader/water.frag", NULL, "water");
     ResourceManager::LoadShader("../src/shader/model.vert", "../src/shader/model.frag", NULL, "model");
+    ResourceManager::LoadShader("../src/shader/normvis.vert", "../src/shader/normvis.frag", "../src/shader/normvis.geom", "normvis");
 
     ResourceManager::LoadTexture("../resource/image/awesomeface.png", GL_RGBA, "awesomeface");
     ResourceManager::GetShader("sprite").use();
     ResourceManager::GetShader("sprite").setInt("image", 0);
+
     ResourceManager::GetShader("instancescene").use();
     ResourceManager::GetShader("instancescene").setInt("HeightMap", 0);
     ResourceManager::GetShader("instancescene").setInt("NormalMap0", 1);
     ResourceManager::GetShader("instancescene").setInt("NormalMap1", 2);
 
-    ResourceManager::LoadModel("../resource/model/widetree/widetree.obj", "crystal");
+    ResourceManager::GetShader("normvis").use();
+    ResourceManager::GetShader("normvis").setInt("HeightMap", 0);
+    ResourceManager::GetShader("normvis").setInt("NormalMap0", 1);
+    ResourceManager::GetShader("normvis").setInt("NormalMap1", 2);
 
+    ResourceManager::LoadModel("../resource/model/widetree/widetree.obj", "crystal");
 
     littlewindow = new SpriteRenderer(ResourceManager::GetShader("sprite"));
 

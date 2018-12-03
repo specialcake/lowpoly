@@ -23,11 +23,15 @@ public:
     Chunk(GLint x, GLint z);
     ~Chunk();
     void Initialize();
+
     void generate_map();
     void generate_water();
     void generate_mountain();
     void generate_tree();
     void generate_normal();
+
+    glm::vec3 calc_normal(glm::vec3 position);
+
     void draw();
     void draw_map();
     void draw_water();

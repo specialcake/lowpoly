@@ -42,6 +42,7 @@ public:
     void generate_scene();
 
     void UpdateChunks();
+    void UpdateNeighbor(GLint x, GLint y);
     void GetLocationbyCamera(GLint& cx, GLint& cz, GLint& ms, GLint& mz);
 
     Texture2D Generate_HeightMap();
