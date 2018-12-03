@@ -73,13 +73,13 @@ void Scene::InitBuffer() {
     glBindVertexArray(0);
 
     GLfloat instance_vertices[] = {
-            1.0f, 1.0f, 1.0f,
-            1.0f, 0.0f, 1.0f,
-            0.0f, 1.0f, 1.0f,
-
-            0.0f, 1.0f, -1.0f,
+            1.0f, 1.0f, -1.0f,
             1.0f, 0.0f, -1.0f,
-            0.0f, 0.0f, -1.0f
+            0.0f, 1.0f, -1.0f,
+
+            0.0f, 1.0f, 1.0f,
+            1.0f, 0.0f, 1.0f,
+            0.0f, 0.0f, 1.0f
     };
     glGenVertexArrays(1, &this->instanceVAO);
     glGenBuffers(1, &this->instanceVBO);
@@ -109,6 +109,10 @@ void Scene::generate_scene() {
         }
     }
     std::cout << this->chunk[0][0]->height[0][0] << std::endl;
+    glm::vec3 va = glm::vec3(0.0f, 1.10733f, 1.0404f);
+    glm::vec3 vb = glm::vec3(1.0404f, -0.552877f, 0.0f);
+    glm::vec3 vc = glm::cross(va, vb);
+    Tools::PrintVec3(glm::normalize(vc));
 //    this->chunk[0][0]->height[1][1] = 3.0f;
 }
 void Scene::draw(glm::mat4 PVMatrix) {

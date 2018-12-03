@@ -42,6 +42,9 @@ void main() {
     pNormal = (pNormal - 0.5f) * 2.0f;
     pNormal = vec3(projection * view * vec4(pNormal, 0.0f));
     vs_out.normal = pNormal;
+
+    vs_out.normal = Normal;
+//    vs_out.normal = vec3(projection * view * vec4(vec3(0.0f, 1.0f, 0.0f), 0.0f));
 //    vs_out.normal = vec3(pNormalTexCoord.x, 1.0f, pNormalTexCoord.y);
 }
 

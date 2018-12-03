@@ -71,7 +71,7 @@ void main() {
 
     //Light calculate
     vec3 viewDir = normalize(viewPos - FragPos);
-    vec3 factory = CalcParallelLight(dirLight, pNormal, viewDir);
+    vec3 factory = CalcParallelLight(dirLight, Normal, viewDir);
 //    for(int i = 0; i < NR_POINT_LIGHTS; i++)
 //        factory += CalcPointLight(pointLights[i], Normal, FragPos, viewDir);
 

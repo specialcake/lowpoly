@@ -82,7 +82,13 @@ void Game::Render() {
 //        Texture2D face = ResourceManager::GetTexture("awesomeface");
         littlewindow->shader.use();
         littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
-        littlewindow->DrawSprite(scene->pNormalMap, glm::vec3(0.5f), glm::vec3(0.5f));
+        littlewindow->DrawSprite(scene->NormalMap1, glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.5f));
+        littlewindow->shader.use();
+        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
+        littlewindow->DrawSprite(scene->pNormalMap, glm::vec3(-0.25, 0.5f, 0.0f), glm::vec3(0.5f));
+        littlewindow->shader.use();
+        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
+        littlewindow->DrawSprite(scene->NormalMap0, glm::vec3(-1.0f, 0.5f, 0.0f), glm::vec3(0.5f));
 
         Model* mymodel = ResourceManager::GetModel("crystal");
 
