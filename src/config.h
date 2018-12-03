@@ -11,12 +11,12 @@
 #define SCREEN_HEIGHT 900
 
 //Scene
-#define SCENE_LENGTH 53.0f
+#define SCENE_LENGTH 103.0f
 #define CHUNK_SIZE 9
 #define CHUNK_RADIUS 4
 #define CHUNK_LENGTH (SCENE_LENGTH / CHUNK_SIZE)
-#define MESH_SIZE 21
-#define MESH_RADIUS 10
+#define MESH_SIZE 11
+#define MESH_RADIUS 5
 #define MESH_LENGTH (CHUNK_LENGTH / MESH_SIZE)
 #define OBJECT_TYPE_NUMBER 2
 #define LAND_COLOR glm::vec3(0.543f, 0.836f, 0.25f)

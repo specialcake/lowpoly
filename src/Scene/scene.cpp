@@ -100,9 +100,12 @@ void Scene::InitBuffer() {
 void Scene::generate_scene() {
     for(GLint i = 0; i < CHUNK_SIZE; i++) {
         for (GLint j = 0; j < CHUNK_SIZE; j++) {
-            chunk[i][j]->generate_map();
-            chunk[i][j]->generate_water();
-            chunk[i][j]->generate_normal();
+            chunk[i][j]->generate_height();
+        }
+    }
+    for(GLint i = 0; i < CHUNK_SIZE; i++) {
+        for (GLint j = 0; j < CHUNK_SIZE; j++) {
+            chunk[i][j]->Updateinfo();
         }
     }
     std::cout << this->chunk[0][0]->height[0][0] << std::endl;
@@ -113,12 +116,15 @@ void Scene::draw(glm::mat4 PVMatrix) {
     HeightMap = this->Generate_HeightMap();
     NormalMap0 = this->Generate_NormalMap(0);
     NormalMap1 = this->Generate_NormalMap(1);
+    pNormalMap = this->Generate_pNormalMap();
     glActiveTexture(GL_TEXTURE0);
     this->HeightMap.Bind();
     glActiveTexture(GL_TEXTURE1);
     this->NormalMap0.Bind();
     glActiveTexture(GL_TEXTURE2);
     this->NormalMap1.Bind();
+    glActiveTexture(GL_TEXTURE3);
+    this->pNormalMap.Bind();
     map_instance_shader.setMat4("PVMatrix", PVMatrix);
     map_instance_shader.setVec3("viewPos", ResourceManager::camera.Position);
     map_instance_shader.setVec3("land_color", LAND_COLOR);
@@ -127,9 +133,9 @@ void Scene::draw(glm::mat4 PVMatrix) {
     map_instance_shader.setVec3("scene_offset", this->offset);
     map_instance_shader.setInt("scene_size", MESH_SIZE * CHUNK_SIZE);
 
-    map_instance_shader.setVec3("dirLight.direction", glm::vec3(-1.0f, -1.0f, 1.0f));
-    map_instance_shader.setVec3("dirLight.ambient", glm::vec3(0.5f));
-    map_instance_shader.setVec3("dirLight.diffuse", glm::vec3(0.7f));
+    map_instance_shader.setVec3("dirLight.direction", glm::vec3(-1.0f, -1.0f, 0.0f));
+    map_instance_shader.setVec3("dirLight.ambient", glm::vec3(0.3f));
+    map_instance_shader.setVec3("dirLight.diffuse", glm::vec3(1.0f));
     map_instance_shader.setVec3("dirLight.specular", glm::vec3(0.0f));
 
     map_instance_shader.setVec3("pointLights[0].position", glm::vec3(0.0f, 1.0f, -14.0f));
@@ -152,6 +158,8 @@ void Scene::draw(glm::mat4 PVMatrix) {
 //    this->NormalMap0.Bind();
 //    glActiveTexture(GL_TEXTURE2);
 //    this->NormalMap1.Bind();
+//    glActiveTexture(GL_TEXTURE3);
+//    this->pNormalMap.Bind();
 //    normvis.setMat4("PVMatrix", PVMatrix);
 //    normvis.setMat4("projection", glm::perspective(glm::radians(ResourceManager::camera.Zoom), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f));
 //    normvis.setMat4("view", ResourceManager::camera.GetViewMatrix());
@@ -201,6 +209,9 @@ void Scene::UpdateChunks() {
         return ;
     }
     this->debugflag = true;
+    static auto toUpdate = new Chunk*[CHUNK_SIZE];
+    static GLint head, tail;
+    head = tail = 0;
     if(Chunkx > cur_Chunk->pos_x){
         this->offset += glm::vec3(CHUNK_LENGTH, 0.0f, 0.0f);
         for(GLint i = 0; i < CHUNK_SIZE; i++) {
@@ -211,6 +222,7 @@ void Scene::UpdateChunks() {
             }
             this->chunk[CHUNK_SIZE - 1][i] = tmpChunk;
             tmpChunk->recycle(CHUNK_SIZE - 1, i);
+            toUpdate[tail++] = tmpChunk;
         }
         dir = MOVE_XPOS;
     }
@@ -224,6 +236,7 @@ void Scene::UpdateChunks() {
             }
             this->chunk[0][i] = tmpChunk;
             tmpChunk->recycle(0, i);
+            toUpdate[tail++] = tmpChunk;
         }
         dir = MOVE_XNEG;
     }
@@ -237,6 +250,7 @@ void Scene::UpdateChunks() {
             }
             this->chunk[i][CHUNK_SIZE - 1] = tmpChunk;
             tmpChunk->recycle(i, CHUNK_SIZE - 1);
+            toUpdate[tail++] = tmpChunk;
         }
         dir = MOVE_ZPOS;
     }
@@ -250,12 +264,10 @@ void Scene::UpdateChunks() {
             }
             this->chunk[i][0] = tmpChunk;
             tmpChunk->recycle(i, 0);
+            toUpdate[tail++] = tmpChunk;
         }
         dir = MOVE_ZNEG;
     }
-    cur_Chunk = this->chunk[CHUNK_RADIUS][CHUNK_RADIUS];
-    cur_Submesh = cur_Chunk->submesh[MESH_RADIUS][MESH_RADIUS];
-
     for(GLint i = 0; i < CHUNK_SIZE; i++) {
         this->UpdateNeighbor(0, i);
         this->UpdateNeighbor(1, i);
@@ -266,6 +278,11 @@ void Scene::UpdateChunks() {
         this->UpdateNeighbor(i, CHUNK_SIZE - 1);
         this->UpdateNeighbor(i, CHUNK_SIZE - 2);
     }
+    while(head < tail){
+        toUpdate[head++]->Updateinfo();
+    }
+    cur_Chunk = this->chunk[CHUNK_RADIUS][CHUNK_RADIUS];
+    cur_Submesh = cur_Chunk->submesh[MESH_RADIUS][MESH_RADIUS];
 //    UpdateChunk(dir);
 }
 void Scene::UpdateNeighbor(GLint x, GLint y) {
@@ -311,7 +328,7 @@ void Scene::GetLocationbyCamera(GLint &cx, GLint &cz, GLint &mx, GLint &mz) {
 Texture2D Scene::Generate_HeightMap() {
     GLint p = 0;
     GLint limit = CHUNK_SIZE * CHUNK_SIZE * MESH_SIZE * MESH_SIZE + CHUNK_SIZE * MESH_SIZE * 2 + 1;
-    GLint len = CHUNK_SIZE * CHUNK_SIZE + 1;
+    GLuint len = CHUNK_SIZE * MESH_SIZE + 1;
     static GLfloat* data = new GLfloat[limit];
     for(GLint i = 0; i < CHUNK_SIZE; i++){
         for(GLint j = 0; j < MESH_SIZE; j++){
@@ -353,7 +370,7 @@ Texture2D Scene::Generate_HeightMap() {
 //    if(this->debugflag) {
 //        printf("\n===============================\n");
 //    }
-    return ResourceManager::MakeTexture(CHUNK_SIZE * MESH_SIZE + 1, CHUNK_SIZE * MESH_SIZE + 1, GL_RED, data, "HeightMap");
+    return ResourceManager::MakeTexture(len, len, GL_RED, data, "HeightMap");
 }
 Texture2D Scene::Generate_NormalMap(int th) {
     GLint p = 0;
@@ -372,4 +389,29 @@ Texture2D Scene::Generate_NormalMap(int th) {
         data[i] = data[i] * 0.5f + 0.5f;
     }
     return ResourceManager::MakeTexture(len, len, GL_RGB, data, "NormalMap" + std::to_string(th));
+}
+
+Texture2D Scene::Generate_pNormalMap() {
+    GLint p = 0;
+    GLint limit = CHUNK_SIZE * CHUNK_SIZE * MESH_SIZE * MESH_SIZE + CHUNK_SIZE * MESH_SIZE * 2 + 1;
+    GLuint len = CHUNK_SIZE * MESH_SIZE + 1;
+    static auto data = new glm::vec3[limit];
+    for(GLint i = 0; i < CHUNK_SIZE; i++){
+        for(GLint j = 0; j < MESH_SIZE; j++){
+            for(GLint k = 0; k < CHUNK_SIZE; k++){
+                memcpy(data + p, chunk[i][k]->pnormal[j], sizeof(glm::vec3) * MESH_SIZE);
+                p += MESH_SIZE;
+            }
+            data[p++] = glm::vec3(0.0f);
+        }
+    }
+    for(GLint i = 0; i < CHUNK_SIZE; i++){
+        memset(data + p, 0, sizeof(glm::vec3) * MESH_SIZE);
+        p += MESH_SIZE;
+    }
+    data[p++] = glm::vec3(0.0f);
+    for(GLint i = 0; i < limit; i++){
+        data[i] = data[i] * 0.5f + 0.5f;
+    }
+    return ResourceManager::MakeTexture(len, len, GL_RGB, data, "pNormalMap");
 }

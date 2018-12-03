@@ -31,11 +31,13 @@ void Game::Init() {
     ResourceManager::GetShader("instancescene").setInt("HeightMap", 0);
     ResourceManager::GetShader("instancescene").setInt("NormalMap0", 1);
     ResourceManager::GetShader("instancescene").setInt("NormalMap1", 2);
+    ResourceManager::GetShader("instancescene").setInt("pNormalMap", 3);
 
     ResourceManager::GetShader("normvis").use();
     ResourceManager::GetShader("normvis").setInt("HeightMap", 0);
     ResourceManager::GetShader("normvis").setInt("NormalMap0", 1);
     ResourceManager::GetShader("normvis").setInt("NormalMap1", 2);
+    ResourceManager::GetShader("normvis").setInt("pNormalMap", 3);
 
     ResourceManager::LoadModel("../resource/model/widetree/widetree.obj", "crystal");
 
@@ -80,7 +82,7 @@ void Game::Render() {
 //        Texture2D face = ResourceManager::GetTexture("awesomeface");
         littlewindow->shader.use();
         littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
-        littlewindow->DrawSprite(scene->HeightMap, glm::vec3(0.5f), glm::vec3(0.5f));
+        littlewindow->DrawSprite(scene->pNormalMap, glm::vec3(0.5f), glm::vec3(0.5f));
 
         Model* mymodel = ResourceManager::GetModel("crystal");
 

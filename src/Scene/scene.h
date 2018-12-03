@@ -28,7 +28,8 @@ public:
     glm::vec3 mesh_offset[MESH_SIZE + 1][MESH_SIZE + 1];
 
     Noise* generator;
-    Texture2D HeightMap, NormalMap0, NormalMap1;
+    Texture2D HeightMap;
+    Texture2D NormalMap0, NormalMap1, pNormalMap;
 
     Shader map_shader, map_instance_shader, water_shader;
     GLuint VAO, VBO, instanceVAO, instanceVBO;
@@ -47,6 +48,7 @@ public:
 
     Texture2D Generate_HeightMap();
     Texture2D Generate_NormalMap(int th);
+    Texture2D Generate_pNormalMap();
 private:
 
 };

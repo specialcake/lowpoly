@@ -41,6 +41,7 @@ uniform PointLight pointLights[NR_POINT_LIGHTS];
 uniform sampler2D HeightMap;
 uniform sampler2D NormalMap0;
 uniform sampler2D NormalMap1;
+uniform sampler2D pNormalMap;
 
 vec3 CalcParallelLight(ParallelLight light, vec3 normal, vec3 viewDir);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
@@ -61,12 +62,16 @@ void main() {
     else
         Normal = texture(NormalMap1, NormalTexCoord).rgb;
     Normal = (Normal - 0.5f) * 2.0f;
+    //pnormal calc
+    vec2 pNormalTexCoord = vec2((idy + aVertex.y + 0.5f) / (scene_size + 1.0f), (idx + aVertex.x + 0.5f) / (scene_size + 1.0f));
+    vec3 pNormal = texture(pNormalMap, pNormalTexCoord).rgb;
+    pNormal = (pNormal - 0.5f) * 2.0f;
     //world coordinate
     vec3 FragPos = pos + scene_offset;
 
     //Light calculate
     vec3 viewDir = normalize(viewPos - FragPos);
-    vec3 factory = CalcParallelLight(dirLight, Normal, viewDir);
+    vec3 factory = CalcParallelLight(dirLight, pNormal, viewDir);
 //    for(int i = 0; i < NR_POINT_LIGHTS; i++)
 //        factory += CalcPointLight(pointLights[i], Normal, FragPos, viewDir);
 

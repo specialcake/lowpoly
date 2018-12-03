@@ -17,6 +17,7 @@ uniform mat4 view;
 uniform sampler2D HeightMap;
 uniform sampler2D NormalMap0;
 uniform sampler2D NormalMap1;
+uniform sampler2D pNormalMap;
 
 void main() {
     //realworld coordinate calc
@@ -35,6 +36,12 @@ void main() {
         Normal = texture(NormalMap1, NormalTexCoord).rgb;
     Normal = (Normal - 0.5f) * 2.0f;
     Normal = vec3(projection * view * vec4(Normal, 0.0f));
-    vs_out.normal = Normal;
+    //point normal calc
+    vec2 pNormalTexCoord = vec2((idy + aVertex.y + 0.5f) / (scene_size + 1.0f), (idx + aVertex.x + 0.5f) / (scene_size + 1.0f));
+    vec3 pNormal = texture(pNormalMap, pNormalTexCoord).rgb;
+    pNormal = (pNormal - 0.5f) * 2.0f;
+    pNormal = vec3(projection * view * vec4(pNormal, 0.0f));
+    vs_out.normal = pNormal;
+//    vs_out.normal = vec3(pNormalTexCoord.x, 1.0f, pNormalTexCoord.y);
 }
 

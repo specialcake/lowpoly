@@ -18,19 +18,20 @@ public:
     Submesh* submesh[MESH_SIZE + 1][MESH_SIZE + 1];
     GLfloat height[MESH_SIZE + 1][MESH_SIZE + 1];
     glm::vec3 normal[2][MESH_SIZE][MESH_SIZE];
+    glm::vec3 pnormal[MESH_SIZE][MESH_SIZE];
     Scene* parent;
     Chunk *xPos, *xNeg, *zPos, *zNeg;
     Chunk(GLint x, GLint z);
     ~Chunk();
     void Initialize();
 
-    void generate_map();
+    void generate_height();
     void generate_water();
     void generate_mountain();
     void generate_tree();
     void generate_normal();
 
-    glm::vec3 calc_normal(glm::vec3 position);
+    glm::vec3 calc_normal(GLint x, GLint z);
 
     void draw();
     void draw_map();
@@ -38,6 +39,7 @@ public:
     void draw_mountain();
     void draw_tree();
 
+    void Updateinfo();
     void recycle(GLint x, GLint z);
 private:
 };
