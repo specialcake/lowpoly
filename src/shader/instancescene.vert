@@ -67,8 +67,8 @@ void main() {
     //Light calculate
     vec3 viewDir = normalize(viewPos - FragPos);
     vec3 factory = CalcParallelLight(dirLight, Normal, viewDir);
-    for(int i = 0; i < NR_POINT_LIGHTS; i++)
-        factory += CalcPointLight(pointLights[i], Normal, FragPos, viewDir);
+//    for(int i = 0; i < NR_POINT_LIGHTS; i++)
+//        factory += CalcPointLight(pointLights[i], Normal, FragPos, viewDir);
 
     if(height > 1.0f)
         aFragColor = rock_color * factory;
