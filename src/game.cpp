@@ -22,10 +22,14 @@ void Game::Init() {
     ResourceManager::LoadShader("../src/shader/water.vert", "../src/shader/water.frag", NULL, "water");
     ResourceManager::LoadShader("../src/shader/model.vert", "../src/shader/model.frag", NULL, "model");
     ResourceManager::LoadShader("../src/shader/normvis.vert", "../src/shader/normvis.frag", "../src/shader/normvis.geom", "normvis");
+    ResourceManager::LoadShader("../src/shader/fontdisplay.vert", "../src/shader/fontdisplay.frag", NULL, "fontdisplay");
 
     ResourceManager::LoadTexture("../resource/image/awesomeface.png", GL_RGBA, "awesomeface");
     ResourceManager::GetShader("sprite").use();
     ResourceManager::GetShader("sprite").setInt("image", 0);
+
+    ResourceManager::GetShader("fontdisplay").use();
+    ResourceManager::GetShader("fontdisplay").setInt("text", 0);
 
     ResourceManager::GetShader("instancescene").use();
     ResourceManager::GetShader("instancescene").setInt("HeightMap", 0);
@@ -40,6 +44,8 @@ void Game::Init() {
     ResourceManager::GetShader("normvis").setInt("pNormalMap", 3);
 
     ResourceManager::LoadModel("../resource/model/widetree/widetree.obj", "crystal");
+
+    ResourceManager::fontdisplay.Initialize(ResourceManager::GetShader("fontdisplay"));
 
     littlewindow = new SpriteRenderer(ResourceManager::GetShader("sprite"));
 
@@ -80,15 +86,15 @@ void Game::Render() {
         scene->draw(PVMatrix);
 
 //        Texture2D face = ResourceManager::GetTexture("awesomeface");
-        littlewindow->shader.use();
-        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
-        littlewindow->DrawSprite(scene->NormalMap1, glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.5f));
-        littlewindow->shader.use();
-        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
-        littlewindow->DrawSprite(scene->pNormalMap, glm::vec3(-0.25, 0.5f, 0.0f), glm::vec3(0.5f));
-        littlewindow->shader.use();
-        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
-        littlewindow->DrawSprite(scene->NormalMap0, glm::vec3(-1.0f, 0.5f, 0.0f), glm::vec3(0.5f));
+//        littlewindow->shader.use();
+//        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
+//        littlewindow->DrawSprite(scene->NormalMap1, glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.5f));
+//        littlewindow->shader.use();
+//        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
+//        littlewindow->DrawSprite(scene->pNormalMap, glm::vec3(-0.25, 0.5f, 0.0f), glm::vec3(0.5f));
+//        littlewindow->shader.use();
+//        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
+//        littlewindow->DrawSprite(scene->NormalMap0, glm::vec3(-1.0f, 0.5f, 0.0f), glm::vec3(0.5f));
 
         Model* mymodel = ResourceManager::GetModel("crystal");
 
@@ -101,6 +107,8 @@ void Game::Render() {
         model = glm::scale(model, glm::vec3(0.3f));
         model_shader.setMat4("model", model);
         ResourceManager::GetModel("crystal")->Draw(model_shader);
+
+        ResourceManager::Displayfont("This is a test", glm::vec3(25.0f, 830.0f, 0.0f), glm::vec3(1.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 //        plane->shader.use();
 //        plane->shader.setMat4("PVMatrix", PVMatrix);
 //        plane->Render();

@@ -8,6 +8,7 @@
 #include "shader.h"
 #include "camera.h"
 #include "model.h"
+#include "fontdisplay.h"
 #include <map>
 #include <iostream>
 #include <sstream>
@@ -24,6 +25,7 @@ public:
     static std::map<std::string, Texture2D> Textures;
     static std::map<std::string, Model> Models;
     static Camera camera;
+    static Fontdisplay fontdisplay;
 
 //    ResourceManager();
 
@@ -37,6 +39,8 @@ public:
 
     static Model* LoadModel(const GLchar *file, std::string name);
     static Model* GetModel(std::string name);
+
+    static void Displayfont(const std::string text, const glm::vec3 pos, const glm::vec3 scale, const glm::vec3 color);
 
     static void window_initialize();
     static void mouse_callback(GLFWwindow* window, double xpos, double ypos);

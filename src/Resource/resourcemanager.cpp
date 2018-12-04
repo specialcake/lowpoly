@@ -11,6 +11,7 @@ std::map<std::string, Texture2D> ResourceManager::Textures;
 std::map<std::string, Shader> ResourceManager::Shaders;
 std::map<std::string, Model> ResourceManager::Models;
 Camera ResourceManager::camera;
+Fontdisplay ResourceManager::fontdisplay;
 GLfloat ResourceManager::lastX, ResourceManager::lastY;
 GLboolean ResourceManager::firstMouse = GL_TRUE;
 GLboolean ResourceManager::Keys[1024];
@@ -69,6 +70,11 @@ Model* ResourceManager::GetModel(std::string name) {
     return &Models[name];
 };
 
+void ResourceManager::Displayfont(const std::string text, const glm::vec3 pos, const glm::vec3 scale,
+                                  const glm::vec3 color) {
+    fontdisplay.RenderText(text, pos, scale, color);
+}
+
 void ResourceManager::Clear() {
 
     for (auto iter : Shaders)
@@ -121,6 +127,7 @@ void ResourceManager::window_initialize() {
         std::cout << "Fail to initialize glad." << std::endl;
         glfwTerminate();
     }
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
 //    glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);

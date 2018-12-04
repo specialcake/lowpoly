@@ -184,8 +184,8 @@ void Scene::draw(glm::mat4 PVMatrix) {
     water_shader.setVec3("water_color", SEA_COLOR);
 
     water_shader.setVec3("dirLight.direction", glm::vec3(-1.0f, -4.0f, 1.0f));
-    water_shader.setVec3("dirLight.ambient", glm::vec3(0.3f));
-    water_shader.setVec3("dirLight.diffuse", glm::vec3(0.7f));
+    water_shader.setVec3("dirLight.ambient", glm::vec3(0.1f));
+    water_shader.setVec3("dirLight.diffuse", glm::vec3(0.4f));
     water_shader.setVec3("dirLight.specular", glm::vec3(0.0f));
 
     water_shader.setVec3("pointLights[0].position", glm::vec3(0.0f, 1.0f, -14.0f));
