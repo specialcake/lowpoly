@@ -1,6 +1,7 @@
 
 #include <glad/glad.h>
 #include "shader.h"
+#include "../config.h"
 #include <iostream>
 #include <fstream>
 #include <cstdio>
@@ -87,7 +88,21 @@ Shader::Shader(const char *vertexPath, const char *fragmentPath, const char* geo
 void Shader::use() {
     glUseProgram(shaderProgram);
 }
+void Shader::setLight() {
+    this->setVec3("dirLight.direction", PARLIGHT_DIR);
+    this->setVec3("dirLight.ambient", PARLIGHT_AMBIENT);
+    this->setVec3("dirLight.diffuse", PARLIGHT_DIFFUSE);
+    this->setVec3("dirLight.specular", PARLIGHT_SPECULAR);
 
+    this->setVec3("pointLights[0].position", POINTLIGHT0_POS);
+    this->setVec3("pointLights[0].ambient", POINTLIGHT0_AMBIENT);
+    this->setVec3("pointLights[0].diffuse", POINTLIGHT0_DIFFUSE);
+    this->setVec3("pointLights[0].specular", POINTLIGHT0_SPECULAR);
+    this->setFloat("pointLights[0].constant", POINTLIGHT0_CONSTANT);
+    this->setFloat("pointLights[0].linear", POINTLIGHT0_LINEAR);
+    this->setFloat("pointLights[0].quadratic", POINTLIGHT0_QUADRATIC);
+
+}
 void Shader::setBool(const std::string &name, bool value) const {
     glUniform1i(glGetUniformLocation(shaderProgram, name.c_str()), (int)value);
 }

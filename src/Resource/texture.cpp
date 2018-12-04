@@ -55,6 +55,22 @@ void Texture2D::Generatevec3(GLuint width, GLuint height, glm::vec3* data) {
 
     glBindTexture(GL_TEXTURE_2D, 0);
 }
+void Texture2D::GenerateShadowMap(GLuint width, GLuint height) {
+    this->Width = width, this->Height = height;
+    this->Internal_Format = this->Image_Format = GL_DEPTH_COMPONENT;
+
+    glBindTexture(GL_TEXTURE_2D, this->ID);
+    glTexImage2D(GL_TEXTURE_2D, 0, this->Internal_Format, width, height, 0, this->Image_Format, GL_FLOAT, nullptr);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    GLfloat borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
+    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
 
 void Texture2D::Bind() const {
     glBindTexture(GL_TEXTURE_2D, this->ID);

@@ -10,13 +10,16 @@
 #define SCREEN_WIDTH 1200
 #define SCREEN_HEIGHT 900
 
+#define SHADOW_WIDTH 1200
+#define SHADOW_HEIGHT 1200
+
 //Scene
-#define SCENE_LENGTH 103.0f
+#define SCENE_LENGTH 53.0f
 #define CHUNK_SIZE 9
 #define CHUNK_RADIUS 4
 #define CHUNK_LENGTH (SCENE_LENGTH / CHUNK_SIZE)
-#define MESH_SIZE 41
-#define MESH_RADIUS 20
+#define MESH_SIZE 21
+#define MESH_RADIUS 10
 #define MESH_LENGTH (CHUNK_LENGTH / MESH_SIZE)
 #define OBJECT_TYPE_NUMBER 2
 #define LAND_COLOR glm::vec3(0.543f, 0.736f, 0.25f)
@@ -36,6 +39,20 @@ enum Direction{
     MOVE_ZPOS,
     MOVE_ZNEG
 };
+
+//Light
+#define PARLIGHT_DIR glm::vec3(-27.0f, -12.0f, 0.0f)
+#define PARLIGHT_AMBIENT glm::vec3(0.2f)
+#define PARLIGHT_DIFFUSE glm::vec3(0.7f)
+#define PARLIGHT_SPECULAR glm::vec3(0.0f)
+
+#define POINTLIGHT0_POS glm::vec3(0.0f, 1.0f, -14.0f)
+#define POINTLIGHT0_AMBIENT glm::vec3(0.4f)
+#define POINTLIGHT0_DIFFUSE glm::vec3(0.7f)
+#define POINTLIGHT0_SPECULAR glm::vec3(0.0f)
+#define POINTLIGHT0_CONSTANT 1.0f
+#define POINTLIGHT0_LINEAR 0.045f
+#define POINTLIGHT0_QUADRATIC 0.0075f
 
 //Value
 #define PI 3.1415926535f

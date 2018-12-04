@@ -115,7 +115,8 @@ void Scene::generate_scene() {
     Tools::PrintVec3(glm::normalize(vc));
 //    this->chunk[0][0]->height[1][1] = 3.0f;
 }
-void Scene::draw(glm::mat4 PVMatrix) {
+void Scene::draw(const glm::mat4& PVMatrix, const glm::mat4& lightSpaceMatrix,
+                 const Texture2D& ShadowMap) {
     map_instance_shader.use();
     HeightMap = this->Generate_HeightMap();
     NormalMap0 = this->Generate_NormalMap(0);
@@ -127,28 +128,19 @@ void Scene::draw(glm::mat4 PVMatrix) {
     this->NormalMap0.Bind();
     glActiveTexture(GL_TEXTURE2);
     this->NormalMap1.Bind();
-    glActiveTexture(GL_TEXTURE3);
-    this->pNormalMap.Bind();
+//    glActiveTexture(GL_TEXTURE3);
+//    this->pNormalMap.Bind();
+    glActiveTexture(GL_TEXTURE4);
+    ShadowMap.Bind();
     map_instance_shader.setMat4("PVMatrix", PVMatrix);
+    map_instance_shader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
     map_instance_shader.setVec3("viewPos", ResourceManager::camera.Position);
     map_instance_shader.setVec3("land_color", LAND_COLOR);
     map_instance_shader.setVec3("rock_color", ROCK_COLOR);
     map_instance_shader.setFloat("scalefactor", MESH_LENGTH);
     map_instance_shader.setVec3("scene_offset", this->offset);
     map_instance_shader.setInt("scene_size", MESH_SIZE * CHUNK_SIZE);
-
-    map_instance_shader.setVec3("dirLight.direction", glm::vec3(-1.0f, -1.0f, 0.0f));
-    map_instance_shader.setVec3("dirLight.ambient", glm::vec3(0.3f));
-    map_instance_shader.setVec3("dirLight.diffuse", glm::vec3(1.0f));
-    map_instance_shader.setVec3("dirLight.specular", glm::vec3(0.0f));
-
-    map_instance_shader.setVec3("pointLights[0].position", glm::vec3(0.0f, 1.0f, -14.0f));
-    map_instance_shader.setVec3("pointLights[0].ambient", glm::vec3(0.2f));
-    map_instance_shader.setVec3("pointLights[0].diffuse", glm::vec3(0.5f));
-    map_instance_shader.setVec3("pointLights[0].specular", glm::vec3(0.0f));
-    map_instance_shader.setFloat("pointLights[0].constant", 1.0f);
-    map_instance_shader.setFloat("pointLights[0].linear", 0.045f);
-    map_instance_shader.setFloat("pointLights[0].quadratic", 0.0075f);
+    map_instance_shader.setLight();
 
     glBindVertexArray(this->instanceVAO);
     glDrawArraysInstanced(GL_TRIANGLES, 0, 6, MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE);
@@ -175,26 +167,17 @@ void Scene::draw(glm::mat4 PVMatrix) {
 //    glBindVertexArray(0);
 
     water_shader.use();
+    glActiveTexture(GL_TEXTURE0);
+    ShadowMap.Bind();
     water_shader.setMat4("PVMatrix", PVMatrix);
-    map_instance_shader.setVec3("viewPos", ResourceManager::camera.Position);
+    water_shader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
+    water_shader.setVec3("viewPos", ResourceManager::camera.Position);
     water_shader.setFloat("water_height", SEA_LEVEL);
     water_shader.setFloat("scalefactor", MESH_LENGTH);
     water_shader.setInt("scene_size", MESH_SIZE * CHUNK_SIZE);
     water_shader.setVec3("scene_offset", this->offset);
     water_shader.setVec3("water_color", SEA_COLOR);
-
-    water_shader.setVec3("dirLight.direction", glm::vec3(-1.0f, -4.0f, 1.0f));
-    water_shader.setVec3("dirLight.ambient", glm::vec3(0.1f));
-    water_shader.setVec3("dirLight.diffuse", glm::vec3(0.4f));
-    water_shader.setVec3("dirLight.specular", glm::vec3(0.0f));
-
-    water_shader.setVec3("pointLights[0].position", glm::vec3(0.0f, 1.0f, -14.0f));
-    water_shader.setVec3("pointLights[0].ambient", glm::vec3(0.2f));
-    water_shader.setVec3("pointLights[0].diffuse", glm::vec3(0.5f));
-    water_shader.setVec3("pointLights[0].specular", glm::vec3(0.0f));
-    water_shader.setFloat("pointLights[0].constant", 1.0f);
-    water_shader.setFloat("pointLights[0].linear", 0.045f);
-    water_shader.setFloat("pointLights[0].quadratic", 0.0075f);
+    water_shader.setLight();
 
     glBindVertexArray(this->VAO);
     glDrawArraysInstanced(GL_TRIANGLES, 0, 6, MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE);
@@ -304,6 +287,9 @@ void Scene::GetLocationbyCamera(GLint &cx, GLint &cz, GLint &mx, GLint &mz) {
     glm::vec3 position = ResourceManager::camera.Position -
                          chunk[CHUNK_RADIUS][CHUNK_RADIUS]->submesh[MESH_RADIUS][MESH_RADIUS]->get_Position() -
                          glm::vec3(MESH_LENGTH / 2.0f, 0.0f, MESH_LENGTH / 2.0f);
+    position = glm::vec3(0.0f) -
+               chunk[CHUNK_RADIUS][CHUNK_RADIUS]->submesh[MESH_RADIUS][MESH_RADIUS]->get_Position() -
+               glm::vec3(MESH_LENGTH / 2.0f, 0.0f, MESH_LENGTH / 2.0f);
 //    printf("camera position = ");
 //    Tools::PrintVec3(ResourceManager::camera.Position);
 //    printf("center position = ");

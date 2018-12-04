@@ -2,9 +2,11 @@
 #include "Resource/resourcemanager.h"
 #include "utils/spriterender.h"
 #include "Scene/scene.h"
+#include "Postprocess/shadowmap.h"
 
 Scene* scene;
 SpriteRenderer* littlewindow;
+Shadowmap* shadowmap;
 //Terrian* plane;
 
 Game::Game(GLuint width, GLuint height) : State(GAME_ACTIVE), Width(width), Height(height) {
@@ -36,6 +38,10 @@ void Game::Init() {
     ResourceManager::GetShader("instancescene").setInt("NormalMap0", 1);
     ResourceManager::GetShader("instancescene").setInt("NormalMap1", 2);
     ResourceManager::GetShader("instancescene").setInt("pNormalMap", 3);
+    ResourceManager::GetShader("instancescene").setInt("ShadowMap", 4);
+
+    ResourceManager::GetShader("water").use();
+    ResourceManager::GetShader("water").setInt("ShadowMap", 0);
 
     ResourceManager::GetShader("normvis").use();
     ResourceManager::GetShader("normvis").setInt("HeightMap", 0);
@@ -53,6 +59,8 @@ void Game::Init() {
     scene->map_instance_shader = ResourceManager::GetShader("instancescene");
     scene->water_shader = ResourceManager::GetShader("water");
     scene->generate_scene();
+
+    shadowmap = new Shadowmap();
     //plane = new Terrian(ResourceManager::GetShader("terrian"));
 }
 
@@ -81,23 +89,17 @@ void Game::Render() {
         glm::mat4 view = ResourceManager::camera.GetViewMatrix();
         glm::mat4 PVMatrix = projection * view;
 
-//        scene->map_shader.use();
-//        scene->map_shader.setMat4("PVMatrix", PVMatrix);
-        scene->draw(PVMatrix);
+        glm::mat4 lightSpaceMatrix = shadowmap->BeginMakeMap();
+        scene->draw(lightSpaceMatrix, lightSpaceMatrix, shadowmap->DepthMap);
+        shadowmap->EndMakeMap();
 
-//        Texture2D face = ResourceManager::GetTexture("awesomeface");
-//        littlewindow->shader.use();
-//        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
-//        littlewindow->DrawSprite(scene->NormalMap1, glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.5f));
-//        littlewindow->shader.use();
-//        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
-//        littlewindow->DrawSprite(scene->pNormalMap, glm::vec3(-0.25, 0.5f, 0.0f), glm::vec3(0.5f));
-//        littlewindow->shader.use();
-//        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
-//        littlewindow->DrawSprite(scene->NormalMap0, glm::vec3(-1.0f, 0.5f, 0.0f), glm::vec3(0.5f));
+        littlewindow->shader.use();
+        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
+        littlewindow->DrawSprite(shadowmap->DepthMap, glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.5f));
 
+        scene->draw(PVMatrix, lightSpaceMatrix, shadowmap->DepthMap);
+//        PVMatrix = lightSpaceMatrix;
         Model* mymodel = ResourceManager::GetModel("crystal");
-
         Shader model_shader = ResourceManager::GetShader("model");
         model_shader.use();
         model_shader.setMat4("PVMatrix", PVMatrix);
@@ -108,9 +110,6 @@ void Game::Render() {
         model_shader.setMat4("model", model);
         ResourceManager::GetModel("crystal")->Draw(model_shader);
 
-        ResourceManager::Displayfont("This is a test", glm::vec3(25.0f, 830.0f, 0.0f), glm::vec3(1.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-//        plane->shader.use();
-//        plane->shader.setMat4("PVMatrix", PVMatrix);
-//        plane->Render();
+        //ResourceManager::Displayfont("This is a test", glm::vec3(25.0f, 830.0f, 0.0f), glm::vec3(1.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     }
 }
