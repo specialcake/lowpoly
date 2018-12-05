@@ -20,8 +20,8 @@ Game::~Game() {
 void Game::Init() {
     ResourceManager::LoadShader("../src/shader/scene.vert", "../src/shader/scene.frag", NULL, "scene");
     ResourceManager::LoadShader("../src/shader/sprite.vert", "../src/shader/sprite.frag", NULL, "sprite");
-    ResourceManager::LoadShader("../src/shader/instancescene.vert", "../src/shader/instancescene.frag", NULL, "instancescene");
-    ResourceManager::LoadShader("../src/shader/water.vert", "../src/shader/water.frag", NULL, "water");
+    ResourceManager::LoadShader("../src/shader/instancescene.vert", "../src/shader/instancescene.frag", "../src/shader/instancescene.geom", "instancescene");
+    ResourceManager::LoadShader("../src/shader/water.vert", "../src/shader/water.frag", "../src/shader/instancescene.geom", "water");
     ResourceManager::LoadShader("../src/shader/model.vert", "../src/shader/model.frag", NULL, "model");
     ResourceManager::LoadShader("../src/shader/normvis.vert", "../src/shader/normvis.frag", "../src/shader/normvis.geom", "normvis");
     ResourceManager::LoadShader("../src/shader/fontdisplay.vert", "../src/shader/fontdisplay.frag", NULL, "fontdisplay");

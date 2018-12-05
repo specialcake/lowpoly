@@ -1,7 +1,7 @@
 #version 330 core
 out vec4 FragColor;
 
-in VS_OUT {
+in GS_OUT {
     vec3 FragPos;
     vec3 Normal;
     vec4 FragPosLightSpace;
@@ -56,6 +56,7 @@ void main() {
 }
 
 float ShadowCalculation(vec4 fragPosLightSpace){
+//    return 0.0f;
     vec3 lightDir = normalize(-dirLight.direction);
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
     projCoords = projCoords * 0.5 + 0.5;

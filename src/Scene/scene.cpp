@@ -345,21 +345,9 @@ Texture2D Scene::Generate_HeightMap() {
         p += MESH_SIZE;
     }
     p++;
-//    if(this->debugflag) {
-//        printf("------------------------------------\n");
-//        for(int i = 0; i < len; i++){
-//            for(int j = 0; j < len; j++){
-//                printf("%.3lf ", data[i * len + j]);
-//            }
-//            printf("\n");
-//        }
-//    }
     for(GLint i = 0; i < limit; i++){
-        data[i] = data[i] * 0.1;
+        data[i] = data[i] * 0.1f;
     }
-//    if(this->debugflag) {
-//        printf("\n===============================\n");
-//    }
     return ResourceManager::MakeTexture(len, len, GL_RED, data, "HeightMap");
 }
 Texture2D Scene::Generate_NormalMap(int th) {
