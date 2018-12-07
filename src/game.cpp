@@ -86,6 +86,7 @@ void Game::ProcessInput(GLfloat dt) {
 void Game::Render() {
     if(this->State == GAME_ACTIVE) {
         glm::mat4 projection = glm::perspective(glm::radians(ResourceManager::camera.Zoom), (float)Width / (float)Height, 0.1f, 100.0f);
+//        projection = glm::ortho(-56.0f, 56.0f, -20.0f, 22.0f, 0.1f, 400.0f);
         glm::mat4 view = ResourceManager::camera.GetViewMatrix();
         glm::mat4 PVMatrix = projection * view;
 

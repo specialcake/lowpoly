@@ -150,12 +150,6 @@ void Scene::draw(const glm::mat4& PVMatrix, const glm::mat4& lightSpaceMatrix,
 //    normvis.use();
 //    glActiveTexture(GL_TEXTURE0);
 //    this->HeightMap.Bind();
-//    glActiveTexture(GL_TEXTURE1);
-//    this->NormalMap0.Bind();
-//    glActiveTexture(GL_TEXTURE2);
-//    this->NormalMap1.Bind();
-//    glActiveTexture(GL_TEXTURE3);
-//    this->pNormalMap.Bind();
 //    normvis.setMat4("PVMatrix", PVMatrix);
 //    normvis.setMat4("projection", glm::perspective(glm::radians(ResourceManager::camera.Zoom), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f));
 //    normvis.setMat4("view", ResourceManager::camera.GetViewMatrix());

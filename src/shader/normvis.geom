@@ -3,36 +3,29 @@ layout (triangles) in;
 layout (line_strip, max_vertices = 6) out;
 
 in VS_OUT {
-    vec3 normal;
+    vec3 FragPos;
+    mat4 PVMatrix;
 } gs_in[];
 
 const float MAGNITUDE = 0.2;
 
-void GenerateLine(int index) {
-    gl_Position = gl_in[index].gl_Position;
-    EmitVertex();
-    gl_Position = gl_in[index].gl_Position + vec4(gs_in[index].normal, 0.0) * MAGNITUDE;
-    EmitVertex();
-    EndPrimitive();
+vec3 GetNormal() {
+    vec3 a = vec3(gs_in[0].FragPos) - vec3(gs_in[1].FragPos);
+    vec3 b = vec3(gs_in[2].FragPos) - vec3(gs_in[1].FragPos);
+    return -normalize(cross(a, b));
 }
 
 void main() {
 //    GenerateLine(0); // first vertex normal
 //    GenerateLine(1); // second vertex normal
 //    GenerateLine(2); // third vertex normal
-    gl_Position = (gl_in[0].gl_Position + gl_in[1].gl_Position + gl_in[2].gl_Position) / 3.0f;
+    vec3 normal = GetNormal();
+
+    vec3 center = (gs_in[0].FragPos + gs_in[1].FragPos + gs_in[2].FragPos) / 3.0f;
+
+    gl_Position = gs_in[0].PVMatrix * vec4(center, 1.0f);
     EmitVertex();
-    gl_Position = (gl_in[0].gl_Position + gl_in[1].gl_Position + gl_in[2].gl_Position) / 3.0f + vec4(gs_in[0].normal, 0.0) * MAGNITUDE;
-    EmitVertex();
-    EndPrimitive();
-    gl_Position = (gl_in[0].gl_Position + gl_in[1].gl_Position + gl_in[2].gl_Position) / 3.0f;
-    EmitVertex();
-    gl_Position = (gl_in[0].gl_Position + gl_in[1].gl_Position + gl_in[2].gl_Position) / 3.0f + vec4(gs_in[1].normal, 0.0) * MAGNITUDE;
-    EmitVertex();
-    EndPrimitive();
-    gl_Position = (gl_in[0].gl_Position + gl_in[1].gl_Position + gl_in[2].gl_Position) / 3.0f;
-    EmitVertex();
-    gl_Position = (gl_in[0].gl_Position + gl_in[1].gl_Position + gl_in[2].gl_Position) / 3.0f + vec4(gs_in[2].normal, 0.0) * MAGNITUDE;
+    gl_Position = gs_in[0].PVMatrix * (vec4(center, 1.0f) + vec4(normal, 0.0) * MAGNITUDE);
     EmitVertex();
     EndPrimitive();
 }

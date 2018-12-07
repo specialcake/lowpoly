@@ -92,7 +92,7 @@ GLfloat Noise::Generate(glm::vec3 loc) {
     ret = ret * 0.5f + 0.25f;
     ret *= 3.0f;
     if(ret < 0.0f) ret = 0.0f;
-    ret = pow(ret, 3.23);
+    ret = pow(ret, 3.76);
     return ret;
 }
 GLfloat Noise::default_noise(glm::vec2 p) {

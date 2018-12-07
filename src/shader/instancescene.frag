@@ -53,6 +53,8 @@ void main() {
     else
         aFragColor = land_color * factory;
     FragColor = vec4(aFragColor, 1.0f);
+
+//    if(shadoweffect != 0.0f) FragColor = vec4(1.0f, 0.0f, 0.0f, 1.0f);
 }
 
 float ShadowCalculation(vec4 fragPosLightSpace){
@@ -60,10 +62,18 @@ float ShadowCalculation(vec4 fragPosLightSpace){
     vec3 lightDir = normalize(-dirLight.direction);
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
     projCoords = projCoords * 0.5 + 0.5;
-    if(projCoords.z > 1.0)
+    if(projCoords.z > 1.0f)
         return 0.0f;
 
-    float bias = max(0.05 * (1.0 - dot(fs_in.Normal, lightDir)), 0.0005);
+//    float shadowcos = dot(fs_in.Normal * lightDir);
+//    float shadowsin = sqrt(1 - shadowcos * shadowcos);
+//    float normalbias =
+
+    float bias = max(0.010 * dot(fs_in.Normal, lightDir), 0.0005);
+//    bias = 0.004f;
+//    float bias = max(0.002 * (1.0f - dot(fs_in.Normal, lightDir)), 0.007);
+//    float bias = max(0.006 * (1.0 - dot(fs_in.Normal, lightDir)), 0.0006);
+//    bias = 0.0005f;
     float currentDepth = projCoords.z;
     float shadow = 0.0;
     vec2 texelSize = 1.0 / textureSize(ShadowMap, 0);
@@ -75,7 +85,7 @@ float ShadowCalculation(vec4 fragPosLightSpace){
     }
     shadow /= 9.0;
 //    float closestDepth = texture(ShadowMap, projCoords.xy).r;
-//    float shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
+//    shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
     return shadow;
 }
 vec3 CalcParallelLight(ParallelLight light, vec3 normal, vec3 viewDir, float shadow){
