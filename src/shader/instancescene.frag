@@ -4,6 +4,7 @@ out vec4 FragColor;
 in GS_OUT {
     vec3 FragPos;
     vec3 Normal;
+    vec3 Color;
     vec4 FragPosLightSpace;
 } fs_in;
 
@@ -27,8 +28,6 @@ struct PointLight{
 
 uniform vec3 viewPos;
 
-uniform vec3 land_color;
-uniform vec3 rock_color;
 uniform ParallelLight dirLight;
 uniform PointLight pointLights[NR_POINT_LIGHTS];
 
@@ -40,6 +39,7 @@ float ShadowCalculation(vec4 fragPosLightSpace);
 
 void main() {
     float shadoweffect = ShadowCalculation(fs_in.FragPosLightSpace);
+    shadoweffect *= 0.90f;
 
     //Light calculate
     vec3 viewDir = normalize(viewPos - fs_in.FragPos);
@@ -47,14 +47,13 @@ void main() {
 //    for(int i = 0; i < NR_POINT_LIGHTS; i++)
 //        factory += CalcPointLight(pointLights[i], Normal, FragPos, viewDir, shadoweffect);
 
-    vec3 aFragColor = vec3(1.0f, 1.0f, 1.0f);
-    if(fs_in.FragPos.y > 1.0f)
-        aFragColor = rock_color * factory;
-    else
-        aFragColor = land_color * factory;
+    vec3 aFragColor = fs_in.Color * factory;
     FragColor = vec4(aFragColor, 1.0f);
 
-//    if(shadoweffect != 0.0f) FragColor = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+//    if(shadoweffect > 0.0f) FragColor = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+//    if(dot(fs_in.Normal, normalize(dirLight.direction)) < 0.0f) FragColor = vec4(0.0f, 1.0f, 1.0f, 1.0f);
+//    if(shadoweffect > 0.0f && dot(fs_in.Normal, normalize(dirLight.direction)) < 0.0f)
+//        FragColor = vec4(1.0f, 1.0f, 0.0f, 1.0f);
 }
 
 float ShadowCalculation(vec4 fragPosLightSpace){
@@ -65,27 +64,23 @@ float ShadowCalculation(vec4 fragPosLightSpace){
     if(projCoords.z > 1.0f)
         return 0.0f;
 
-//    float shadowcos = dot(fs_in.Normal * lightDir);
-//    float shadowsin = sqrt(1 - shadowcos * shadowcos);
-//    float normalbias =
-
-    float bias = max(0.010 * dot(fs_in.Normal, lightDir), 0.0005);
-//    bias = 0.004f;
-//    float bias = max(0.002 * (1.0f - dot(fs_in.Normal, lightDir)), 0.007);
-//    float bias = max(0.006 * (1.0 - dot(fs_in.Normal, lightDir)), 0.0006);
-//    bias = 0.0005f;
+    float bias = max(0.0008 * dot(fs_in.Normal, lightDir), 0.00055);
+//    bias = 0.0f;
+//    bias = 0.005f;
+//bias = max(0.05 * (1.0 - dot(fs_in.Normal, lightDir)), 0.005);
     float currentDepth = projCoords.z;
     float shadow = 0.0;
     vec2 texelSize = 1.0 / textureSize(ShadowMap, 0);
-    for(int x = -1; x <= 1; ++x) {
-        for(int y = -1; y <= 1; ++y) {
+    for(int x = -2; x <= 2; ++x) {
+        for(int y = -2; y <= 2; ++y) {
             float pcfDepth = texture(ShadowMap, projCoords.xy + vec2(x, y) * texelSize).r;
-            shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
+            shadow += currentDepth + bias > pcfDepth ? 1.0 : 0.0;
         }
     }
-    shadow /= 9.0;
+    shadow /= 25.0;
 //    float closestDepth = texture(ShadowMap, projCoords.xy).r;
-//    shadow = currentDepth - bias > closestDepth ? 1.0 : 0.0;
+//    shadow = currentDepth + bias > closestDepth ? 1.0 : 0.0;
+    shadow = pow(shadow, 0.25f);
     return shadow;
 }
 vec3 CalcParallelLight(ParallelLight light, vec3 normal, vec3 viewDir, float shadow){

@@ -7,6 +7,12 @@ in VS_OUT {
     mat4 PVMatrix;
 } gs_in[];
 
+out GS_OUT{
+    vec4 Color;
+} gs_out;
+
+uniform vec3 lightdir;
+
 const float MAGNITUDE = 0.2;
 
 vec3 GetNormal() {
@@ -24,8 +30,18 @@ void main() {
     vec3 center = (gs_in[0].FragPos + gs_in[1].FragPos + gs_in[2].FragPos) / 3.0f;
 
     gl_Position = gs_in[0].PVMatrix * vec4(center, 1.0f);
+    gs_out.Color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
     EmitVertex();
     gl_Position = gs_in[0].PVMatrix * (vec4(center, 1.0f) + vec4(normal, 0.0) * MAGNITUDE);
+    gs_out.Color = vec4(1.0f, 0.0f, 0.0f, 1.0f);
     EmitVertex();
+
+    gl_Position = gs_in[0].PVMatrix * vec4(center, 1.0f);
+    gs_out.Color = vec4(1.0f, 1.0f, 0.0f, 1.0f);
+    EmitVertex();
+    gl_Position = gs_in[0].PVMatrix * (vec4(center, 1.0f) + vec4(normalize(-lightdir), 0.0f) * MAGNITUDE);
+    gs_out.Color = vec4(1.0f, 1.0f, 0.0f, 1.0f);
+    EmitVertex();
+
     EndPrimitive();
 }

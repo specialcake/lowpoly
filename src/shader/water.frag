@@ -1,7 +1,7 @@
 #version 330 core
 out vec4 FragColor;
 
-in GS_OUT {
+in VS_OUT {
     vec3 FragPos;
     vec3 Normal;
     vec4 FragPosLightSpace;
@@ -62,6 +62,7 @@ float ShadowCalculation(vec4 fragPosLightSpace){
         return 0.0f;
 
     float bias = max(0.05 * (1.0 - dot(fs_in.Normal, lightDir)), 0.0005);
+    bias = 0.00033;
     float currentDepth = projCoords.z;
     float shadow = 0.0;
     vec2 texelSize = 1.0 / textureSize(ShadowMap, 0);

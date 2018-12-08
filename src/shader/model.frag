@@ -13,6 +13,7 @@ void main(){
     const vec3 lightdir2 = vec3(-1.0f, 0.0f, 0.0f);
     float diff1 = max(dot(normalize(Normal), lightdir1), 0.0);
     float diff2 = max(dot(normalize(Normal), lightdir2), 0.0);
+    diff2 = 0.0f;
 
     vec4 diffuse_color = vec4(0.0f, 0.0f, 0.0f, 1.0f);
     if(texture_diffuse1_exist == 0) // pure color
