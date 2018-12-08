@@ -119,64 +119,82 @@ void Scene::draw(const glm::mat4& PVMatrix, const glm::mat4& lightSpaceMatrix,
                  const Texture2D& ShadowMap) {
     map_instance_shader.use();
     HeightMap = this->Generate_HeightMap();
-    NormalMap0 = this->Generate_NormalMap(0);
-    NormalMap1 = this->Generate_NormalMap(1);
-    pNormalMap = this->Generate_pNormalMap();
+//    NormalMap0 = this->Generate_NormalMap(0);
+//    NormalMap1 = this->Generate_NormalMap(1);
+//    pNormalMap = this->Generate_pNormalMap();
     glActiveTexture(GL_TEXTURE0);
     this->HeightMap.Bind();
-    glActiveTexture(GL_TEXTURE1);
-    this->NormalMap0.Bind();
-    glActiveTexture(GL_TEXTURE2);
-    this->NormalMap1.Bind();
+//    glActiveTexture(GL_TEXTURE1);
+//    this->NormalMap0.Bind();
+//    glActiveTexture(GL_TEXTURE2);
+//    this->NormalMap1.Bind();
 //    glActiveTexture(GL_TEXTURE3);
 //    this->pNormalMap.Bind();
     glActiveTexture(GL_TEXTURE4);
     ShadowMap.Bind();
     map_instance_shader.setMat4("PVMatrix", PVMatrix);
     map_instance_shader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
-    map_instance_shader.setVec3("viewPos", ResourceManager::camera.Position);
+    map_instance_shader.setVec3("lower_color", LOWER_COLOR);
     map_instance_shader.setVec3("land_color", LAND_COLOR);
     map_instance_shader.setVec3("rock_color", ROCK_COLOR);
     map_instance_shader.setFloat("scalefactor", MESH_LENGTH);
     map_instance_shader.setVec3("scene_offset", this->offset);
     map_instance_shader.setInt("scene_size", MESH_SIZE * CHUNK_SIZE);
-    map_instance_shader.setLight();
+    map_instance_shader.setLight(ResourceManager::camera.Position);
 
     glBindVertexArray(this->instanceVAO);
     glDrawArraysInstanced(GL_TRIANGLES, 0, 6, MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE);
     glBindVertexArray(0);
 
-//    Shader normvis = ResourceManager::GetShader("normvis");
-//    normvis.use();
-//    glActiveTexture(GL_TEXTURE0);
-//    this->HeightMap.Bind();
-//    normvis.setMat4("PVMatrix", PVMatrix);
-//    normvis.setMat4("projection", glm::perspective(glm::radians(ResourceManager::camera.Zoom), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f));
-//    normvis.setMat4("view", ResourceManager::camera.GetViewMatrix());
-//    normvis.setFloat("scalefactor", MESH_LENGTH);
-//    normvis.setVec3("scene_offset", this->offset);
-//    normvis.setInt("scene_size", MESH_SIZE * CHUNK_SIZE);
-//    glBindVertexArray(this->instanceVAO);
-//    glDrawArraysInstanced(GL_TRIANGLES, 0, 6, MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE);
-//    glBindVertexArray(0);
+#ifdef viewnormal
+    Shader normvis = ResourceManager::GetShader("normvis");
+    normvis.use();
+    glActiveTexture(GL_TEXTURE0);
+    this->HeightMap.Bind();
+    normvis.setMat4("PVMatrix", PVMatrix);
+    normvis.setMat4("projection", glm::perspective(glm::radians(ResourceManager::camera.Zoom), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f));
+    normvis.setMat4("view", ResourceManager::camera.GetViewMatrix());
+    normvis.setFloat("scalefactor", MESH_LENGTH);
+    normvis.setVec3("scene_offset", this->offset);
+    normvis.setInt("scene_size", MESH_SIZE * CHUNK_SIZE);
+    normvis.setVec3("lightdir", PARLIGHT_DIR);
+    glBindVertexArray(this->instanceVAO);
+    glDrawArraysInstanced(GL_TRIANGLES, 0, 6, MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE);
+    glBindVertexArray(0);
+#endif //viewnormal
 
     water_shader.use();
     glActiveTexture(GL_TEXTURE0);
     ShadowMap.Bind();
     water_shader.setMat4("PVMatrix", PVMatrix);
     water_shader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
-    water_shader.setVec3("viewPos", ResourceManager::camera.Position);
     water_shader.setFloat("water_height", SEA_LEVEL);
     water_shader.setFloat("scalefactor", MESH_LENGTH);
     water_shader.setInt("scene_size", MESH_SIZE * CHUNK_SIZE);
     water_shader.setVec3("scene_offset", this->offset);
     water_shader.setVec3("water_color", SEA_COLOR);
-    water_shader.setLight();
+    water_shader.setLight(ResourceManager::camera.Position);
 
     glBindVertexArray(this->VAO);
     glDrawArraysInstanced(GL_TRIANGLES, 0, 6, MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE);
     glBindVertexArray(0);
     glActiveTexture(GL_TEXTURE0);
+}
+
+void Scene::Generate_ShadowMap(const glm::mat4& lightSpaceMatrix) {
+    shadow_shader.use();
+    HeightMap = this->Generate_HeightMap();
+    glActiveTexture(GL_TEXTURE0);
+    this->HeightMap.Bind();
+    shadow_shader.setMat4("PVMatrix", lightSpaceMatrix);
+    shadow_shader.setFloat("scalefactor", MESH_LENGTH);
+    shadow_shader.setVec3("scene_offset", this->offset);
+    shadow_shader.setInt("scene_size", MESH_SIZE * CHUNK_SIZE);
+    shadow_shader.setVec3("lightdir", PARLIGHT_DIR);
+
+    glBindVertexArray(this->instanceVAO);
+    glDrawArraysInstanced(GL_TRIANGLES, 0, 6, MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE);
+    glBindVertexArray(0);
 }
 
 void Scene::UpdateChunks() {

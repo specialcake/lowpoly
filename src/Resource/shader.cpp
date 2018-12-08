@@ -88,7 +88,9 @@ Shader::Shader(const char *vertexPath, const char *fragmentPath, const char* geo
 void Shader::use() {
     glUseProgram(shaderProgram);
 }
-void Shader::setLight() {
+void Shader::setLight(glm::vec3 Position) {
+    this->setVec3("viewPos", Position);
+
     this->setVec3("dirLight.direction", PARLIGHT_DIR);
     this->setVec3("dirLight.ambient", PARLIGHT_AMBIENT);
     this->setVec3("dirLight.diffuse", PARLIGHT_DIFFUSE);

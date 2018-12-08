@@ -14,17 +14,19 @@
 #define SHADOW_HEIGHT 1800
 
 //Scene
-#define SCENE_LENGTH 103.0f
-#define CHUNK_SIZE 9
-#define CHUNK_RADIUS 4
+#define SCENE_LENGTH 53.0f
+#define CHUNK_SIZE 3
+#define CHUNK_RADIUS 1
 #define CHUNK_LENGTH (SCENE_LENGTH / CHUNK_SIZE)
 #define MESH_SIZE 21
 #define MESH_RADIUS 10
 #define MESH_LENGTH (CHUNK_LENGTH / MESH_SIZE)
 #define OBJECT_TYPE_NUMBER 2
-#define LAND_COLOR glm::vec3(0.48627f, 0.97647f, 0.65882f)
 #define SEA_COLOR glm::vec3(0.106f, 0.863f, 1.0f)
+#define LOWER_COLOR glm::vec3(0.75686f, 1.0f, 0.91373f)
+#define LAND_COLOR glm::vec3(0.48627f, 0.97647f, 0.65882f)
 #define ROCK_COLOR glm::vec3(0.522f, 0.522f, 0.522f)
+
 #define MAX_HEIGHT 4.0f
 #define NOISE_SIZE 29
 #define SEA_LEVEL 0.10f
@@ -41,10 +43,10 @@ enum Direction{
 };
 
 //Light
-#define PARLIGHT_DIR glm::vec3(-57.0f, -24.0f, 0.0f)
-#define PARLIGHT_POSITION glm::vec3(57.0f, 24.0f, 0.0f)
-#define PARLIGHT_AMBIENT glm::vec3(0.4f)
-#define PARLIGHT_DIFFUSE glm::vec3(0.8f)
+#define PARLIGHT_DIR glm::vec3(27.0f, -13.0f, -27.0f)
+#define PARLIGHT_POSITION glm::vec3(-27.0f, 13.0f, 27.0f)
+#define PARLIGHT_AMBIENT glm::vec3(0.3f)
+#define PARLIGHT_DIFFUSE glm::vec3(0.9f)
 #define PARLIGHT_SPECULAR glm::vec3(0.0f)
 
 #define POINTLIGHT0_POS glm::vec3(0.0f, 1.0f, -14.0f)
@@ -70,10 +72,13 @@ enum Direction{
 #define MIN_ZOOM 1.0f
 #define MAX_ZOOM 45.0f
 
+#ifndef lightview
 #define default_position glm::vec3(0.0f, 3.0f, 0.0f)
-//#define default_position glm::vec3(57.0f, 24.0f, 0.0f)
+#else //lightview
+//#define default_position glm::vec3(-27.0f, 13.0f, 27.0f)
+#endif //lightview
 #define default_up glm::vec3(0.0f, 1.0f, 0.0f)
-#define default_front glm::vec3(-57.0f, -24.0f, 0.0f)
+#define default_front glm::vec3(27.0f, -13.0f, -27.0f)
 //#define default_front glm::vec3(0.0f, 0.0f, -1.0f)
 //#define default_position glm::vec3(0.0f, -3.0f, 1.0f)
 //#define default_up glm::vec3(0.0f, 0.0f, 1.0f)

@@ -108,7 +108,9 @@ private:
         front.x = cos(glm::radians(Yaw)) * cos(glm::radians(Pitch));
         front.y = sin(glm::radians(Pitch));
         front.z = sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
-//        front = Front;
+#ifdef lightview
+        front = Front;
+#endif
 
         Front = glm::normalize(front);
         Right = glm::normalize(glm::cross(Front, WorldUp));

@@ -31,7 +31,7 @@ public:
     Texture2D HeightMap;
     Texture2D NormalMap0, NormalMap1, pNormalMap;
 
-    Shader map_shader, map_instance_shader, water_shader;
+    Shader map_shader, map_instance_shader, water_shader, shadow_shader;
     GLuint VAO, VBO, instanceVAO, instanceVBO;
     std::vector<GLfloat> vertices;
 
@@ -49,6 +49,7 @@ public:
     Texture2D Generate_HeightMap();
     Texture2D Generate_NormalMap(int th);
     Texture2D Generate_pNormalMap();
+    void Generate_ShadowMap(const glm::mat4& lightSpaceMatrix);
 private:
 
 };

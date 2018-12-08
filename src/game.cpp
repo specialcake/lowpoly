@@ -21,7 +21,8 @@ void Game::Init() {
     ResourceManager::LoadShader("../src/shader/scene.vert", "../src/shader/scene.frag", NULL, "scene");
     ResourceManager::LoadShader("../src/shader/sprite.vert", "../src/shader/sprite.frag", NULL, "sprite");
     ResourceManager::LoadShader("../src/shader/instancescene.vert", "../src/shader/instancescene.frag", "../src/shader/instancescene.geom", "instancescene");
-    ResourceManager::LoadShader("../src/shader/water.vert", "../src/shader/water.frag", "../src/shader/instancescene.geom", "water");
+    ResourceManager::LoadShader("../src/shader/water.vert", "../src/shader/water.frag", NULL, "water");
+    ResourceManager::LoadShader("../src/shader/shadowmap.vert", "../src/shader/shadowmap.frag", "../src/shader/shadowmap.geom", "shadowmap");
     ResourceManager::LoadShader("../src/shader/model.vert", "../src/shader/model.frag", NULL, "model");
     ResourceManager::LoadShader("../src/shader/normvis.vert", "../src/shader/normvis.frag", "../src/shader/normvis.geom", "normvis");
     ResourceManager::LoadShader("../src/shader/fontdisplay.vert", "../src/shader/fontdisplay.frag", NULL, "fontdisplay");
@@ -35,19 +36,22 @@ void Game::Init() {
 
     ResourceManager::GetShader("instancescene").use();
     ResourceManager::GetShader("instancescene").setInt("HeightMap", 0);
-    ResourceManager::GetShader("instancescene").setInt("NormalMap0", 1);
-    ResourceManager::GetShader("instancescene").setInt("NormalMap1", 2);
-    ResourceManager::GetShader("instancescene").setInt("pNormalMap", 3);
+//    ResourceManager::GetShader("instancescene").setInt("NormalMap0", 1);
+//    ResourceManager::GetShader("instancescene").setInt("NormalMap1", 2);
+//    ResourceManager::GetShader("instancescene").setInt("pNormalMap", 3);
     ResourceManager::GetShader("instancescene").setInt("ShadowMap", 4);
 
     ResourceManager::GetShader("water").use();
     ResourceManager::GetShader("water").setInt("ShadowMap", 0);
 
+    ResourceManager::GetShader("shadowmap").use();
+    ResourceManager::GetShader("shadowmap").setInt("HeightMap", 0);
+
     ResourceManager::GetShader("normvis").use();
     ResourceManager::GetShader("normvis").setInt("HeightMap", 0);
-    ResourceManager::GetShader("normvis").setInt("NormalMap0", 1);
-    ResourceManager::GetShader("normvis").setInt("NormalMap1", 2);
-    ResourceManager::GetShader("normvis").setInt("pNormalMap", 3);
+//    ResourceManager::GetShader("normvis").setInt("NormalMap0", 1);
+//    ResourceManager::GetShader("normvis").setInt("NormalMap1", 2);
+//    ResourceManager::GetShader("normvis").setInt("pNormalMap", 3);
 
     ResourceManager::LoadModel("../resource/model/widetree/widetree.obj", "crystal");
 
@@ -58,6 +62,7 @@ void Game::Init() {
     scene = new Scene(glm::vec3(0.0f), ResourceManager::GetShader("scene"));
     scene->map_instance_shader = ResourceManager::GetShader("instancescene");
     scene->water_shader = ResourceManager::GetShader("water");
+    scene->shadow_shader = ResourceManager::GetShader("shadowmap");
     scene->generate_scene();
 
     shadowmap = new Shadowmap();
@@ -85,13 +90,16 @@ void Game::ProcessInput(GLfloat dt) {
 
 void Game::Render() {
     if(this->State == GAME_ACTIVE) {
-        glm::mat4 projection = glm::perspective(glm::radians(ResourceManager::camera.Zoom), (float)Width / (float)Height, 0.1f, 100.0f);
-//        projection = glm::ortho(-56.0f, 56.0f, -20.0f, 22.0f, 0.1f, 400.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(ResourceManager::camera.Zoom), (float)Width / (float)Height, 0.1f, 200.0f);
+#ifdef lightview
+        projection = glm::ortho(-37.0f, 38.0f, -12.0f, 14.0f, 5.5f, 200.0f);
+#endif //lightview
         glm::mat4 view = ResourceManager::camera.GetViewMatrix();
         glm::mat4 PVMatrix = projection * view;
 
         glm::mat4 lightSpaceMatrix = shadowmap->BeginMakeMap();
-        scene->draw(lightSpaceMatrix, lightSpaceMatrix, shadowmap->DepthMap);
+//        scene->draw(lightSpaceMatrix, lightSpaceMatrix, shadowmap->DepthMap);
+        scene->Generate_ShadowMap(lightSpaceMatrix);
         shadowmap->EndMakeMap();
 
         littlewindow->shader.use();
@@ -104,6 +112,7 @@ void Game::Render() {
         Shader model_shader = ResourceManager::GetShader("model");
         model_shader.use();
         model_shader.setMat4("PVMatrix", PVMatrix);
+        model_shader.setLight(ResourceManager::camera.Position);
 
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, glm::vec3(-mymodel->cx, -mymodel->cy + 4.0f, -mymodel->cz - 14.0f));
