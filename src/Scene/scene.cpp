@@ -191,6 +191,8 @@ void Scene::Generate_ShadowMap(const glm::mat4& lightSpaceMatrix) {
     shadow_shader.setVec3("scene_offset", this->offset);
     shadow_shader.setInt("scene_size", MESH_SIZE * CHUNK_SIZE);
     shadow_shader.setVec3("lightdir", PARLIGHT_DIR);
+    shadow_shader.setFloat("near_plane", NEAR_PLANE);
+    shadow_shader.setFloat("far_plane", FAR_PLANE);
 
     glBindVertexArray(this->instanceVAO);
     glDrawArraysInstanced(GL_TRIANGLES, 0, 6, MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE);
