@@ -5,6 +5,8 @@
 #ifndef CGFRAME_CONFIG_H
 #define CGFRAME_CONFIG_H
 
+//#define lightview
+
 //Screen
 #define WINDOW_NAME "CGFrame"
 #define SCREEN_WIDTH 1200
@@ -13,8 +15,8 @@
 #define NEAR_PLANE 0.1f
 #define FAR_PLANE 200.0f
 
-#define SHADOW_WIDTH 2400
-#define SHADOW_HEIGHT 1800
+#define SHADOW_WIDTH 1200
+#define SHADOW_HEIGHT 900
 
 //Scene
 #define SCENE_LENGTH 53.0f
@@ -44,6 +46,9 @@ enum Direction{
     MOVE_ZPOS,
     MOVE_ZNEG
 };
+
+//GaussBlur
+#define GAUSSBLUR_ROUND 10
 
 //Light
 #define PARLIGHT_DIR glm::vec3(27.0f, -13.0f, -27.0f)
@@ -78,7 +83,7 @@ enum Direction{
 #ifndef lightview
 #define default_position glm::vec3(0.0f, 3.0f, 0.0f)
 #else //lightview
-//#define default_position glm::vec3(-27.0f, 13.0f, 27.0f)
+#define default_position glm::vec3(-27.0f, 13.0f, 27.0f)
 #endif //lightview
 #define default_up glm::vec3(0.0f, 1.0f, 0.0f)
 #define default_front glm::vec3(27.0f, -13.0f, -27.0f)

@@ -24,8 +24,8 @@ void Shadowmap::Initialize() {
 glm::mat4 Shadowmap::BeginMakeMap(){
     GLfloat near_plane = 0.1f, far_plane = 100.0f;
     glm::mat4 lightProjection = glm::ortho(-33.0f, 42.0f, -12.0f, 14.0f, 0.1f, 200.0f);
-    glm::mat4 lightview = glm::lookAt(PARLIGHT_POSITION, PARLIGHT_POSITION + PARLIGHT_DIR, glm::vec3(0.0f, 1.0f, 0.0f));
-    glm::mat4 lightSpaceMatrix = lightProjection * lightview;
+    glm::mat4 lightviewmat = glm::lookAt(PARLIGHT_POSITION, PARLIGHT_POSITION + PARLIGHT_DIR, glm::vec3(0.0f, 1.0f, 0.0f));
+    glm::mat4 lightSpaceMatrix = lightProjection * lightviewmat;
     glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
     glBindFramebuffer(GL_FRAMEBUFFER, DepthMapFBO);
     glClear(GL_DEPTH_BUFFER_BIT);

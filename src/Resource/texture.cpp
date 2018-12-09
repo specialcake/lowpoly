@@ -9,6 +9,10 @@ Texture2D::Texture2D()
         : Width(0), Height(0), Internal_Format(GL_RGB), Image_Format(GL_RGB), Wrap_S(GL_LINEAR), Wrap_T(GL_LINEAR), Filter_Min(GL_NEAREST), Filter_Max(GL_NEAREST) {
     glGenTextures(1, &this->ID);
 }
+Texture2D::Texture2D(GLuint id)
+        : Width(0), Height(0), Internal_Format(GL_RGB), Image_Format(GL_RGB), Wrap_S(GL_LINEAR), Wrap_T(GL_LINEAR), Filter_Min(GL_NEAREST), Filter_Max(GL_NEAREST) {
+    this->ID = id;
+}
 
 void Texture2D::Generate(GLuint width, GLuint height, unsigned char* data) {
     this->Width = width;
