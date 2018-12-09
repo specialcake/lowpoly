@@ -116,7 +116,7 @@ void Scene::generate_scene() {
 //    this->chunk[0][0]->height[1][1] = 3.0f;
 }
 void Scene::draw(const glm::mat4& PVMatrix, const glm::mat4& lightSpaceMatrix,
-                 const Texture2D& ShadowMap) {
+                 const Texture2D& ShadowMap, const Texture2D& BluredShadow) {
     map_instance_shader.use();
     HeightMap = this->Generate_HeightMap();
 //    NormalMap0 = this->Generate_NormalMap(0);
@@ -132,6 +132,8 @@ void Scene::draw(const glm::mat4& PVMatrix, const glm::mat4& lightSpaceMatrix,
 //    this->pNormalMap.Bind();
     glActiveTexture(GL_TEXTURE4);
     ShadowMap.Bind();
+//    glActiveTexture(GL_TEXTURE5);
+//    BluredShadow.Bind();
     map_instance_shader.setMat4("PVMatrix", PVMatrix);
     map_instance_shader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
     map_instance_shader.setVec3("lower_color", LOWER_COLOR);

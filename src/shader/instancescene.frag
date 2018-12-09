@@ -66,21 +66,23 @@ float ShadowCalculation(vec4 fragPosLightSpace){
 
     float bias = max(0.0008 * dot(fs_in.Normal, lightDir), 0.00055);
 //    bias = 0.0f;
-//    bias = 0.005f;
+    bias = 0.0000001f;
 //bias = max(0.05 * (1.0 - dot(fs_in.Normal, lightDir)), 0.005);
     float currentDepth = projCoords.z;
+//    currentDepth = (currentDepth - 0.1f) / (200.0f - 0.1f);
     float shadow = 0.0;
     vec2 texelSize = 1.0 / textureSize(ShadowMap, 0);
     for(int x = -2; x <= 2; ++x) {
         for(int y = -2; y <= 2; ++y) {
             float pcfDepth = texture(ShadowMap, projCoords.xy + vec2(x, y) * texelSize).r;
-            shadow += currentDepth + bias > pcfDepth ? 1.0 : 0.0;
+            shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
         }
     }
     shadow /= 25.0;
-//    float closestDepth = texture(ShadowMap, projCoords.xy).r;
+    float closestDepth = texture(ShadowMap, projCoords.xy).r;
 //    shadow = currentDepth + bias > closestDepth ? 1.0 : 0.0;
     shadow = pow(shadow, 0.25f);
+    shadow = clamp( exp( 80.0f * ( currentDepth - closestDepth ) ), 0.0, 1.0 );
     return shadow;
 }
 vec3 CalcParallelLight(ParallelLight light, vec3 normal, vec3 viewDir, float shadow){

@@ -3,6 +3,7 @@
 #include "utils/spriterender.h"
 #include "Scene/scene.h"
 #include "Postprocess/shadowmap.h"
+#include "Postprocess/gaussblur.h"
 
 Scene* scene;
 SpriteRenderer* littlewindow;
@@ -26,6 +27,7 @@ void Game::Init() {
     ResourceManager::LoadShader("../src/shader/model.vert", "../src/shader/model.frag", NULL, "model");
     ResourceManager::LoadShader("../src/shader/normvis.vert", "../src/shader/normvis.frag", "../src/shader/normvis.geom", "normvis");
     ResourceManager::LoadShader("../src/shader/fontdisplay.vert", "../src/shader/fontdisplay.frag", NULL, "fontdisplay");
+    ResourceManager::LoadShader("../src/shader/gaussblur.vert", "../src/shader/gaussblur.frag", NULL, "gaussblur");
 
     ResourceManager::LoadTexture("../resource/image/awesomeface.png", GL_RGBA, "awesomeface");
     ResourceManager::GetShader("sprite").use();
@@ -66,6 +68,7 @@ void Game::Init() {
     scene->generate_scene();
 
     shadowmap = new Shadowmap();
+    Gaussblur::Initialize(ResourceManager::GetShader("gaussblur"));
     //plane = new Terrian(ResourceManager::GetShader("terrian"));
 }
 
@@ -106,7 +109,13 @@ void Game::Render() {
         littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
         littlewindow->DrawSprite(shadowmap->DepthMap, glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.5f));
 
-        scene->draw(PVMatrix, lightSpaceMatrix, shadowmap->DepthMap);
+        Texture2D BluredShadow(Gaussblur::GaussBlur(shadowmap->DepthMap));
+
+        littlewindow->shader.use();
+        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
+        littlewindow->DrawSprite(BluredShadow, glm::vec3(-0.1f, 0.5f, 0.0f), glm::vec3(0.5f));
+
+        scene->draw(PVMatrix, lightSpaceMatrix, BluredShadow);
 //        PVMatrix = lightSpaceMatrix;
         Model* mymodel = ResourceManager::GetModel("crystal");
         Shader model_shader = ResourceManager::GetShader("model");
