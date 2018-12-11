@@ -39,7 +39,7 @@ public:
     ~Scene();
     void Initialize();
     void InitBuffer();
-    void draw(const glm::mat4& PVMatrix, const glm::mat4& lightSpaceMatrix, const Texture2D& ShadowMap);
+    void draw(const glm::mat4& PVMatrix, const glm::mat4& lightSpaceMatrix, const Texture2D& ShadowMap, const Texture2D& BluredShadow);
     void generate_scene();
 
     void UpdateChunks();
@@ -49,7 +49,7 @@ public:
     Texture2D Generate_HeightMap();
     Texture2D Generate_NormalMap(int th);
     Texture2D Generate_pNormalMap();
-    void Generate_ShadowMap(const glm::mat4& lightSpaceMatrix);
+    void Generate_ShadowMap(const glm::mat4& lightSpaceMatrix, const glm::mat4& view);
 private:
 
 };

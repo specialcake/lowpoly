@@ -22,17 +22,18 @@ void Shadowmap::Initialize() {
 }
 
 glm::mat4 Shadowmap::BeginMakeMap(){
-    GLfloat near_plane = 0.1f, far_plane = 100.0f;
-    glm::mat4 lightProjection = glm::ortho(-33.0f, 42.0f, -12.0f, 14.0f, 0.1f, 200.0f);
+    glm::mat4 lightProjection = glm::ortho(-40.0f, 45.0f, -12.0f, 14.0f, 0.1f, 150.0f);
     glm::mat4 lightviewmat = glm::lookAt(PARLIGHT_POSITION, PARLIGHT_POSITION + PARLIGHT_DIR, glm::vec3(0.0f, 1.0f, 0.0f));
     glm::mat4 lightSpaceMatrix = lightProjection * lightviewmat;
     glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
     glBindFramebuffer(GL_FRAMEBUFFER, DepthMapFBO);
     glClear(GL_DEPTH_BUFFER_BIT);
+    glCullFace(GL_BACK);
     return lightSpaceMatrix;
 }
 
 void Shadowmap::EndMakeMap() {
+//    glCullFace(GL_BACK);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

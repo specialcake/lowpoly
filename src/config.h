@@ -13,7 +13,7 @@
 #define SCREEN_HEIGHT 900
 
 #define NEAR_PLANE 0.1f
-#define FAR_PLANE 200.0f
+#define FAR_PLANE 150.0f
 
 #define SHADOW_WIDTH 1200
 #define SHADOW_HEIGHT 900
@@ -51,8 +51,10 @@ enum Direction{
 #define GAUSSBLUR_ROUND 10
 
 //Light
+//#define PARLIGHT_DIR glm::vec3(27.0f, -13.0f, -27.0f)
 #define PARLIGHT_DIR glm::vec3(27.0f, -13.0f, -27.0f)
 #define PARLIGHT_POSITION glm::vec3(-27.0f, 13.0f, 27.0f)
+//#define PARLIGHT_POSITION glm::vec3(-27.0f, 13.0f, 27.0f)
 #define PARLIGHT_AMBIENT glm::vec3(0.3f)
 #define PARLIGHT_DIFFUSE glm::vec3(0.9f)
 #define PARLIGHT_SPECULAR glm::vec3(0.0f)

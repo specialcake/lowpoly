@@ -36,15 +36,20 @@ void Game::Init() {
     ResourceManager::GetShader("fontdisplay").use();
     ResourceManager::GetShader("fontdisplay").setInt("text", 0);
 
+    ResourceManager::GetShader("gaussblur").use();
+    ResourceManager::GetShader("gaussblur").setInt("image", 0);
+
     ResourceManager::GetShader("instancescene").use();
     ResourceManager::GetShader("instancescene").setInt("HeightMap", 0);
 //    ResourceManager::GetShader("instancescene").setInt("NormalMap0", 1);
 //    ResourceManager::GetShader("instancescene").setInt("NormalMap1", 2);
 //    ResourceManager::GetShader("instancescene").setInt("pNormalMap", 3);
-    ResourceManager::GetShader("instancescene").setInt("ShadowMap", 4);
+    ResourceManager::GetShader("instancescene").setInt("DepthMap", 4);
+    ResourceManager::GetShader("instancescene").setInt("BlurShadow", 5);
 
     ResourceManager::GetShader("water").use();
     ResourceManager::GetShader("water").setInt("ShadowMap", 0);
+    ResourceManager::GetShader("water").setInt("BlurShadow", 1);
 
     ResourceManager::GetShader("shadowmap").use();
     ResourceManager::GetShader("shadowmap").setInt("HeightMap", 0);
@@ -95,14 +100,14 @@ void Game::Render() {
     if(this->State == GAME_ACTIVE) {
         glm::mat4 projection = glm::perspective(glm::radians(ResourceManager::camera.Zoom), (float)Width / (float)Height, 0.1f, 200.0f);
 #ifdef lightview
-        projection = glm::ortho(-37.0f, 38.0f, -12.0f, 14.0f, 5.5f, 200.0f);
+        projection = glm::ortho(-40.0f, 40.0f, -12.0f, 14.0f, 0.1f, 150.0f);
 #endif //lightview
         glm::mat4 view = ResourceManager::camera.GetViewMatrix();
         glm::mat4 PVMatrix = projection * view;
 
         glm::mat4 lightSpaceMatrix = shadowmap->BeginMakeMap();
 //        scene->draw(lightSpaceMatrix, lightSpaceMatrix, shadowmap->DepthMap);
-        scene->Generate_ShadowMap(lightSpaceMatrix);
+        scene->Generate_ShadowMap(lightSpaceMatrix, glm::lookAt(PARLIGHT_POSITION, PARLIGHT_POSITION + PARLIGHT_DIR, glm::vec3(0.0f, 1.0f, 0.0f)));
         shadowmap->EndMakeMap();
 
         littlewindow->shader.use();
@@ -115,7 +120,7 @@ void Game::Render() {
         littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
         littlewindow->DrawSprite(BluredShadow, glm::vec3(-0.1f, 0.5f, 0.0f), glm::vec3(0.5f));
 
-        scene->draw(PVMatrix, lightSpaceMatrix, BluredShadow);
+        scene->draw(PVMatrix, lightSpaceMatrix, shadowmap->DepthMap, BluredShadow);
 //        PVMatrix = lightSpaceMatrix;
         Model* mymodel = ResourceManager::GetModel("crystal");
         Shader model_shader = ResourceManager::GetShader("model");

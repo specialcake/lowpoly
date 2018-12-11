@@ -109,7 +109,7 @@ private:
         front.y = sin(glm::radians(Pitch));
         front.z = sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
 #ifdef lightview
-        front = Front;
+//        front = Front;
 #endif
 
         Front = glm::normalize(front);

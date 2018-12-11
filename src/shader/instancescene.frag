@@ -27,25 +27,33 @@ struct PointLight{
 #define NR_POINT_LIGHTS 1
 
 uniform vec3 viewPos;
+uniform float near_plane;
+uniform float far_plane;
 
 uniform ParallelLight dirLight;
 uniform PointLight pointLights[NR_POINT_LIGHTS];
 
-uniform sampler2D ShadowMap;
+uniform sampler2D DepthMap;
+uniform sampler2D BlurShadow;
 
-vec3 CalcParallelLight(ParallelLight light, vec3 normal, vec3 viewDir, float shadow);
+vec3 CalcParallelLight(ParallelLight light, vec3 normal, vec3 viewDir, float visibility);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, float shadow);
 float ShadowCalculation(vec4 fragPosLightSpace);
 
 void main() {
-    float shadoweffect = ShadowCalculation(fs_in.FragPosLightSpace);
-    shadoweffect *= 0.90f;
+    float visibility = ShadowCalculation(fs_in.FragPosLightSpace);
+//    if(visibility > 0.003f){
+//        FragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+//        return ;
+//    }
+//    else{
+//        FragColor = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+//        return;
+//    }
 
     //Light calculate
     vec3 viewDir = normalize(viewPos - fs_in.FragPos);
-    vec3 factory = CalcParallelLight(dirLight, fs_in.Normal, viewDir, shadoweffect);
-//    for(int i = 0; i < NR_POINT_LIGHTS; i++)
-//        factory += CalcPointLight(pointLights[i], Normal, FragPos, viewDir, shadoweffect);
+    vec3 factory = CalcParallelLight(dirLight, fs_in.Normal, viewDir, visibility);
 
     vec3 aFragColor = fs_in.Color * factory;
     FragColor = vec4(aFragColor, 1.0f);
@@ -62,30 +70,19 @@ float ShadowCalculation(vec4 fragPosLightSpace){
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
     projCoords = projCoords * 0.5 + 0.5;
     if(projCoords.z > 1.0f)
-        return 0.0f;
+        return 1.0f;
 
-    float bias = max(0.0008 * dot(fs_in.Normal, lightDir), 0.00055);
+    float bias = max(0.008 * dot(fs_in.Normal, lightDir), 0.0055);
+    bias = 0.00051f;
 //    bias = 0.0f;
-    bias = 0.0000001f;
-//bias = max(0.05 * (1.0 - dot(fs_in.Normal, lightDir)), 0.005);
     float currentDepth = projCoords.z;
-//    currentDepth = (currentDepth - 0.1f) / (200.0f - 0.1f);
-    float shadow = 0.0;
-    vec2 texelSize = 1.0 / textureSize(ShadowMap, 0);
-    for(int x = -2; x <= 2; ++x) {
-        for(int y = -2; y <= 2; ++y) {
-            float pcfDepth = texture(ShadowMap, projCoords.xy + vec2(x, y) * texelSize).r;
-            shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;
-        }
-    }
-    shadow /= 25.0;
-    float closestDepth = texture(ShadowMap, projCoords.xy).r;
+    float closestDepth = texture(BlurShadow, projCoords.xy).r;
 //    shadow = currentDepth + bias > closestDepth ? 1.0 : 0.0;
-    shadow = pow(shadow, 0.25f);
-    shadow = clamp( exp( 80.0f * ( currentDepth - closestDepth ) ), 0.0, 1.0 );
+    float shadow = clamp(exp(-20.0f * (currentDepth - closestDepth - bias)), 0.0, 1.0);
+//    return (currentDepth - closestDepth - bias);
     return shadow;
 }
-vec3 CalcParallelLight(ParallelLight light, vec3 normal, vec3 viewDir, float shadow){
+vec3 CalcParallelLight(ParallelLight light, vec3 normal, vec3 viewDir, float visibility){
     vec3 lightDir = normalize(-light.direction);
     // diffuse shading
     float diff = max(dot(normal, lightDir), 0.0);
@@ -93,7 +90,7 @@ vec3 CalcParallelLight(ParallelLight light, vec3 normal, vec3 viewDir, float sha
     // combine results
     vec3 ambient = light.ambient;
     vec3 diffuse = light.diffuse * diff;
-    return ambient + diffuse * (1.0f - shadow);
+    return ambient + diffuse * visibility;
 }
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, float shadow){
     vec3 lightDir = normalize(light.position - fragPos);

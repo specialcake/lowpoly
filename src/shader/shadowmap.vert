@@ -4,6 +4,7 @@ layout (location = 1) in float aTriangleType;
 
 out VS_OUT {
     vec3 FragPos;
+    vec4 wCoords;
 } vs_out;
 
 uniform int scene_size;
@@ -11,6 +12,7 @@ uniform float scalefactor;
 uniform vec3 scene_offset;
 
 uniform mat4 PVMatrix;
+uniform mat4 view;
 
 uniform sampler2D HeightMap;
 
@@ -24,4 +26,5 @@ void main() {
     gl_Position = PVMatrix * vec4(pos + scene_offset, 1.0f);
 
     vs_out.FragPos = pos + scene_offset;
+    vs_out.wCoords = view * vec4(pos + scene_offset, 1.0f);
 }
