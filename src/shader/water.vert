@@ -3,7 +3,7 @@ layout (location = 0) in vec2 aVertex;
 
 out VS_OUT {
     vec3 FragPos;
-    vec3 Normal;
+//    vec3 Normal;
     vec4 FragPosLightSpace;
 } vs_out;
 
@@ -33,7 +33,7 @@ void main() {
     pos += scene_offset;
 
     vec3 opos = pos;
-    vec3 aNormal = vec3(0.0f, 1.0f, 0.0f);
+//    vec3 aNormal = vec3(0.0f, 1.0f, 0.0f);
     for(int i = 0; i < wave_number; i++){
         float Qs = 1.0 / (wave_number * wave[i].w * wave[i].A);
         pos.x += Qs * wave[i].A * wave[i].D.x * cos(wave[i].w * dot(wave[i].D, opos.xz) + wave[i].phi * Timer);
@@ -44,17 +44,17 @@ void main() {
         float S = sin(wave[i].w * dot(wave[i].D, opos.xz) + wave[i].phi * Timer);
         float C = cos(wave[i].w * dot(wave[i].D, opos.xz) + wave[i].phi * Timer);
 
-        aNormal.x += wave[i].D.x * wa * C;
-        aNormal.z += wave[i].D.y * wa * C;
-        aNormal.y -= Qs * wa * S;
+//        aNormal.x += wave[i].D.x * wa * C;
+//        aNormal.z += wave[i].D.y * wa * C;
+//        aNormal.y -= Qs * wa * S;
     }
-    aNormal.x = -aNormal.x;
-    aNormal.z = -aNormal.z;
-    aNormal = normalize(aNormal);
+//    aNormal.x = -aNormal.x;
+//    aNormal.z = -aNormal.z;
+//    aNormal = normalize(aNormal);
 
     gl_Position = PVMatrix * vec4(pos, 1.0f);
     //normal calc
-    vs_out.Normal = aNormal;
+//    vs_out.Normal = aNormal;
     //world coordinate
     vs_out.FragPos = pos;
 
