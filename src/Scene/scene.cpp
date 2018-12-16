@@ -117,45 +117,35 @@ void Scene::generate_scene() {
 }
 void Scene::draw(const glm::mat4& PVMatrix, const glm::mat4& lightSpaceMatrix,
                  const Texture2D& ShadowMap, const Texture2D& BluredShadow) {
-    if(ResourceManager::Keys[GLFW_KEY_H]){
-        glEnable(GL_CULL_FACE);
-        glCullFace(GL_FRONT);
-    }
-    map_instance_shader.use();
-    HeightMap = this->Generate_HeightMap();
-//    NormalMap0 = this->Generate_NormalMap(0);
-//    NormalMap1 = this->Generate_NormalMap(1);
-//    pNormalMap = this->Generate_pNormalMap();
-    glActiveTexture(GL_TEXTURE0);
-    this->HeightMap.Bind();
-//    glActiveTexture(GL_TEXTURE1);
-//    this->NormalMap0.Bind();
-//    glActiveTexture(GL_TEXTURE2);
-//    this->NormalMap1.Bind();
-//    glActiveTexture(GL_TEXTURE3);
-//    this->pNormalMap.Bind();
-    glActiveTexture(GL_TEXTURE4);
-    ShadowMap.Bind();
-    glActiveTexture(GL_TEXTURE5);
-    BluredShadow.Bind();
-    map_instance_shader.setMat4("PVMatrix", PVMatrix);
-    map_instance_shader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
-    map_instance_shader.setVec3("lower_color", LOWER_COLOR);
-    map_instance_shader.setVec3("land_color", LAND_COLOR);
-    map_instance_shader.setVec3("rock_color", ROCK_COLOR);
-    map_instance_shader.setFloat("scalefactor", MESH_LENGTH);
-    map_instance_shader.setVec3("scene_offset", this->offset);
-    map_instance_shader.setInt("scene_size", MESH_SIZE * CHUNK_SIZE);
-    map_instance_shader.setFloat("near_plane", NEAR_PLANE);
-    map_instance_shader.setFloat("far_plane", FAR_PLANE);
-    map_instance_shader.setLight(ResourceManager::camera.Position);
-
-    glBindVertexArray(this->instanceVAO);
-    glDrawArraysInstanced(GL_TRIANGLES, 0, 6, MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE);
-    glBindVertexArray(0);
-    if(ResourceManager::Keys[GLFW_KEY_H]){
-        glCullFace(GL_BACK);
-    }
+//    if(ResourceManager::Keys[GLFW_KEY_H]){
+//        glEnable(GL_CULL_FACE);
+//        glCullFace(GL_FRONT);
+//    }
+//    map_instance_shader.use();
+//    glActiveTexture(GL_TEXTURE0);
+//    this->HeightMap.Bind();
+//    glActiveTexture(GL_TEXTURE4);
+//    ShadowMap.Bind();
+//    glActiveTexture(GL_TEXTURE5);
+//    BluredShadow.Bind();
+//    map_instance_shader.setMat4("PVMatrix", PVMatrix);
+//    map_instance_shader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
+//    map_instance_shader.setVec3("lower_color", LOWER_COLOR);
+//    map_instance_shader.setVec3("land_color", LAND_COLOR);
+//    map_instance_shader.setVec3("rock_color", ROCK_COLOR);
+//    map_instance_shader.setFloat("scalefactor", MESH_LENGTH);
+//    map_instance_shader.setVec3("scene_offset", this->offset);
+//    map_instance_shader.setInt("scene_size", MESH_SIZE * CHUNK_SIZE);
+//    map_instance_shader.setFloat("near_plane", NEAR_PLANE);
+//    map_instance_shader.setFloat("far_plane", FAR_PLANE);
+//    map_instance_shader.setLight(ResourceManager::camera.Position);
+//
+//    glBindVertexArray(this->instanceVAO);
+//    glDrawArraysInstanced(GL_TRIANGLES, 0, 6, MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE);
+//    glBindVertexArray(0);
+//    if(ResourceManager::Keys[GLFW_KEY_H]){
+//        glCullFace(GL_BACK);
+//    }
 
 #ifdef viewnormal
     Shader normvis = ResourceManager::GetShader("normvis");
@@ -196,7 +186,6 @@ void Scene::draw(const glm::mat4& PVMatrix, const glm::mat4& lightSpaceMatrix,
 
 void Scene::Generate_ShadowMap(const glm::mat4& lightSpaceMatrix, const glm::mat4& view) {
     shadow_shader.use();
-    HeightMap = this->Generate_HeightMap();
     glActiveTexture(GL_TEXTURE0);
     this->HeightMap.Bind();
     shadow_shader.setMat4("PVMatrix", lightSpaceMatrix);
@@ -221,6 +210,7 @@ void Scene::UpdateChunks() {
 //    printf("(%d, %d) -> (%d, %d)\n", Chunkx, Chunkz, Meshx, Meshz);
     if(Chunkx == cur_Chunk->pos_x && Chunkz == cur_Chunk->pos_z){
         cur_Submesh = cur_Chunk->submesh[Meshx][Meshz];
+        ResourceManager::dir = ORIGIN_POS;
         return ;
     }
     this->debugflag = true;
@@ -298,7 +288,8 @@ void Scene::UpdateChunks() {
     }
     cur_Chunk = this->chunk[CHUNK_RADIUS][CHUNK_RADIUS];
     cur_Submesh = cur_Chunk->submesh[MESH_RADIUS][MESH_RADIUS];
-//    UpdateChunk(dir);
+
+    ResourceManager::dir = dir;
 }
 void Scene::UpdateNeighbor(GLint x, GLint y) {
     if(x > 0) chunk[x][y]->xNeg = chunk[x - 1][y];

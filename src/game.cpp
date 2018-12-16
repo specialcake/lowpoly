@@ -78,7 +78,23 @@ void Game::Init() {
 }
 
 void Game::Update(GLfloat dt) {
+    static int first_time = 1;
+
     scene->UpdateChunks();
+
+    if(ResourceManager::dir != ORIGIN_POS || first_time){
+        scene->HeightMap = scene->Generate_HeightMap();
+
+        glm::mat4 lightSpaceMatrix = shadowmap->GetlightSpaceMatrix();
+        shadowmap->BeginMakeMap();
+        scene->Generate_ShadowMap(lightSpaceMatrix, glm::lookAt(PARLIGHT_POSITION, PARLIGHT_POSITION + PARLIGHT_DIR, glm::vec3(0.0f, 1.0f, 0.0f)));
+        shadowmap->EndMakeMap();
+
+        shadowmap->BluredShadow = Gaussblur::GaussBlur(shadowmap->DepthMap);
+
+    }
+
+    first_time = 0;
 }
 
 void Game::ProcessInput(GLfloat dt) {
@@ -105,22 +121,17 @@ void Game::Render() {
         glm::mat4 view = ResourceManager::camera.GetViewMatrix();
         glm::mat4 PVMatrix = projection * view;
 
-        glm::mat4 lightSpaceMatrix = shadowmap->BeginMakeMap();
-//        scene->draw(lightSpaceMatrix, lightSpaceMatrix, shadowmap->DepthMap);
-        scene->Generate_ShadowMap(lightSpaceMatrix, glm::lookAt(PARLIGHT_POSITION, PARLIGHT_POSITION + PARLIGHT_DIR, glm::vec3(0.0f, 1.0f, 0.0f)));
-        shadowmap->EndMakeMap();
+        glm::mat4 lightSpaceMatrix = shadowmap->GetlightSpaceMatrix();
 
         littlewindow->shader.use();
         littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
         littlewindow->DrawSprite(shadowmap->DepthMap, glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.5f));
 
-        Texture2D BluredShadow(Gaussblur::GaussBlur(shadowmap->DepthMap));
-
         littlewindow->shader.use();
         littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
-        littlewindow->DrawSprite(BluredShadow, glm::vec3(-0.1f, 0.5f, 0.0f), glm::vec3(0.5f));
+        littlewindow->DrawSprite(shadowmap->BluredShadow, glm::vec3(-0.1f, 0.5f, 0.0f), glm::vec3(0.5f));
 
-        scene->draw(PVMatrix, lightSpaceMatrix, shadowmap->DepthMap, BluredShadow);
+        scene->draw(PVMatrix, lightSpaceMatrix, shadowmap->DepthMap, shadowmap->BluredShadow);
 //        PVMatrix = lightSpaceMatrix;
         Model* mymodel = ResourceManager::GetModel("crystal");
         Shader model_shader = ResourceManager::GetShader("model");

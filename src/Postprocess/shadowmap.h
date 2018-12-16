@@ -10,11 +10,12 @@
 
 class Shadowmap {
 public:
-    Texture2D DepthMap;
+    Texture2D DepthMap, BluredShadow;
     Shadowmap();
     ~Shadowmap();
     void Initialize();
-    glm::mat4 BeginMakeMap();
+    glm::mat4 GetlightSpaceMatrix();
+    void BeginMakeMap();
     void EndMakeMap();
 private:
     GLuint DepthMapFBO;

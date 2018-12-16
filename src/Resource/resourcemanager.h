@@ -20,6 +20,7 @@ public:
     static GLfloat lastX, lastY;
     static GLboolean firstMouse;
     static GLboolean Keys[1024];
+    static Direction dir;
     // Resource storage
     static std::map<std::string, Shader> Shaders;
     static std::map<std::string, Texture2D> Textures;
