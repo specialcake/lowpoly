@@ -118,35 +118,35 @@ void Scene::generate_scene() {
 }
 void Scene::draw(const glm::mat4& PVMatrix, const glm::mat4& lightSpaceMatrix,
                  const Texture2D& ShadowMap, const Texture2D& BluredShadow) {
-//    if(ResourceManager::Keys[GLFW_KEY_H]){
-//        glEnable(GL_CULL_FACE);
-//        glCullFace(GL_FRONT);
-//    }
-//    map_instance_shader.use();
-//    glActiveTexture(GL_TEXTURE0);
-//    this->HeightMap.Bind();
-//    glActiveTexture(GL_TEXTURE4);
-//    ShadowMap.Bind();
-//    glActiveTexture(GL_TEXTURE5);
-//    BluredShadow.Bind();
-//    map_instance_shader.setMat4("PVMatrix", PVMatrix);
-//    map_instance_shader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
-//    map_instance_shader.setVec3("lower_color", LOWER_COLOR);
-//    map_instance_shader.setVec3("land_color", LAND_COLOR);
-//    map_instance_shader.setVec3("rock_color", ROCK_COLOR);
-//    map_instance_shader.setFloat("scalefactor", MESH_LENGTH);
-//    map_instance_shader.setVec3("scene_offset", this->offset);
-//    map_instance_shader.setInt("scene_size", MESH_SIZE * CHUNK_SIZE);
-//    map_instance_shader.setFloat("near_plane", NEAR_PLANE);
-//    map_instance_shader.setFloat("far_plane", FAR_PLANE);
-//    map_instance_shader.setLight(ResourceManager::camera.Position);
-//
-//    glBindVertexArray(this->instanceVAO);
-//    glDrawArraysInstanced(GL_TRIANGLES, 0, 6, MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE);
-//    glBindVertexArray(0);
-//    if(ResourceManager::Keys[GLFW_KEY_H]){
-//        glCullFace(GL_BACK);
-//    }
+    if(ResourceManager::Keys[GLFW_KEY_H]){
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_FRONT);
+    }
+    map_instance_shader.use();
+    glActiveTexture(GL_TEXTURE0);
+    this->HeightMap.Bind();
+    glActiveTexture(GL_TEXTURE4);
+    ShadowMap.Bind();
+    glActiveTexture(GL_TEXTURE5);
+    BluredShadow.Bind();
+    map_instance_shader.setMat4("PVMatrix", PVMatrix);
+    map_instance_shader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
+    map_instance_shader.setVec3("lower_color", LOWER_COLOR);
+    map_instance_shader.setVec3("land_color", LAND_COLOR);
+    map_instance_shader.setVec3("rock_color", ROCK_COLOR);
+    map_instance_shader.setFloat("scalefactor", MESH_LENGTH);
+    map_instance_shader.setVec3("scene_offset", this->offset);
+    map_instance_shader.setInt("scene_size", MESH_SIZE * CHUNK_SIZE);
+    map_instance_shader.setFloat("near_plane", NEAR_PLANE);
+    map_instance_shader.setFloat("far_plane", FAR_PLANE);
+    map_instance_shader.setLight(ResourceManager::camera.Position);
+
+    glBindVertexArray(this->instanceVAO);
+    glDrawArraysInstanced(GL_TRIANGLES, 0, 6, MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE);
+    glBindVertexArray(0);
+    if(ResourceManager::Keys[GLFW_KEY_H]){
+        glCullFace(GL_BACK);
+    }
 
 #ifdef viewnormal
     Shader normvis = ResourceManager::GetShader("normvis");
