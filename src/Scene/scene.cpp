@@ -35,6 +35,7 @@ void Scene::Initialize() {
     this->InitBuffer();
 
     this->generator = new Noise(NOISE_SIZE);
+    this->water = new Water();
 
     for(GLint i = 0; i < CHUNK_SIZE; i++){
         for(GLint j = 0; j < CHUNK_SIZE; j++){
@@ -177,6 +178,7 @@ void Scene::draw(const glm::mat4& PVMatrix, const glm::mat4& lightSpaceMatrix,
     water_shader.setVec3("scene_offset", this->offset);
     water_shader.setVec3("water_color", SEA_COLOR);
     water_shader.setLight(ResourceManager::camera.Position);
+    this->water->Setwater(water_shader);
 
     glBindVertexArray(this->VAO);
     glDrawArraysInstanced(GL_TRIANGLES, 0, 6, MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE);

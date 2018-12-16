@@ -12,6 +12,7 @@
 #include "../config.h"
 #include "../Resource/shader.h"
 #include "noise.h"
+#include "water.h"
 #include <iostream>
 #include <vector>
 
@@ -30,6 +31,8 @@ public:
     Noise* generator;
     Texture2D HeightMap;
     Texture2D NormalMap0, NormalMap1, pNormalMap;
+
+    Water* water;
 
     Shader map_shader, map_instance_shader, water_shader, shadow_shader;
     GLuint VAO, VBO, instanceVAO, instanceVBO;

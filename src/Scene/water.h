@@ -5,9 +5,25 @@
 #ifndef TMPER_WATER_H
 #define TMPER_WATER_H
 
+#include <glad/glad.h>
+#include "../Resource/texture.h"
+#include "../Resource/shader.h"
+#include "../config.h"
 
-class water {
+struct Wave{
+    //Amplitude, Q, Speed, Length, phi, omega
+    //Direction
+    GLfloat A, Q, S, L, phi, w;
+    glm::vec2 D;
+};
 
+class Water {
+public:
+    Wave wave[NUMOFWATER];
+    Water();
+    ~Water();
+    void Initialize();
+    void Setwater(Shader shader);
 };
 
 

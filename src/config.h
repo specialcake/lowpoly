@@ -34,7 +34,7 @@
 
 #define MAX_HEIGHT 4.0f
 #define NOISE_SIZE 29
-#define SEA_LEVEL 0.10f
+
 enum Meshtype{
     LAND,
     WATER
@@ -46,6 +46,11 @@ enum Direction{
     MOVE_ZPOS,
     MOVE_ZNEG
 };
+
+//Water
+#define NUMOFWATER 4
+#define SEA_LEVEL 0.10f
+#define CONSTQ 0.5f
 
 //GaussBlur
 #define GAUSSBLUR_ROUND 10
