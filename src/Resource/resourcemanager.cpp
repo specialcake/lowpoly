@@ -11,6 +11,7 @@ Direction ResourceManager::dir;
 std::map<std::string, Texture2D> ResourceManager::Textures;
 std::map<std::string, Shader> ResourceManager::Shaders;
 std::map<std::string, Model> ResourceManager::Models;
+Skybox* ResourceManager::skybox;
 Camera ResourceManager::camera;
 Fontdisplay ResourceManager::fontdisplay;
 GLfloat ResourceManager::lastX, ResourceManager::lastY;

@@ -8,6 +8,7 @@
 #include "shader.h"
 #include "camera.h"
 #include "model.h"
+#include "skybox.h"
 #include "fontdisplay.h"
 #include <map>
 #include <iostream>
@@ -25,6 +26,7 @@ public:
     static std::map<std::string, Shader> Shaders;
     static std::map<std::string, Texture2D> Textures;
     static std::map<std::string, Model> Models;
+    static Skybox* skybox;
     static Camera camera;
     static Fontdisplay fontdisplay;
 
