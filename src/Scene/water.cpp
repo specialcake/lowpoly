@@ -13,16 +13,16 @@ Water::~Water() {
 }
 
 void Water::Initialize() {
-    wave[0] = (Wave){0.10f, 0.0f, 0.6f, 2.1f, 0.0f, 0.0f};
+    wave[0] = (Wave){0.05f, 0.0f, 0.6f, 2.1f, 0.0f, 0.0f};
     wave[0].D = glm::vec2(-0.468f, -0.956f);
 
-    wave[1] = (Wave){0.07f, 0.0f, 0.4f, 3.5f, 0.0f, 0.0f};
+    wave[1] = (Wave){0.02f, 0.0f, 0.4f, 3.5f, 0.0f, 0.0f};
     wave[1].D = glm::vec2(-0.111f, 0.379f);
 
-    wave[2] = (Wave){0.12f, 0.0f, 0.5f, 4.2f, 0.0f, 0.0f};
+    wave[2] = (Wave){0.07f, 0.0f, 0.5f, 4.2f, 0.0f, 0.0f};
     wave[2].D = glm::vec2(0.53f, -0.239f);
 
-    wave[3] = (Wave){0.08f, 0.0f, 0.7f, 5.0f, 0.0f, 0.0f};
+    wave[3] = (Wave){0.03f, 0.0f, 0.7f, 5.0f, 0.0f, 0.0f};
     wave[3].D = glm::vec2(0.497f, 0.78f);
 
     for(int i = 0; i < NUMOFWATER; i++){

@@ -21,9 +21,42 @@ void Shadowmap::Initialize() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-glm::mat4 Shadowmap::GetlightSpaceMatrix() {
-    glm::mat4 lightProjection = glm::ortho(-40.0f, 45.0f, -12.0f, 14.0f, 0.1f, 150.0f);
-    glm::mat4 lightviewmat = glm::lookAt(PARLIGHT_POSITION, PARLIGHT_POSITION + PARLIGHT_DIR, glm::vec3(0.0f, 1.0f, 0.0f));
+void Shadowmap::UpdateFrustum(const Scene *scene) {
+    glm::mat4 lightviewmat = glm::lookAt(PARLIGHT_POSITION + scene->offset,
+                                         PARLIGHT_POSITION + scene->offset + PARLIGHT_DIR,
+                                         glm::vec3(0.0f, 1.0f, 0.0f));
+    this->near = this->left  = this->bottom = 2000000.0f;
+    this->far  = this->right = this->top    = -2000000.0f;
+    for(int i = 0; i < CHUNK_SIZE; i++){
+        for(int j = 0; j < CHUNK_SIZE; j++){
+            for(int k = 0; k <= MESH_SIZE; k++){
+                for(int h = 0; h <= MESH_SIZE; h++){
+                    glm::vec3 pos = scene->offset +
+                    scene->chunk_offset[i][j] +
+                    scene->mesh_offset[k][h];
+                    pos.y = scene->chunk[i][j]->height[k][h];
+                    pos = glm::vec3(lightviewmat * glm::vec4(pos, 1.0f));
+                    this->left   = glm::min(this->left,   pos.x);
+                    this->right  = glm::max(this->right,  pos.x);
+                    this->bottom = glm::min(this->bottom, pos.y);
+                    this->top    = glm::max(this->top,    pos.y);
+                    this->near   = glm::min(this->near,  -pos.z);
+                    this->far    = glm::max(this->far ,  -pos.z);
+                }
+            }
+        }
+    }
+    this->left -= 0.2f, this->bottom -= 0.2f, this->near -= 0.2f;
+    this->right += 0.2f, this->top += 0.2f, this->far += 0.2f;
+}
+
+glm::mat4 Shadowmap::GetlightSpaceMatrix(const Scene* scene) {
+    glm::mat4 lightProjection = glm::ortho(this->left, this->right,
+               this->bottom, this->top,
+               this->near, this->far);
+    glm::mat4 lightviewmat = glm::lookAt(PARLIGHT_POSITION + scene->offset,
+                                         PARLIGHT_POSITION + scene->offset + PARLIGHT_DIR,
+                                         glm::vec3(0.0f, 1.0f, 0.0f));
     glm::mat4 lightSpaceMatrix = lightProjection * lightviewmat;
     return lightSpaceMatrix;
 }

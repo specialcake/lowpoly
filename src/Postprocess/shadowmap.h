@@ -7,6 +7,7 @@
 
 #include "../Resource/resourcemanager.h"
 #include "../Resource/texture.h"
+#include "../Scene/scene.h"
 
 class Shadowmap {
 public:
@@ -14,10 +15,12 @@ public:
     Shadowmap();
     ~Shadowmap();
     void Initialize();
-    glm::mat4 GetlightSpaceMatrix();
+    glm::mat4 GetlightSpaceMatrix(const Scene* scene);
     void BeginMakeMap();
     void EndMakeMap();
+    void UpdateFrustum(const Scene* scene);
 private:
+    GLfloat near, far, left, right, top, bottom;
     GLuint DepthMapFBO;
 };
 

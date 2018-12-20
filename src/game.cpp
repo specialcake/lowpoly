@@ -85,13 +85,17 @@ void Game::Update(GLfloat dt) {
     if(ResourceManager::dir != ORIGIN_POS || first_time){
         scene->HeightMap = scene->Generate_HeightMap();
 
-        glm::mat4 lightSpaceMatrix = shadowmap->GetlightSpaceMatrix();
+        shadowmap->UpdateFrustum(scene);
+
+        glm::mat4 lightSpaceMatrix = shadowmap->GetlightSpaceMatrix(scene);
+        glm::mat4 viewmat = glm::lookAt(PARLIGHT_POSITION + scene->offset,
+                                        PARLIGHT_POSITION + scene->offset + PARLIGHT_DIR,
+                                        glm::vec3(0.0f, 0.0f, 0.0f));
         shadowmap->BeginMakeMap();
-        scene->Generate_ShadowMap(lightSpaceMatrix, glm::lookAt(PARLIGHT_POSITION, PARLIGHT_POSITION + PARLIGHT_DIR, glm::vec3(0.0f, 1.0f, 0.0f)));
+        scene->Generate_ShadowMap(lightSpaceMatrix, viewmat);
         shadowmap->EndMakeMap();
 
         shadowmap->BluredShadow = Gaussblur::GaussBlur(shadowmap->DepthMap);
-
     }
 
     first_time = 0;
@@ -121,7 +125,7 @@ void Game::Render() {
         glm::mat4 view = ResourceManager::camera.GetViewMatrix();
         glm::mat4 PVMatrix = projection * view;
 
-        glm::mat4 lightSpaceMatrix = shadowmap->GetlightSpaceMatrix();
+        glm::mat4 lightSpaceMatrix = shadowmap->GetlightSpaceMatrix(scene);
 
         littlewindow->shader.use();
         littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
