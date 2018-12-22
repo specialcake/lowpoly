@@ -75,6 +75,19 @@ void Texture2D::GenerateShadowMap(GLuint width, GLuint height) {
 
     glBindTexture(GL_TEXTURE_2D, 0);
 }
+void Texture2D::GenerateSkymap(GLuint width, GLuint height) {
+    this->Width = width, this->Height = height;
+    this->Internal_Format = this->Image_Format = GL_RGBA;
+
+    glBindTexture(GL_TEXTURE_2D, this->ID);
+    glTexImage2D(GL_TEXTURE_2D, 0, this->Internal_Format, width, height, 0, this->Image_Format, GL_FLOAT, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
 
 void Texture2D::Bind() const {
     glBindTexture(GL_TEXTURE_2D, this->ID);

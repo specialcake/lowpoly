@@ -4,10 +4,12 @@
 #include "Scene/scene.h"
 #include "Postprocess/shadowmap.h"
 #include "Postprocess/gaussblur.h"
+#include "Postprocess/skymap.h"
 
 Scene* scene;
 SpriteRenderer* littlewindow;
 Shadowmap* shadowmap;
+Skymap* skymap;
 //Terrian* plane;
 
 Game::Game(GLuint width, GLuint height) : State(GAME_ACTIVE), Width(width), Height(height) {
@@ -15,8 +17,7 @@ Game::Game(GLuint width, GLuint height) : State(GAME_ACTIVE), Width(width), Heig
     ResourceManager::lastY = height / 2.0f;
 }
 
-Game::~Game() {
-}
+Game::~Game() {}
 
 void Game::Init() {
     ResourceManager::LoadShader("../src/shader/scene.vert", "../src/shader/scene.frag", NULL, "scene");
@@ -27,6 +28,7 @@ void Game::Init() {
     ResourceManager::LoadShader("../src/shader/model.vert", "../src/shader/model.frag", NULL, "model");
     ResourceManager::LoadShader("../src/shader/gaussblur.vert", "../src/shader/gaussblur.frag", NULL, "gaussblur");
     ResourceManager::LoadShader("../src/shader/skybox.vert", "../src/shader/skybox.frag", NULL, "skybox");
+    ResourceManager::LoadShader("../src/shader/skymap.vert", "../src/shader/skymap.frag", NULL, "skymap");
 
     ResourceManager::GetShader("sprite").use();
     ResourceManager::GetShader("sprite").setInt("image", 0);
@@ -46,6 +48,14 @@ void Game::Init() {
     ResourceManager::GetShader("shadowmap").use();
     ResourceManager::GetShader("shadowmap").setInt("HeightMap", 0);
 
+    ResourceManager::GetShader("skybox").use();
+    ResourceManager::GetShader("skybox").setInt("Right", 0);
+    ResourceManager::GetShader("skybox").setInt("Left", 1);
+    ResourceManager::GetShader("skybox").setInt("Top", 2);
+    ResourceManager::GetShader("skybox").setInt("Bottom", 3);
+    ResourceManager::GetShader("skybox").setInt("Front", 4);
+    ResourceManager::GetShader("skybox").setInt("Back", 5);
+
     ResourceManager::LoadModel("../resource/model/widetree/widetree.obj", "crystal");
 
     littlewindow = new SpriteRenderer(ResourceManager::GetShader("sprite"));
@@ -60,6 +70,14 @@ void Game::Init() {
     Gaussblur::Initialize(ResourceManager::GetShader("gaussblur"));
 
     ResourceManager::skybox = new Skybox(ResourceManager::GetShader("skybox"));
+
+    skymap = new Skymap(ResourceManager::GetShader("skymap"));
+    skymap->BeginMakeMap();
+    skymap->shader.use();
+    skymap->Draw(glm::vec3(0.0f, 0.5f, -1.0f));
+    skymap->EndMakeMap();
+
+//    ResourceManager::skybox->LoadTexture(skymap->skymap);
 }
 
 void Game::Update(GLfloat dt) {
@@ -115,13 +133,19 @@ void Game::Render() {
 
         ResourceManager::skybox->shader.use();
         ResourceManager::skybox->shader.setMat4("PVMatrix", projection * glm::mat4(glm::mat3(ResourceManager::camera.GetViewMatrix())));
-        ResourceManager::skybox->Draw();
+        ResourceManager::skybox->Draw(skymap->skymap);
 
         glDepthFunc(GL_LESS);
+
 //        littlewindow->shader.use();
 //        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
-//        littlewindow->DrawSprite(shadowmap->DepthMap, glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.5f));
-//
+//        littlewindow->DrawSprite(skymap->skymap[0], glm::vec3( 0.5f, -0.25f, 0.0f), glm::vec3(0.5f));
+//        littlewindow->DrawSprite(skymap->skymap[1], glm::vec3(-0.5f, -0.25f, 0.0f), glm::vec3(0.5f));
+//        littlewindow->DrawSprite(skymap->skymap[2], glm::vec3( 0.5f,  0.25f, 0.0f), glm::vec3(0.5f));
+//        littlewindow->DrawSprite(skymap->skymap[3], glm::vec3( 0.0f, -0.75f, 0.0f), glm::vec3(0.5f));
+//        littlewindow->DrawSprite(skymap->skymap[4], glm::vec3( 0.0f, -0.25f, 0.0f), glm::vec3(0.5f));
+//        littlewindow->DrawSprite(skymap->skymap[5], glm::vec3(-1.0f, -0.25f, 0.0f), glm::vec3(0.5f));
+
 //        littlewindow->shader.use();
 //        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
 //        littlewindow->DrawSprite(shadowmap->BluredShadow, glm::vec3(-0.1f, 0.5f, 0.0f), glm::vec3(0.5f));

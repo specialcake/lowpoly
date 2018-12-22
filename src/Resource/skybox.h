@@ -14,11 +14,13 @@
 class Skybox {
 public:
     GLuint VAO, VBO;
+    GLuint CubeMapid;
     Shader shader;
     Skybox(Shader shader);
     ~Skybox();
     void Initialize();
-    void Draw();
+    void LoadTexture(Texture2D* skymaps);
+    void Draw(Texture2D* skymaps);
 private:
 
 };

@@ -28,6 +28,7 @@ public:
     void Generatefloat(GLuint width, GLuint height, GLfloat* data);
     void Generatevec3(GLuint width, GLuint height, glm::vec3* data);
     void GenerateShadowMap(GLuint width, GLuint height);
+    void GenerateSkymap(GLuint width, GLuint height);
     void Bind() const;
 };
 
