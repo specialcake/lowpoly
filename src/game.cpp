@@ -130,21 +130,10 @@ void Game::Render() {
         glm::mat4 lightSpaceMatrix = shadowmap->GetlightSpaceMatrix(scene);
 
         glDepthFunc(GL_LEQUAL);
-
         ResourceManager::skybox->shader.use();
         ResourceManager::skybox->shader.setMat4("PVMatrix", projection * glm::mat4(glm::mat3(ResourceManager::camera.GetViewMatrix())));
         ResourceManager::skybox->Draw(skymap->skymap);
-
         glDepthFunc(GL_LESS);
-
-//        littlewindow->shader.use();
-//        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
-//        littlewindow->DrawSprite(skymap->skymap[0], glm::vec3( 0.5f, -0.25f, 0.0f), glm::vec3(0.5f));
-//        littlewindow->DrawSprite(skymap->skymap[1], glm::vec3(-0.5f, -0.25f, 0.0f), glm::vec3(0.5f));
-//        littlewindow->DrawSprite(skymap->skymap[2], glm::vec3( 0.5f,  0.25f, 0.0f), glm::vec3(0.5f));
-//        littlewindow->DrawSprite(skymap->skymap[3], glm::vec3( 0.0f, -0.75f, 0.0f), glm::vec3(0.5f));
-//        littlewindow->DrawSprite(skymap->skymap[4], glm::vec3( 0.0f, -0.25f, 0.0f), glm::vec3(0.5f));
-//        littlewindow->DrawSprite(skymap->skymap[5], glm::vec3(-1.0f, -0.25f, 0.0f), glm::vec3(0.5f));
 
 //        littlewindow->shader.use();
 //        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));

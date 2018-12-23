@@ -57,8 +57,8 @@ enum Direction{
 
 //Light
 //#define PARLIGHT_DIR glm::vec3(27.0f, -13.0f, -27.0f)
-#define PARLIGHT_DIR glm::vec3(27.0f, -13.0f, -27.0f)
-#define PARLIGHT_POSITION glm::vec3(-27.0f, 13.0f, 27.0f)
+#define PARLIGHT_DIR glm::vec3(0.0f, -13.0f, 27.0f)
+#define PARLIGHT_POSITION glm::vec3(0.0f, 13.0f, -27.0f)
 //#define PARLIGHT_POSITION glm::vec3(-27.0f, 13.0f, 27.0f)
 #define PARLIGHT_AMBIENT glm::vec3(0.3f)
 #define PARLIGHT_DIFFUSE glm::vec3(0.9f)
@@ -90,10 +90,10 @@ enum Direction{
 #ifndef lightview
 #define default_position glm::vec3(0.0f, 3.0f, 0.0f)
 #else //lightview
-#define default_position glm::vec3(-27.0f, 13.0f, 27.0f)
+#define default_position glm::vec3(0.0f, 13.0f, -27.0f)
 #endif //lightview
 #define default_up glm::vec3(0.0f, 1.0f, 0.0f)
-#define default_front glm::vec3(27.0f, -13.0f, -27.0f)
+#define default_front glm::vec3(0.0f, -13.0f, 27.0f)
 //#define default_front glm::vec3(0.0f, 0.0f, -1.0f)
 //#define default_position glm::vec3(0.0f, -3.0f, 1.0f)
 //#define default_up glm::vec3(0.0f, 0.0f, 1.0f)
