@@ -46,7 +46,7 @@ void main() {
 
     vec3 aFragColor = water_color * factory;
 
-    FragColor = vec4(aFragColor, 1.0f);
+    FragColor = vec4(aFragColor, 0.6f);
 }
 
 float ShadowCalculation(vec4 fragPosLightSpace){
@@ -71,10 +71,13 @@ vec3 CalcParallelLight(ParallelLight light, vec3 normal, vec3 viewDir, float vis
     // diffuse shading
     float diff = max(dot(normal, lightDir), 0.0);
     // specular shading
+    vec3 halfwayDir = normalize(lightDir + viewDir);
+    float spec = pow(max(dot(normal, halfwayDir), 0.0), 8.0f);
     // combine results
     vec3 ambient = light.ambient;
     vec3 diffuse = light.diffuse * diff;
-    return ambient + diffuse * visibility;
+    vec3 specular = light.specular * spec;
+    return ambient + (diffuse + specular) * visibility;
 }
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir, float shadow){
     vec3 lightDir = normalize(light.position - fragPos);

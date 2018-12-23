@@ -165,6 +165,8 @@ void Scene::draw(const glm::mat4& PVMatrix, const glm::mat4& lightSpaceMatrix,
     glBindVertexArray(0);
 #endif //viewnormal
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     water_shader.use();
     glActiveTexture(GL_TEXTURE0);
     ShadowMap.Bind();
@@ -184,6 +186,7 @@ void Scene::draw(const glm::mat4& PVMatrix, const glm::mat4& lightSpaceMatrix,
     glDrawArraysInstanced(GL_TRIANGLES, 0, 6, MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE);
     glBindVertexArray(0);
     glActiveTexture(GL_TEXTURE0);
+    glDisable(GL_BLEND);
 }
 
 void Scene::Generate_ShadowMap(const glm::mat4& lightSpaceMatrix, const glm::mat4& view) {

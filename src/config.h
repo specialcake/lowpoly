@@ -62,7 +62,7 @@ enum Direction{
 //#define PARLIGHT_POSITION glm::vec3(-27.0f, 13.0f, 27.0f)
 #define PARLIGHT_AMBIENT glm::vec3(0.3f)
 #define PARLIGHT_DIFFUSE glm::vec3(0.9f)
-#define PARLIGHT_SPECULAR glm::vec3(0.0f)
+#define PARLIGHT_SPECULAR glm::vec3(0.5f)
 
 #define POINTLIGHT0_POS glm::vec3(0.0f, 1.0f, -14.0f)
 #define POINTLIGHT0_AMBIENT glm::vec3(0.4f)
