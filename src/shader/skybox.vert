@@ -10,7 +10,7 @@ out vec3 TexCoords;
 uniform mat4 PVMatrix;
 
 void main() {
-    vec4 pos = PVMatrix * vec4(aPos.x, aPos.y + 0.7f, aPos.z, 1.0);
+    vec4 pos = PVMatrix * vec4(aPos.x, aPos.y - 0.1f, aPos.z, 1.0);
     gl_Position = pos.xyww;
 
     Pos = aPos * 0.5f + 0.5f;

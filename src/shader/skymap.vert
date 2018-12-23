@@ -14,7 +14,7 @@ out VS_OUT{
 void main() {
     gl_Position = vec4(aPosition, 1.0);
     vec3 tmpos = aPosition;
-    tmpos.y = tmpos.y * 0.5f + 0.5f;
+//    tmpos.y = tmpos.y * 0.5f + 0.5f;
 
     vs_out.Front  = vec3( tmpos.x,  tmpos.y,  tmpos.z);
     vs_out.Back   = vec3( tmpos.x,  tmpos.y, -tmpos.z);
