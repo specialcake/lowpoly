@@ -45,8 +45,8 @@ public
     var shadowPipelineState: MTLRenderPipelineState! = nil
     
     // Texture
-    var textureLoader: MTKTextureLoader! = nil
-    var HeightMap: MTLTexture! = nil
+    var textureLoader: MTKTextureLoader!
+    var depthBufferDescriptor: MTLTextureDescriptor! = nil
     var NormalMap0: MTLTexture! = nil
     var NormalMap1: MTLTexture! = nil
     var pNormalMap: MTLTexture! = nil
@@ -143,6 +143,10 @@ public
         renderPassDescriptor.colorAttachments[0].clearColor = bleen
         renderPassDescriptor.colorAttachments[0].storeAction = .store
         
+        renderPassDescriptor.depthAttachment.texture = device.makeTexture(descriptor: depthBufferDescriptor)
+        renderPassDescriptor.depthAttachment.loadAction = .clear
+        renderPassDescriptor.depthAttachment.storeAction = .store
+        
         let commandBuffer = commandQueue.makeCommandBuffer()!
         let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
         
@@ -184,11 +188,12 @@ public
         renderEncoder.setFrontFacing(.counterClockwise)
         renderEncoder.setCullMode(.back)
         
-//        // 深度测试
-//        let depthStencilDescriptor = MTLDepthStencilDescriptor()
-//        depthStencilDescriptor.depthCompareFunction = .less
-//        let depthStencilState = device.makeDepthStencilState(descriptor: depthStencilDescriptor)
-//        renderEncoder.setDepthStencilState(depthStencilState)
+        // 深度测试
+        let depthStencilDescriptor = MTLDepthStencilDescriptor()
+        depthStencilDescriptor.depthCompareFunction = .less
+        depthStencilDescriptor.isDepthWriteEnabled = true
+        let depthStencilState = device.makeDepthStencilState(descriptor: depthStencilDescriptor)
+        renderEncoder.setDepthStencilState(depthStencilState)
         
         renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6, instanceCount: MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE)
         

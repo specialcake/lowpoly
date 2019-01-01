@@ -28,6 +28,7 @@ class ViewController: UIViewController {
     var instanceScenePipelineState: MTLRenderPipelineState! = nil
     
     var textureLoader: MTKTextureLoader! = nil
+    var depthBufferDescriptor: MTLTextureDescriptor! = nil
     
     // Camera
     // var cameraController: CameraController!
@@ -62,12 +63,15 @@ class ViewController: UIViewController {
         
         registerShaders()
         textureLoader = MTKTextureLoader(device: device)
+        depthBufferDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: Int(2 * self.view.bounds.size.width), height: Int(2 * self.view.bounds.size.height), mipmapped: false)
+        depthBufferDescriptor.usage = .renderTarget
         
         ResourceManager.camera = CameraController()
         projectionMatrix = float4x4(perspectiveProjectionFov: radian(45), aspectRatio: Float(self.view.bounds.size.width / self.view.bounds.size.height), nearZ: 0.01, farZ: 100)
         
         scene = Scene(device: device, initpos: float3(0), shader: scenePipelineState, textureLoader: textureLoader)
         scene.mapInstancePipelineState = instanceScenePipelineState
+        scene.depthBufferDescriptor = depthBufferDescriptor
         
         scene.generate_scene()
     }
@@ -132,6 +136,7 @@ class ViewController: UIViewController {
         pipelineStateDescriptor.vertexFunction = vertexProgram
         pipelineStateDescriptor.fragmentFunction = fragmentProgram
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm
+        pipelineStateDescriptor.depthAttachmentPixelFormat = .depth32Float
         
         let pipelineState = try! device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)
         return pipelineState
