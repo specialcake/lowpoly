@@ -15,6 +15,7 @@
 		909A886C21DB636900AE91DF /* down_highlight.png in Resources */ = {isa = PBXBuildFile; fileRef = 909A886421DB636900AE91DF /* down_highlight.png */; };
 		909A886D21DB636900AE91DF /* right_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 909A886521DB636900AE91DF /* right_normal.png */; };
 		909A886E21DB636900AE91DF /* up_highlight.png in Resources */ = {isa = PBXBuildFile; fileRef = 909A886621DB636900AE91DF /* up_highlight.png */; };
+		909A887021DBAB3800AE91DF /* ParallelLight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 909A886F21DBAB3800AE91DF /* ParallelLight.swift */; };
 		909DFF9921DA69B400241714 /* InstanceSceneShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 909DFF9821DA69B400241714 /* InstanceSceneShader.metal */; };
 		909DFF9B21DA8C5A00241714 /* MetalTexture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 909DFF9A21DA8C5A00241714 /* MetalTexture.swift */; };
 		909DFF9D21DAA2B000241714 /* ResourceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 909DFF9C21DAA2B000241714 /* ResourceManager.swift */; };
@@ -42,6 +43,7 @@
 		909A886421DB636900AE91DF /* down_highlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = down_highlight.png; sourceTree = "<group>"; };
 		909A886521DB636900AE91DF /* right_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = right_normal.png; sourceTree = "<group>"; };
 		909A886621DB636900AE91DF /* up_highlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = up_highlight.png; sourceTree = "<group>"; };
+		909A886F21DBAB3800AE91DF /* ParallelLight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParallelLight.swift; sourceTree = "<group>"; };
 		909DFF9821DA69B400241714 /* InstanceSceneShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = InstanceSceneShader.metal; sourceTree = "<group>"; };
 		909DFF9A21DA8C5A00241714 /* MetalTexture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetalTexture.swift; sourceTree = "<group>"; };
 		909DFF9C21DAA2B000241714 /* ResourceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ResourceManager.swift; path = Polyworld/ResourceManager.swift; sourceTree = SOURCE_ROOT; };
@@ -120,6 +122,7 @@
 				9031781321DA1E4A00D18E39 /* Shader */,
 				90B4C1A321CA5B98008ECBB3 /* Scene */,
 				90B4C1A121CA5A91008ECBB3 /* Config.swift */,
+				909A886F21DBAB3800AE91DF /* ParallelLight.swift */,
 				90B4BE1B21CA572A008ECBB3 /* AppDelegate.swift */,
 				90B4BE1D21CA572B008ECBB3 /* ViewController.swift */,
 				909DFF9C21DAA2B000241714 /* ResourceManager.swift */,
@@ -225,6 +228,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				90B4BE1E21CA572B008ECBB3 /* ViewController.swift in Sources */,
+				909A887021DBAB3800AE91DF /* ParallelLight.swift in Sources */,
 				909DFF9B21DA8C5A00241714 /* MetalTexture.swift in Sources */,
 				90B4BE2E21CA57D8008ECBB3 /* MathUtilities.swift in Sources */,
 				90B4C1A921CA6009008ECBB3 /* Scene.swift in Sources */,

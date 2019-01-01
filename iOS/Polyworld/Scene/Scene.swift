@@ -54,8 +54,8 @@ public
     // Buffer
     var vertexBuffer: MTLBuffer! = nil
     var instanceVertexBuffer: MTLBuffer! = nil
-    var vertexUniformBuffer: MTLBuffer! = nil
     var instanceHeightBuffer: MTLBuffer! = nil
+    var vertexUniformBuffer: MTLBuffer! = nil
     var fragmentUniformBuffer: MTLBuffer! = nil
     
     var vertices: [Float] = []
@@ -150,9 +150,9 @@ public
         let commandBuffer = commandQueue.makeCommandBuffer()!
         let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
         
-        let sizeOfUniformsBuffer = MemoryLayout<UInt32>.size + MemoryLayout<Float>.size * 31
-        let uniformsBuffer = device.makeBuffer(length: sizeOfUniformsBuffer, options: [])!
-        let bufferPointer = uniformsBuffer.contents()
+        var sizeOfUniformsBuffer = MemoryLayout<UInt32>.size + MemoryLayout<Float>.size * 31
+        vertexUniformBuffer = device.makeBuffer(length: sizeOfUniformsBuffer, options: [])!
+        var bufferPointer = vertexUniformBuffer.contents()
         
         var offset = 0
         var scene_size: UInt32 = UInt32(MESH_SIZE * CHUNK_SIZE)
@@ -179,10 +179,30 @@ public
         memcpy(bufferPointer + offset, &PVMatrix, MemoryLayout<Float>.size * float4x4.numberOfElements)
         offset += MemoryLayout<Float>.size * float4x4.numberOfElements
         
+        sizeOfUniformsBuffer = MemoryLayout<Float>.size * 5 + ParallelLight.size()
+        fragmentUniformBuffer = device.makeBuffer(length: sizeOfUniformsBuffer, options: [])!
+        bufferPointer = fragmentUniformBuffer.contents()
+        
+        var near_plane = NEAR_PLANE
+        var far_plane = FAR_PLANE
+        var viewPos = ResourceManager.camera.position
+        var dirLight = ParallelLight(direction: PARLIGHT_DIR, ambient: PARLIGHT_AMBIENT, diffuse: PARLIGHT_DIFFUSE, specular: PARLIGHT_SPECULAR)
+        
+        offset = 0
+        memcpy(bufferPointer + offset, &near_plane, MemoryLayout<Float>.size)
+        offset += MemoryLayout<Float>.size
+        memcpy(bufferPointer + offset, &far_plane, MemoryLayout<Float>.size)
+        offset += MemoryLayout<Float>.size
+        memcpy(bufferPointer + offset, &viewPos, MemoryLayout<Float>.size * 3)
+        offset += MemoryLayout<Float>.size * 3
+        memcpy(bufferPointer + offset, dirLight.raw(), ParallelLight.size())
+        
         renderEncoder.setRenderPipelineState(mapInstancePipelineState)
         renderEncoder.setVertexBuffer(instanceVertexBuffer, offset: 0, index: 0)
         renderEncoder.setVertexBuffer(instanceHeightBuffer, offset: 0, index: 1)
-        renderEncoder.setVertexBuffer(uniformsBuffer, offset: 0, index: 2)
+        renderEncoder.setVertexBuffer(vertexUniformBuffer, offset: 0, index: 2)
+        
+        renderEncoder.setFragmentBuffer(fragmentUniformBuffer, offset: 0, index: 0)
         
         // 面剔除
         renderEncoder.setFrontFacing(.counterClockwise)

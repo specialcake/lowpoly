@@ -18,6 +18,7 @@ struct InstanceSceneVertexOut {
     float4 position [[position]];
     float3 fragPosition;
     float3 color;
+    float3 normal;
     float4 fragPosLightSpace;
 };
 
@@ -33,8 +34,18 @@ struct InstanceSceneVertexUniform {
     //float4x4 lightSpaceMatrix;
 };
 
-struct InstanceSceneFragmentUniform {
+struct ParallelLight{
+    packed_float3 direction;
+    packed_float3 ambient;
+    packed_float3 diffuse;
+    packed_float3 specular;
+};
 
+struct InstanceSceneFragmentUniform {
+    float near_plane;
+    float far_plane;
+    packed_float3 viewPos;
+    ParallelLight dirLight;
 };
 
 vertex InstanceSceneVertexOut instanceSceneVertex(constant InstanceSceneVertexIn *vertices [[buffer(0)]],
@@ -52,7 +63,6 @@ vertex InstanceSceneVertexOut instanceSceneVertex(constant InstanceSceneVertexIn
     float deltax = idx - uniforms.scene_size / 2.0f, deltay = idy - uniforms.scene_size / 2.0f;
     float3 pos = float3(in.position.x + deltax, 0.0f, in.position.y + deltay) * uniforms.scalefactor;
     
-
     int index = 0;
     if (vid == 0) index = (idy + 1) * (uniforms.scene_size + 1) + idx + 1;
     else if (vid == 1 || vid == 4) index = idy * (uniforms.scene_size + 1) + idx + 1;
@@ -68,12 +78,47 @@ vertex InstanceSceneVertexOut instanceSceneVertex(constant InstanceSceneVertexIn
     if(out.fragPosition.y > 1.0f) out.color = uniforms.rock_color;
     else if(out.fragPosition.y > 0.3f) out.color = uniforms.land_color;
     else out.color = uniforms.lower_color;
+    
+    // Calculate Normal
+    float3 a, b, c;
+    if (vid <= 2)
+    {
+        float ha = height[(idy + 1) * (uniforms.scene_size + 1) + idx + 1] * 10.0f;
+        float hb = height[idy * (uniforms.scene_size + 1) + idx + 1] * 10.0f;
+        float hc = height[(idy + 1) * (uniforms.scene_size + 1) + idx] * 10.0f;
+        a = float3(in.position.x + 1.0, 0.0f, in.position.y + 1.0) * uniforms.scalefactor + float3(0, ha, 0);
+        b = float3(in.position.x + 1.0, 0.0f, in.position.y + 0.0) * uniforms.scalefactor + float3(0, hb, 0);
+        c = float3(in.position.x + 0.0, 0.0f, in.position.y + 1.0) * uniforms.scalefactor + float3(0, hc, 0);
+    }
+    else
+    {
+        float ha = height[(idy + 1) * (uniforms.scene_size + 1) + idx] * 10.0f;
+        float hb = height[idy * (uniforms.scene_size + 1) + idx + 1] * 10.0f;
+        float hc = height[idy * (uniforms.scene_size + 1) + idx] * 10.0f;
+        a = float3(in.position.x + 0.0, 0.0f, in.position.y + 1.0) * uniforms.scalefactor + float3(0, ha, 0);
+        b = float3(in.position.x + 1.0, 0.0f, in.position.y + 0.0) * uniforms.scalefactor + float3(0, hb, 0);
+        c = float3(in.position.x + 0.0, 0.0f, in.position.y + 0.0) * uniforms.scalefactor + float3(0, hc, 0);
+    }
+    out.normal = -normalize(cross(a - b, c - b));
     return out;
 }
 
 fragment float4 instanceSceneFragment(InstanceSceneVertexOut vert [[stage_in]],
-                              constant InstanceSceneFragmentUniform &uniforms [[buffer(1)]])
+                              constant InstanceSceneFragmentUniform &uniforms [[buffer(0)]])
 {
-    //return float4(vert.fragPosition.xyz / 20 + 0.5, 1.0);
-    return float4(vert.color, 1.0);
+    float visibility = 1.0;
+    
+    // float3 viewDir = normalize(uniforms.viewPos - vert.fragPosition);
+    float3 lightDir = normalize(-uniforms.dirLight.direction);
+    // diffuse shading
+    float diff = max(dot(vert.normal, lightDir), 0.0);
+    // specular shading
+    // combine results
+    float3 ambient = uniforms.dirLight.ambient;
+    float3 diffuse = uniforms.dirLight.diffuse * diff;
+    
+    float3 factory = ambient + diffuse * visibility;
+    float3 aFragColor = vert.color * factory;
+    
+    return float4(aFragColor, 1.0);
 }
