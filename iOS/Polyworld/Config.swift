@@ -9,9 +9,11 @@
 import Foundation
 import simd
 
+// Screen
 let NEAR_PLANE: Float = 0.1
 let FAR_PLANE: Float = 150.0
 
+// Scene
 let SCENE_LENGTH: Float = 53.0
 
 let CHUNK_SIZE = 3 // Scene含有的Chunk个数
@@ -22,6 +24,7 @@ let MESH_SIZE = 21 // Chunk含有的Mesh个数
 let MESH_RADIUS = 10
 let MESH_LENGTH = CHUNK_LENGTH / Float(MESH_SIZE)
 
+let WATER_COLOR = float3(0.106, 0.863, 1.0)
 let LOWER_COLOR = float3(0.75686, 1.0, 0.91373)
 let LAND_COLOR = float3(0.48627, 0.97647, 0.65882)
 let ROCK_COLOR = float3(0.522, 0.522, 0.522)
@@ -36,6 +39,12 @@ enum Direction {
     MOVE_ZNEG
 }
 
+// Water
+let NUMOFWATER = 4
+let SEA_LEVEL: Float = 0.50
+let CONSTQ: Float = 0.5
+
+// Light
 let PARLIGHT_DIR = float3(27.0, -13.0, -27.0)
 let PARLIGHT_POSITION = float3(-27.0, 13.0, 27.0)
 let PARLIGHT_AMBIENT = float3(0.3)

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9060E66C21DBD5D5004BFF6F /* WaterShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 9060E66B21DBD5D5004BFF6F /* WaterShader.metal */; };
+		9060E66E21DBD7A3004BFF6F /* Water.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9060E66D21DBD7A3004BFF6F /* Water.swift */; };
 		909A886721DB636900AE91DF /* up_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 909A885F21DB636900AE91DF /* up_normal.png */; };
 		909A886821DB636900AE91DF /* down_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 909A886021DB636900AE91DF /* down_normal.png */; };
 		909A886921DB636900AE91DF /* right_highlight.png in Resources */ = {isa = PBXBuildFile; fileRef = 909A886121DB636900AE91DF /* right_highlight.png */; };
@@ -35,6 +37,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9060E66B21DBD5D5004BFF6F /* WaterShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = WaterShader.metal; sourceTree = "<group>"; };
+		9060E66D21DBD7A3004BFF6F /* Water.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Water.swift; sourceTree = "<group>"; };
 		909A885F21DB636900AE91DF /* up_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = up_normal.png; sourceTree = "<group>"; };
 		909A886021DB636900AE91DF /* down_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = down_normal.png; sourceTree = "<group>"; };
 		909A886121DB636900AE91DF /* right_highlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = right_highlight.png; sourceTree = "<group>"; };
@@ -80,6 +84,7 @@
 			children = (
 				90B4C1AC21CA786E008ECBB3 /* SceneShader.metal */,
 				909DFF9821DA69B400241714 /* InstanceSceneShader.metal */,
+				9060E66B21DBD5D5004BFF6F /* WaterShader.metal */,
 			);
 			path = Shader;
 			sourceTree = "<group>";
@@ -144,6 +149,7 @@
 				90B4C1A421CA5BAB008ECBB3 /* Submesh.swift */,
 				90B4C1A621CA5CAE008ECBB3 /* Chunk.swift */,
 				90B4C1A821CA6009008ECBB3 /* Scene.swift */,
+				9060E66D21DBD7A3004BFF6F /* Water.swift */,
 			);
 			path = Scene;
 			sourceTree = "<group>";
@@ -236,8 +242,10 @@
 				90B4C1A721CA5CAE008ECBB3 /* Chunk.swift in Sources */,
 				90B4C1A221CA5A91008ECBB3 /* Config.swift in Sources */,
 				90B4C1AD21CA786E008ECBB3 /* SceneShader.metal in Sources */,
+				9060E66E21DBD7A3004BFF6F /* Water.swift in Sources */,
 				90B4BE3021CA57F0008ECBB3 /* CameraController.swift in Sources */,
 				90B4BE1C21CA572A008ECBB3 /* AppDelegate.swift in Sources */,
+				9060E66C21DBD5D5004BFF6F /* WaterShader.metal in Sources */,
 				909DFF9D21DAA2B000241714 /* ResourceManager.swift in Sources */,
 				909DFF9921DA69B400241714 /* InstanceSceneShader.metal in Sources */,
 				90B4C1A521CA5BAB008ECBB3 /* Submesh.swift in Sources */,

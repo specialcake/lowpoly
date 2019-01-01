@@ -26,6 +26,7 @@ class ViewController: UIViewController {
     // PipelineState
     var scenePipelineState: MTLRenderPipelineState! = nil
     var instanceScenePipelineState: MTLRenderPipelineState! = nil
+    var waterPipelineState: MTLRenderPipelineState! = nil
     
     var textureLoader: MTKTextureLoader! = nil
     var depthBufferDescriptor: MTLTextureDescriptor! = nil
@@ -71,6 +72,7 @@ class ViewController: UIViewController {
         
         scene = Scene(device: device, initpos: float3(0), shader: scenePipelineState, textureLoader: textureLoader)
         scene.mapInstancePipelineState = instanceScenePipelineState
+        scene.waterPipelineState = waterPipelineState
         scene.depthBufferDescriptor = depthBufferDescriptor
         
         scene.generate_scene()
@@ -107,6 +109,7 @@ class ViewController: UIViewController {
     func gameloop(timeSinceLastUpdate: CFTimeInterval) {
         
         scene.updateChunks()
+        scene.timeInterval += timeSinceLastUpdate
         
         handleButtonAction()
         
@@ -123,11 +126,13 @@ class ViewController: UIViewController {
     }
     
     func registerShaders() {
-        scenePipelineState = buildShaders(vertexFunction: "sceneVertex", fragmentFunction: "sceneFragment")
-        instanceScenePipelineState = buildShaders(vertexFunction: "instanceSceneVertex", fragmentFunction: "instanceSceneFragment")
+        scenePipelineState = buildShaders(vertexFunction: "sceneVertex", fragmentFunction: "sceneFragment", blend: false)
+        instanceScenePipelineState = buildShaders(vertexFunction: "instanceSceneVertex", fragmentFunction: "instanceSceneFragment", blend: false)
+        waterPipelineState = buildShaders(vertexFunction: "waterVertex", fragmentFunction: "waterFragment", blend: true)
+        
     }
     
-    func buildShaders(vertexFunction: String, fragmentFunction: String) -> MTLRenderPipelineState {
+    func buildShaders(vertexFunction: String, fragmentFunction: String, blend: Bool) -> MTLRenderPipelineState {
         let defaultLibrary = device.makeDefaultLibrary()!
         let vertexProgram = defaultLibrary.makeFunction(name: vertexFunction)
         let fragmentProgram = defaultLibrary.makeFunction(name: fragmentFunction)
@@ -137,6 +142,13 @@ class ViewController: UIViewController {
         pipelineStateDescriptor.fragmentFunction = fragmentProgram
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm
         pipelineStateDescriptor.depthAttachmentPixelFormat = .depth32Float
+        if blend == true {
+            pipelineStateDescriptor.colorAttachments[0].isBlendingEnabled = true
+            pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = .sourceAlpha
+            pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = .oneMinusSourceAlpha
+            pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = .one
+            pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .oneMinusSourceAlpha
+        }
         
         let pipelineState = try! device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)
         return pipelineState

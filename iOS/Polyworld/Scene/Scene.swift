@@ -59,12 +59,16 @@ public
     var fragmentUniformBuffer: MTLBuffer! = nil
     
     var vertices: [Float] = []
+    var water: Water
+    var timeInterval: CFTimeInterval
     
     init(device: MTLDevice, initpos: float3, shader: MTLRenderPipelineState, textureLoader: MTKTextureLoader) {
         self.device = device
-        offset = initpos
-        mapPipelineState = shader
+        self.offset = initpos
+        self.mapPipelineState = shader
         self.textureLoader = textureLoader
+        self.water = Water()
+        self.timeInterval = 0
         
         for _ in 0 ..< 3 {
             let c = Chunk(x: 0, z: 0)
@@ -186,7 +190,7 @@ public
         var near_plane = NEAR_PLANE
         var far_plane = FAR_PLANE
         var viewPos = ResourceManager.camera.position
-        var dirLight = ParallelLight(direction: PARLIGHT_DIR, ambient: PARLIGHT_AMBIENT, diffuse: PARLIGHT_DIFFUSE, specular: PARLIGHT_SPECULAR)
+        let dirLight = ParallelLight(direction: PARLIGHT_DIR, ambient: PARLIGHT_AMBIENT, diffuse: PARLIGHT_DIFFUSE, specular: PARLIGHT_SPECULAR)
         
         offset = 0
         memcpy(bufferPointer + offset, &near_plane, MemoryLayout<Float>.size)
@@ -201,7 +205,6 @@ public
         renderEncoder.setVertexBuffer(instanceVertexBuffer, offset: 0, index: 0)
         renderEncoder.setVertexBuffer(instanceHeightBuffer, offset: 0, index: 1)
         renderEncoder.setVertexBuffer(vertexUniformBuffer, offset: 0, index: 2)
-        
         renderEncoder.setFragmentBuffer(fragmentUniformBuffer, offset: 0, index: 0)
         
         // 面剔除
@@ -214,6 +217,49 @@ public
         depthStencilDescriptor.isDepthWriteEnabled = true
         let depthStencilState = device.makeDepthStencilState(descriptor: depthStencilDescriptor)
         renderEncoder.setDepthStencilState(depthStencilState)
+        
+        renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6, instanceCount: MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE)
+        
+        // Water
+        sizeOfUniformsBuffer = MemoryLayout<Float>.size * 48
+        vertexUniformBuffer = device.makeBuffer(length: sizeOfUniformsBuffer, options: [])!
+        bufferPointer = vertexUniformBuffer.contents()
+        
+        var water_height = SEA_LEVEL
+        var timer = Float(timeInterval)
+        
+        offset = 0
+        memcpy(bufferPointer + offset, &scene_size, MemoryLayout<UInt32>.size)
+        offset += MemoryLayout<UInt32>.size
+        memcpy(bufferPointer + offset, &scalefactor, MemoryLayout<Float>.size)
+        offset += MemoryLayout<Float>.size
+        memcpy(bufferPointer + offset, &scene_offset, MemoryLayout<Float>.size * 3)
+        offset += MemoryLayout<Float>.size * 3
+        memcpy(bufferPointer + offset, &water_height, MemoryLayout<Float>.size)
+        offset += MemoryLayout<Float>.size
+        memcpy(bufferPointer + offset, &timer, MemoryLayout<Float>.size)
+        offset += MemoryLayout<Float>.size * 2
+        memcpy(bufferPointer + offset, &PVMatrix, MemoryLayout<Float>.size * float4x4.numberOfElements)
+        offset += MemoryLayout<Float>.size * float4x4.numberOfElements
+        memcpy(bufferPointer + offset, water.raw(), MemoryLayout<Float>.size * 24)
+        
+        sizeOfUniformsBuffer = MemoryLayout<Float>.size * 18
+        fragmentUniformBuffer = device.makeBuffer(length: sizeOfUniformsBuffer, options: [])!
+        bufferPointer = fragmentUniformBuffer.contents()
+        
+        var water_color = WATER_COLOR
+        
+        offset = 0
+        memcpy(bufferPointer + offset, &viewPos, MemoryLayout<Float>.size * 3)
+        offset += MemoryLayout<Float>.size * 3
+        memcpy(bufferPointer + offset, &water_color, MemoryLayout<Float>.size * 3)
+        offset += MemoryLayout<Float>.size * 3
+        memcpy(bufferPointer + offset, dirLight.raw(), ParallelLight.size())
+        
+        renderEncoder.setRenderPipelineState(waterPipelineState)
+        renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
+        renderEncoder.setVertexBuffer(vertexUniformBuffer, offset: 0, index: 1)
+        renderEncoder.setFragmentBuffer(fragmentUniformBuffer, offset: 0, index: 0)
         
         renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6, instanceCount: MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE)
         

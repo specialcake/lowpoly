@@ -9,6 +9,13 @@
 #include <metal_stdlib>
 using namespace metal;
 
+struct ParallelLight{
+    packed_float3 direction;
+    packed_float3 ambient;
+    packed_float3 diffuse;
+    packed_float3 specular;
+};
+
 struct InstanceSceneVertexIn {
     packed_float2 position;
     float triangleType;
@@ -32,13 +39,6 @@ struct InstanceSceneVertexUniform {
     packed_float3 rock_color; // 15 16 empty
     float4x4 PVMatrix;
     //float4x4 lightSpaceMatrix;
-};
-
-struct ParallelLight{
-    packed_float3 direction;
-    packed_float3 ambient;
-    packed_float3 diffuse;
-    packed_float3 specular;
 };
 
 struct InstanceSceneFragmentUniform {
