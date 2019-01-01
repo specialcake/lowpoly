@@ -30,8 +30,9 @@ class ViewController: UIViewController {
     var textureLoader: MTKTextureLoader! = nil
     
     // Camera
-    var cameraController: CameraController!
+    // var cameraController: CameraController!
     var projectionMatrix: float4x4!
+    var trackedTouch: UITouch?
     
     var scene : Scene!
     
@@ -55,7 +56,7 @@ class ViewController: UIViewController {
         registerShaders()
         textureLoader = MTKTextureLoader(device: device)
         
-        cameraController = CameraController()
+        ResourceManager.camera = CameraController()
         projectionMatrix = float4x4(perspectiveProjectionFov: radian(45), aspectRatio: Float(self.view.bounds.size.width / self.view.bounds.size.height), nearZ: 0.01, farZ: 100)
         
         scene = Scene(device: device, initpos: float3(0), shader: scenePipelineState, textureLoader: textureLoader)
@@ -104,7 +105,7 @@ class ViewController: UIViewController {
     func render() {
         guard let drawable = metalLayer?.nextDrawable() else { return }
         
-        scene.draw(commandQueue: commandQueue, drawable: drawable, viewMatrix: cameraController.viewMatrix, projectionMatrix: &projectionMatrix ,clearColor: nil)
+        scene.draw(commandQueue: commandQueue, drawable: drawable, viewMatrix: ResourceManager.camera.viewMatrix, projectionMatrix: &projectionMatrix ,clearColor: nil)
         
     }
     
@@ -126,6 +127,40 @@ class ViewController: UIViewController {
         let pipelineState = try! device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)
         return pipelineState
     }
-
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if trackedTouch == nil {
+            if let newlyTrackedTouch = touches.first {
+                trackedTouch = newlyTrackedTouch
+                let point = newlyTrackedTouch.location(in: view)
+                ResourceManager.camera.startedInteraction(at: point)
+            }
+        }
+    }
+    
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if let previouslyTrackedTouch = trackedTouch {
+            if touches.contains(previouslyTrackedTouch) {
+                let point = previouslyTrackedTouch.location(in: view)
+                ResourceManager.camera.dragged(to: point)
+            }
+        }
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if let previouslyTrackedTouch = trackedTouch {
+            if touches.contains(previouslyTrackedTouch) {
+                self.trackedTouch = nil
+            }
+        }
+    }
+    
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if let previouslyTrackedTouch = trackedTouch {
+            if touches.contains(previouslyTrackedTouch) {
+                self.trackedTouch = nil
+            }
+        }
+    }
 }
 

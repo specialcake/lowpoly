@@ -9,6 +9,6 @@
 import Foundation
 
 class ResourceManager {
-    static var camera :CameraController!
+    static var camera: CameraController!
     
 }

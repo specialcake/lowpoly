@@ -11,6 +11,18 @@ import Metal
 import MetalKit
 import simd
 
+struct InstanceSceneVertexUniform {
+    var scene_size: UInt32
+    var scalefactor: Float
+    var scene_offset: float3
+    
+    var lower_color: float3
+    var land_color: float3
+    var rock_color: float3
+    var PVMatrix: float4x4
+    //var lightSpaceMatrix: float4x4
+}
+
 class Scene {
 public
     let device: MTLDevice
@@ -21,8 +33,8 @@ public
     var tmp_Chunk = [Chunk]()
     
     var offset: float3!
-    var chunk_offset = [[float3]]()
-    var mesh_offset = [[float3]]()
+    var chunk_offset = [[float3]](repeating: [float3](repeating: float3(0,0,0), count: CHUNK_SIZE), count: CHUNK_SIZE)
+    var mesh_offset = [[float3]](repeating: [float3](repeating: float3(0,0,0), count: MESH_SIZE + 1), count: MESH_SIZE + 1)
     
     var generator: Noise!
     
@@ -42,6 +54,8 @@ public
     // Buffer
     var vertexBuffer: MTLBuffer! = nil
     var instanceVertexBuffer: MTLBuffer! = nil
+    var vertexUniformBuffer: MTLBuffer! = nil
+    var fragmentUniformBuffer: MTLBuffer! = nil
     
     var vertices: [Float] = []
     
@@ -106,7 +120,7 @@ public
         
         vertexBuffer = device.makeBuffer(bytes: vertices, length: MemoryLayout<Float>.size * vertices.count, options:[])
         
-        let instance_vertices = [
+        let instance_vertices: [Float] = [
             1.0, 1.0, -1.0,
             1.0, 0.0, -1.0,
             0.0, 1.0, -1.0,
@@ -121,7 +135,7 @@ public
     
     func draw(commandQueue: MTLCommandQueue, drawable: CAMetalDrawable, viewMatrix: float4x4, projectionMatrix: inout float4x4, clearColor: MTLClearColor?) {
         
-        HeightMap = Generate_HeightMap()
+        //HeightMap = Generate_HeightMap()
         
         let bleen = MTLClearColor(red: 0.5, green: 0.5, blue: 0.5, alpha: 1)
         let renderPassDescriptor = MTLRenderPassDescriptor()
@@ -133,9 +147,38 @@ public
         let commandBuffer = commandQueue.makeCommandBuffer()!
         let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
         
+        let sizeOfUniformsBuffer = MemoryLayout<UInt32>.size + MemoryLayout<Float>.size * 31
+        let uniformsBuffer = device.makeBuffer(length: sizeOfUniformsBuffer, options: [])!
+        let bufferPointer = uniformsBuffer.contents()
+        
+        var offset = 0
+        var scene_size: UInt32 = UInt32(MESH_SIZE * CHUNK_SIZE)
+        var scalefactor: Float = MESH_LENGTH
+        var scene_offset: float3 = self.offset
+        
+        var lower_color: float3 = LOWER_COLOR
+        var land_color: float3 = LAND_COLOR
+        var rock_color: float3 = ROCK_COLOR
+        var PVMatrix: float4x4 = projectionMatrix * viewMatrix
+        //var lightSpaceMatrix: float4x4
+        memcpy(bufferPointer + offset, &scene_size, MemoryLayout<UInt32>.size)
+        offset += MemoryLayout<UInt32>.size
+        memcpy(bufferPointer + offset, &scalefactor, MemoryLayout<Float>.size)
+        offset += MemoryLayout<Float>.size
+        memcpy(bufferPointer + offset, &scene_offset, MemoryLayout<Float>.size * 3)
+        offset += MemoryLayout<Float>.size * 3
+        memcpy(bufferPointer + offset, &lower_color, MemoryLayout<Float>.size * 3)
+        offset += MemoryLayout<Float>.size * 3
+        memcpy(bufferPointer + offset, &land_color, MemoryLayout<Float>.size * 3)
+        offset += MemoryLayout<Float>.size * 3
+        memcpy(bufferPointer + offset, &rock_color, MemoryLayout<Float>.size * 3)
+        offset += MemoryLayout<Float>.size * 5
+        memcpy(bufferPointer + offset, &PVMatrix, MemoryLayout<Float>.size * float4x4.numberOfElements)
+        offset += MemoryLayout<Float>.size * float4x4.numberOfElements
+        
         renderEncoder.setRenderPipelineState(mapInstancePipelineState)
         renderEncoder.setVertexBuffer(instanceVertexBuffer, offset: 0, index: 0)
-        // renderEncoder.setVertexBuffer(uniform_buffer, offset: 0, index: 1)
+        renderEncoder.setVertexBuffer(uniformsBuffer, offset: 0, index: 1)
         
         // 面剔除
         renderEncoder.setFrontFacing(.counterClockwise)
@@ -174,13 +217,13 @@ public
         var Meshz: Int = 0
         GetLocationbyCamera(&Chunkx, &Chunkz, &Meshx, &Meshz)
         
-        if (Chunkx == cur_Chunk.pos_x && Chunkz == cur_Chunk.pos_z){
+        if (Chunkx == cur_Chunk.pos_x && Chunkz == cur_Chunk.pos_z) {
             cur_Submesh = cur_Chunk.submesh[Meshx][Meshz]
             return
         }
         debugFlag = true
         var toUpdate = [[Chunk]]()
-        if(Chunkx > cur_Chunk.pos_x) {
+        if (Chunkx > cur_Chunk.pos_x) {
             offset += float3(CHUNK_LENGTH, 0.0, 0.0)
             var row = [Chunk]()
             for i in 0 ..< CHUNK_SIZE {
@@ -196,7 +239,7 @@ public
             toUpdate.append(row)
             dir = .MOVE_XPOS
         }
-        else if(Chunkx < cur_Chunk.pos_x) {
+        else if (Chunkx < cur_Chunk.pos_x) {
             offset -= float3(CHUNK_LENGTH, 0.0, 0.0)
             var row = [Chunk]()
             for i in 0 ..< CHUNK_SIZE {
@@ -212,7 +255,7 @@ public
             toUpdate.append(row)
             dir = .MOVE_XNEG
         }
-        if(Chunkz > cur_Chunk.pos_z){
+        if (Chunkz > cur_Chunk.pos_z) {
             offset += float3(0.0, 0.0, CHUNK_LENGTH)
             var row = [Chunk]()
             for i in 0 ..< CHUNK_SIZE {
@@ -228,7 +271,7 @@ public
             toUpdate.append(row)
             dir = .MOVE_ZPOS
         }
-        else if(Chunkz < cur_Chunk.pos_z){
+        else if (Chunkz < cur_Chunk.pos_z) {
             offset -= float3(0.0, 0.0, CHUNK_LENGTH)
             var row = [Chunk]()
             for i in 0 ..< CHUNK_SIZE {
@@ -267,7 +310,30 @@ public
     }
     
     func updateNeighbor(_ x: Int, _ y: Int) {
-        
+        if (x > 0) {
+            chunk[x][y].xNeg = chunk[x - 1][y]
+        }
+        else {
+            chunk[x][y].xNeg = nil
+        }
+        if (y > 0) {
+            chunk[x][y].zNeg = chunk[x][y - 1]
+        }
+        else {
+            chunk[x][y].zNeg = nil
+        }
+        if (x < CHUNK_SIZE - 1) {
+            chunk[x][y].xPos = chunk[x + 1][y]
+        }
+        else {
+            chunk[x][y].xPos = nil
+        }
+        if (y < CHUNK_SIZE - 1) {
+            chunk[x][y].zPos = chunk[x][y + 1]
+        }
+        else {
+            chunk[x][y].zPos = nil
+        }
     }
     
     func GetLocationbyCamera(_ cx: inout Int , _ cz: inout Int, _ mx: inout Int, _ mz: inout Int) {

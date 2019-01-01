@@ -13,7 +13,7 @@ class Chunk {
 public
     var pos_x, pos_z: Int
     var submesh = [[Submesh]]()
-    var height = [[Float]]()
+    var height = [[Float]](repeating: [Float](repeating: 0, count: MESH_SIZE + 1), count: MESH_SIZE + 1)
     var normal = [[[float3]]]()
     var pnormal = [[float3]]()
     var parent: Scene!

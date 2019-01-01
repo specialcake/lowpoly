@@ -10,7 +10,7 @@
 using namespace metal;
 
 struct InstanceSceneVertexIn {
-    float2 position;
+    packed_float2 position;
     float triangleType;
 };
 
@@ -28,9 +28,9 @@ struct InstanceSceneVertexUniform {
     
     packed_float3 lower_color;
     packed_float3 land_color;
-    packed_float3 rock_color;
+    packed_float3 rock_color; // 15 16 empty
     float4x4 PVMatrix;
-    float4x4 lightSpaceMatrix;
+    //float4x4 lightSpaceMatrix;
 };
 
 struct InstanceSceneFragmentUniform {
@@ -51,13 +51,14 @@ vertex InstanceSceneVertexOut instanceSceneVertex(constant InstanceSceneVertexIn
     float deltax = idx - uniforms.scene_size / 2.0f, deltay = idy - uniforms.scene_size / 2.0f;
     float3 pos = float3(in.position.x + deltax, 0.0f, in.position.y + deltay) * uniforms.scalefactor;
     
-    pos.y = HeightMap.sample(sampler2D,  float2((idy + in.position.y + 0.5f) / (uniforms.scene_size + 1.0f), (idx + in.position.x + 0.5f) / (uniforms.scene_size + 1.0f))).r;
+    //pos.y = HeightMap.sample(sampler2D,  float2((idy + in.position.y + 0.5f) / (uniforms.scene_size + 1.0f), (idx + in.position.x + 0.5f) / (uniforms.scene_size + 1.0f))).r;
+    pos.y = 0;
     
     float height = pos.y = pos.y * 10.0f;
     
     out.position = uniforms.PVMatrix * float4(pos + uniforms.scene_offset, 1.0f);
     out.fragPosition = pos + uniforms.scene_offset;
-    out.fragPosLightSpace = uniforms.lightSpaceMatrix * float4(out.fragPosition, 1.0);
+    //out.fragPosLightSpace = uniforms.lightSpaceMatrix * float4(out.fragPosition, 1.0);
     if(out.fragPosition.y > 1.0f) out.color = uniforms.rock_color;
     else if(out.fragPosition.y > 0.3f) out.color = uniforms.land_color;
     else out.color = uniforms.lower_color;
@@ -67,5 +68,6 @@ vertex InstanceSceneVertexOut instanceSceneVertex(constant InstanceSceneVertexIn
 fragment float4 instanceSceneFragment(InstanceSceneVertexOut vert [[stage_in]],
                               constant InstanceSceneFragmentUniform &uniforms [[buffer(1)]])
 {
-    return float4(vert.color, 1.0);
+    return float4(vert.fragPosition.xyz / 20 + 0.5, 1.0);
+    //return float4(vert.color, 1.0);
 }

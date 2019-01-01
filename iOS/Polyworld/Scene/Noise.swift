@@ -47,8 +47,8 @@ public
     
 private
     var size: Int
-    var G = [float2]()
-    var P = [Int]()
+    var G = [float2](repeating: float2(0,0), count: 30)
+    var P = [Int](repeating: 0, count: 30)
     
     func processer(p: float2) -> float2 {
         
