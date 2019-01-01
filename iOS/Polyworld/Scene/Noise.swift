@@ -143,11 +143,7 @@ private
     func perlin_noise(p: float2) -> Float {
         let pi = floor(p)
         let pf = p - pi
-        //  var w = (6.0 * pf * pf - 15.0 * pf + 10.0)
-        var w = 6 * pf
-        w -= float2(15,15)
-        w *= pf
-        w += float2(10,10)
+        var w = pf * pf * pf * (6.0 * pf * pf - 15.0 * pf + float2(10.0,10.0))
         
         //    GLfloat vala = glm::dot(get_vector(pi + float2(0.0f, 0.0f)), pf - float2(0.0f, 0.0f));
         //    GLfloat valb = glm::dot(get_vector(pi + float2(1.0f, 0.0f)), pf - float2(1.0f, 0.0f));

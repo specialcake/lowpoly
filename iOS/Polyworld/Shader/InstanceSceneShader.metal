@@ -38,9 +38,10 @@ struct InstanceSceneFragmentUniform {
 };
 
 vertex InstanceSceneVertexOut instanceSceneVertex(constant InstanceSceneVertexIn *vertices [[buffer(0)]],
-                             constant InstanceSceneVertexUniform &uniforms [[buffer(1)]],
-                             texture2d<float>  HeightMap [[texture(0)]],
-                             sampler           sampler2D [[sampler(0)]],
+                             constant float *height [[buffer(1)]],
+                             constant InstanceSceneVertexUniform &uniforms [[buffer(2)]],
+                             //texture2d<float>  HeightMap [[texture(0)]],
+                             //sampler           sampler2D [[sampler(0)]],
                              uint vid [[vertex_id]],
                              uint iid [[instance_id]])
 {
@@ -51,10 +52,15 @@ vertex InstanceSceneVertexOut instanceSceneVertex(constant InstanceSceneVertexIn
     float deltax = idx - uniforms.scene_size / 2.0f, deltay = idy - uniforms.scene_size / 2.0f;
     float3 pos = float3(in.position.x + deltax, 0.0f, in.position.y + deltay) * uniforms.scalefactor;
     
-    //pos.y = HeightMap.sample(sampler2D,  float2((idy + in.position.y + 0.5f) / (uniforms.scene_size + 1.0f), (idx + in.position.x + 0.5f) / (uniforms.scene_size + 1.0f))).r;
-    pos.y = 0;
+
+    int index = 0;
+    if (vid == 0) index = (idy + 1) * (uniforms.scene_size + 1) + idx + 1;
+    else if (vid == 1 || vid == 4) index = idy * (uniforms.scene_size + 1) + idx + 1;
+    else if (vid == 2 || vid == 3) index = (idy + 1) * (uniforms.scene_size + 1) + idx;
+    else index = idy * (uniforms.scene_size + 1) + idx;
+    pos.y = height[index];
     
-    float height = pos.y = pos.y * 10.0f;
+    pos.y = pos.y * 10.0f;
     
     out.position = uniforms.PVMatrix * float4(pos + uniforms.scene_offset, 1.0f);
     out.fragPosition = pos + uniforms.scene_offset;
@@ -68,6 +74,6 @@ vertex InstanceSceneVertexOut instanceSceneVertex(constant InstanceSceneVertexIn
 fragment float4 instanceSceneFragment(InstanceSceneVertexOut vert [[stage_in]],
                               constant InstanceSceneFragmentUniform &uniforms [[buffer(1)]])
 {
-    return float4(vert.fragPosition.xyz / 20 + 0.5, 1.0);
-    //return float4(vert.color, 1.0);
+    //return float4(vert.fragPosition.xyz / 20 + 0.5, 1.0);
+    return float4(vert.color, 1.0);
 }

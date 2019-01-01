@@ -55,6 +55,7 @@ public
     var vertexBuffer: MTLBuffer! = nil
     var instanceVertexBuffer: MTLBuffer! = nil
     var vertexUniformBuffer: MTLBuffer! = nil
+    var instanceHeightBuffer: MTLBuffer! = nil
     var fragmentUniformBuffer: MTLBuffer! = nil
     
     var vertices: [Float] = []
@@ -135,9 +136,7 @@ public
     
     func draw(commandQueue: MTLCommandQueue, drawable: CAMetalDrawable, viewMatrix: float4x4, projectionMatrix: inout float4x4, clearColor: MTLClearColor?) {
         
-        //HeightMap = Generate_HeightMap()
-        
-        let bleen = MTLClearColor(red: 0.5, green: 0.5, blue: 0.5, alpha: 1)
+        let bleen = MTLClearColor(red: 1, green: 1, blue: 1, alpha: 1)
         let renderPassDescriptor = MTLRenderPassDescriptor()
         renderPassDescriptor.colorAttachments[0].texture = drawable.texture
         renderPassDescriptor.colorAttachments[0].loadAction = .clear
@@ -178,11 +177,18 @@ public
         
         renderEncoder.setRenderPipelineState(mapInstancePipelineState)
         renderEncoder.setVertexBuffer(instanceVertexBuffer, offset: 0, index: 0)
-        renderEncoder.setVertexBuffer(uniformsBuffer, offset: 0, index: 1)
+        renderEncoder.setVertexBuffer(instanceHeightBuffer, offset: 0, index: 1)
+        renderEncoder.setVertexBuffer(uniformsBuffer, offset: 0, index: 2)
         
         // 面剔除
         renderEncoder.setFrontFacing(.counterClockwise)
         renderEncoder.setCullMode(.back)
+        
+//        // 深度测试
+//        let depthStencilDescriptor = MTLDepthStencilDescriptor()
+//        depthStencilDescriptor.depthCompareFunction = .less
+//        let depthStencilState = device.makeDepthStencilState(descriptor: depthStencilDescriptor)
+//        renderEncoder.setDepthStencilState(depthStencilState)
         
         renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6, instanceCount: MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE)
         
@@ -198,6 +204,8 @@ public
                 chunk[i][j].generate_height()
             }
         }
+        
+        Generate_HeightBuffer()
         
         /* water and normal
         for i in 0 ..< CHUNK_SIZE {
@@ -374,32 +382,35 @@ public
         }
     }
     
-    func Generate_HeightMap() -> MTLTexture {
+    func Generate_HeightBuffer() {
         var p: Int = 0
         var limit = CHUNK_SIZE * CHUNK_SIZE * MESH_SIZE * MESH_SIZE + CHUNK_SIZE * MESH_SIZE * 2 + 1
         var len = CHUNK_SIZE * MESH_SIZE + 1
-        var data = [[Float]]()
+        var data = [Float]()
         for i in 0 ..< CHUNK_SIZE {
             for j in 0 ..< MESH_SIZE {
                 for k in 0 ..< CHUNK_SIZE {
-                    data.append(chunk[i][k].height[j])
+                    for m in 0 ..< MESH_SIZE {
+                        data.append(chunk[i][k].height[j][m])
+                    }
                 }
+                data.append(chunk[i][CHUNK_SIZE - 1].height[j][MESH_SIZE])
             }
         }
-        
-        for i in 0 ..< CHUNK_SIZE {
-            data.append(chunk[CHUNK_SIZE - 1][i].height[MESH_SIZE])
+
+        for k in 0 ..< CHUNK_SIZE {
+            for m in 0 ..< MESH_SIZE {
+                data.append(chunk[CHUNK_SIZE - 1][k].height[MESH_SIZE][m])
+            }
         }
+        data.append(chunk[CHUNK_SIZE - 1][CHUNK_SIZE - 1].height[MESH_SIZE][MESH_SIZE])
         
+
         for i in 0 ..< data.count {
-            for j in 0 ..< data[i].count {
-                data[i][j] *= 0.1
-            }
+                data[i] *= 0.1
         }
         
-        let textureData = NSData(bytes: &data, length: len) as! Data
-        let texture = try! textureLoader.newTexture(data: textureData, options: nil)
-        return texture
+        instanceHeightBuffer = device.makeBuffer(bytes: data, length: MemoryLayout<Float>.size * limit, options:[])
     }
     
 //    Texture2D Generate_NormalMap(int th)
