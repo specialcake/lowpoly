@@ -36,6 +36,13 @@ class ViewController: UIViewController {
     
     var scene : Scene!
     
+    // UI
+    @IBOutlet weak var gameView: UIView!
+    @IBOutlet weak var forwardButton: UIButton!
+    @IBOutlet weak var backwardButton: UIButton!
+    @IBOutlet weak var leftButton: UIButton!
+    @IBOutlet weak var rightButton: UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -45,7 +52,7 @@ class ViewController: UIViewController {
         metalLayer.device = device           // 2
         metalLayer.pixelFormat = .bgra8Unorm // 3
         metalLayer.framebufferOnly = true    // 4
-        view.layer.addSublayer(metalLayer)   // 5
+        gameView.layer.addSublayer(metalLayer)   // 5
         
         commandQueue = device.makeCommandQueue()
         
@@ -97,6 +104,8 @@ class ViewController: UIViewController {
         
         scene.updateChunks()
         
+        handleButtonAction()
+        
         autoreleasepool {
             self.render()
         }
@@ -126,6 +135,23 @@ class ViewController: UIViewController {
         
         let pipelineState = try! device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)
         return pipelineState
+    }
+    
+    func handleButtonAction() {
+        
+        if forwardButton.isHighlighted {
+            ResourceManager.camera.move(.forward)
+        }
+        if backwardButton.isHighlighted {
+            ResourceManager.camera.move(.backward)
+        }
+        if leftButton.isHighlighted {
+            ResourceManager.camera.move(.left)
+        }
+        if rightButton.isHighlighted {
+            ResourceManager.camera.move(.right)
+        }
+
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
