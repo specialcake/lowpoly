@@ -41,12 +41,12 @@ enum Direction {
 
 // Water
 let NUMOFWATER = 4
-let SEA_LEVEL: Float = 0.50
+let SEA_LEVEL: Float = 0.30
 let CONSTQ: Float = 0.5
 
 // Light
-let PARLIGHT_DIR = float3(27.0, -13.0, -27.0)
-let PARLIGHT_POSITION = float3(-27.0, 13.0, 27.0)
+let PARLIGHT_DIR = float3(0.0, -13.0, 27.0)
+let PARLIGHT_POSITION = float3(0.0, 13.0, 27.0)
 let PARLIGHT_AMBIENT = float3(0.3)
 let PARLIGHT_DIFFUSE = float3(0.9)
-let PARLIGHT_SPECULAR = float3(0.0)
+let PARLIGHT_SPECULAR = float3(0.5)

@@ -89,8 +89,6 @@ class MetalTexture: NSObject {
     print("mipCount:\(texture.mipmapLevelCount)")
   }
   
-  
-  
   class func textureCopy(source:MTLTexture,device: MTLDevice, mipmaped: Bool) -> MTLTexture {
     let texDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: MTLPixelFormat.bgra8Unorm, width: Int(source.width), height: Int(source.height), mipmapped: mipmaped)
     let copyTexture = device.makeTexture(descriptor: texDescriptor)!

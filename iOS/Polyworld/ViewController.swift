@@ -146,8 +146,6 @@ class ViewController: UIViewController {
             pipelineStateDescriptor.colorAttachments[0].isBlendingEnabled = true
             pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = .sourceAlpha
             pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = .oneMinusSourceAlpha
-            pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = .one
-            pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .oneMinusSourceAlpha
         }
         
         let pipelineState = try! device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)

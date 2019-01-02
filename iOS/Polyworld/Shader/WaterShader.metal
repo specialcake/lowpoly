@@ -81,42 +81,58 @@ vertex WaterVertexOut waterVertex(constant float2 *vertices [[buffer(0)]],
     // Calculate Normal
     float3 a,b,c;
     float3 v[3];
-    if (vid <= 2)
+    float2 offset[3];
+    
+    if (vid == 0)
     {
-        v[0] = float3(in.x + 1.0, 0.0f, in.y + 1.0) * uniforms.scalefactor + float3(0, uniforms.water_height, 0);
-        v[1] = float3(in.x + 1.0, 0.0f, in.y + 0.0) * uniforms.scalefactor + float3(0, uniforms.water_height, 0);
-        v[2] = float3(in.x + 0.0, 0.0f, in.y + 1.0) * uniforms.scalefactor + float3(0, uniforms.water_height, 0);
-        v[0] += uniforms.scene_offset;
-        v[1] += uniforms.scene_offset;
-        v[2] += uniforms.scene_offset;
-        for (int i = 0; i < 2; i++)
-        {
-            float3 opos = v[i];
-            for(int i = 0; i < wave_number; i++) {
-                float Qs = 1.0 / (wave_number * uniforms.wave[i].w * uniforms.wave[i].A);
-                v[i].x += Qs * uniforms.wave[i].A * uniforms.wave[i].D.x * cos(uniforms.wave[i].w * dot(float2(uniforms.wave[i].D), opos.xz) + uniforms.wave[i].phi * uniforms.timer);
-                v[i].z += Qs * uniforms.wave[i].A * uniforms.wave[i].D.y * cos(uniforms.wave[i].w * dot(float2(uniforms.wave[i].D), opos.xz) + uniforms.wave[i].phi * uniforms.timer);
-                v[i].y += uniforms.wave[i].A * sin(uniforms.wave[i].w * dot(float2(uniforms.wave[i].D), opos.xz) + uniforms.wave[i].phi * uniforms.timer);
-            }
-        }
+        offset[0] = float2(0,0);
+        offset[1] = float2(0,-1);
+        offset[2] = float2(-1,0);
     }
-    else
+    else if (vid == 1)
     {
-        v[0] = float3(in.x + 0.0, 0.0f, in.y + 1.0) * uniforms.scalefactor + float3(0, uniforms.water_height, 0);
-        v[1] = float3(in.x + 1.0, 0.0f, in.y + 0.0) * uniforms.scalefactor + float3(0, uniforms.water_height, 0);
-        v[2] = float3(in.x + 0.0, 0.0f, in.y + 0.0) * uniforms.scalefactor + float3(0, uniforms.water_height, 0);
-        v[0] += uniforms.scene_offset;
-        v[1] += uniforms.scene_offset;
-        v[2] += uniforms.scene_offset;
-        for (int i = 0; i < 2; i++)
-        {
-            float3 opos = v[i];
-            for(int i = 0; i < wave_number; i++) {
-                float Qs = 1.0 / (wave_number * uniforms.wave[i].w * uniforms.wave[i].A);
-                v[i].x += Qs * uniforms.wave[i].A * uniforms.wave[i].D.x * cos(uniforms.wave[i].w * dot(float2(uniforms.wave[i].D), opos.xz) + uniforms.wave[i].phi * uniforms.timer);
-                v[i].z += Qs * uniforms.wave[i].A * uniforms.wave[i].D.y * cos(uniforms.wave[i].w * dot(float2(uniforms.wave[i].D), opos.xz) + uniforms.wave[i].phi * uniforms.timer);
-                v[i].y += uniforms.wave[i].A * sin(uniforms.wave[i].w * dot(float2(uniforms.wave[i].D), opos.xz) + uniforms.wave[i].phi * uniforms.timer);
-            }
+        offset[0] = float2(0,1);
+        offset[1] = float2(0,0);
+        offset[2] = float2(-1,1);
+    }
+    else if (vid == 2)
+    {
+        offset[0] = float2(1,0);
+        offset[1] = float2(1,-1);
+        offset[2] = float2(0,0);
+    }
+    else if (vid == 3)
+    {
+        offset[0] = float2(0,0);
+        offset[1] = float2(1,-1);
+        offset[2] = float2(0,-1);
+    }
+    else if (vid == 4)
+    {
+        offset[0] = float2(-1,1);
+        offset[1] = float2(0,0);
+        offset[2] = float2(-1,0);
+    }
+    else if (vid == 5)
+    {
+        offset[0] = float2(0,1);
+        offset[1] = float2(1,0);
+        offset[2] = float2(0,0);
+    }
+    v[0] = float3(in.x + deltax + offset[0].x, 0.0f, in.y + deltay + offset[0].y) * uniforms.scalefactor + float3(0, uniforms.water_height, 0);
+    v[1] = float3(in.x + deltax + offset[1].x, 0.0f, in.y + deltay + offset[1].y) * uniforms.scalefactor + float3(0, uniforms.water_height, 0);
+    v[2] = float3(in.x + deltax + offset[2].x, 0.0f, in.y + deltay + offset[2].y) * uniforms.scalefactor + float3(0, uniforms.water_height, 0);
+    v[0] += uniforms.scene_offset;
+    v[1] += uniforms.scene_offset;
+    v[2] += uniforms.scene_offset;
+    for (int i = 0; i < 2; i++)
+    {
+        float3 opos = v[i];
+        for(int i = 0; i < wave_number; i++) {
+            float Qs = 1.0 / (wave_number * uniforms.wave[i].w * uniforms.wave[i].A);
+            v[i].x += Qs * uniforms.wave[i].A * uniforms.wave[i].D.x * cos(uniforms.wave[i].w * dot(float2(uniforms.wave[i].D), opos.xz) + uniforms.wave[i].phi * uniforms.timer);
+            v[i].z += Qs * uniforms.wave[i].A * uniforms.wave[i].D.y * cos(uniforms.wave[i].w * dot(float2(uniforms.wave[i].D), opos.xz) + uniforms.wave[i].phi * uniforms.timer);
+            v[i].y += uniforms.wave[i].A * sin(uniforms.wave[i].w * dot(float2(uniforms.wave[i].D), opos.xz) + uniforms.wave[i].phi * uniforms.timer);
         }
     }
     out.normal = -normalize(cross(v[0] - v[1], v[2] - v[1]));
@@ -143,6 +159,6 @@ fragment float4 waterFragment(WaterVertexOut vert [[stage_in]],
     
     float3 aFragColor = uniforms.water_color * factory;
     
+    // return float4(uniforms.water_color, 0.6);
     return float4(aFragColor, 0.6);
 }
-
