@@ -42,6 +42,9 @@ void Game::Init() {
     ResourceManager::GetShader("instancescene").setInt("DepthMap", 4);
     ResourceManager::GetShader("instancescene").setInt("BlurShadow", 5);
 
+    ResourceManager::GetShader("instancemodel").use();
+    ResourceManager::GetShader("instancemodel").setInt("BlurShadow", 0);
+
     ResourceManager::GetShader("water").use();
     ResourceManager::GetShader("water").setInt("ShadowMap", 0);
     ResourceManager::GetShader("water").setInt("BlurShadow", 1);
@@ -156,6 +159,9 @@ void Game::Render() {
         Shader modelshader = ResourceManager::GetShader("instancemodel");
         modelshader.use();
         modelshader.setMat4("PVMatrix", PVMatrix);
+        modelshader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
+        glActiveTexture(GL_TEXTURE0);
+        shadowmap->BluredShadow.Bind();
         scene->plant->Draw(modelshader);
 
         //ResourceManager::Displayfont("This is a test", glm::vec3(25.0f, 830.0f, 0.0f), glm::vec3(1.0f), glm::vec3(1.0f, 0.0f, 0.0f));

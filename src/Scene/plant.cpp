@@ -58,6 +58,7 @@ void Plants::SetParam(const std::vector<Treeinfo>& places) {
 
 void Plants::Draw(Shader shader) {
     Model* tmptr = ResourceManager::GetModel("crystal");
+    shader.setLight(ResourceManager::camera.Position);
     for(int i = 0; i < tmptr->meshes.size(); i++){
         shader.setVec4("texture_diffuse1_color", tmptr->meshes[i].color);
         glBindVertexArray(tmptr->meshes[i].VAO);

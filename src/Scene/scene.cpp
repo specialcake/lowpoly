@@ -346,7 +346,7 @@ void Scene::Generate_Treeplace() {
         for(int j = 1; j < CHUNK_SIZE - 1; j++){
             for(int k = 1; k < MESH_SIZE - 1; k++){
                 for(int h = 1; h < MESH_SIZE - 1; h++){
-                    if(this->chunk[i][j]->height[k][h] > 1.0f)
+                    if(this->chunk[i][j]->height[k][h] > 1.0f || this->chunk[i][j]->height[k][h] < 0.3f)
                         continue;
                     GLfloat height = this->chunk[i][j]->height[k][h];
                     bool flag = true;
