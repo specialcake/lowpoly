@@ -56,11 +56,26 @@ void Plants::SetParam(const std::vector<Treeinfo>& places) {
     }
 }
 
-void Plants::Draw(Shader shader) {
+void Plants::Draw(const glm::mat4& PVMatrix, const glm::mat4& lightSpaceMatrix, const Texture2D& BluredShadow) {
     Model* tmptr = ResourceManager::GetModel("crystal");
+    shader.use();
+    glActiveTexture(GL_TEXTURE0);
+    BluredShadow.Bind();
+    shader.setMat4("PVMatrix", PVMatrix);
+    shader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
     shader.setLight(ResourceManager::camera.Position);
     for(int i = 0; i < tmptr->meshes.size(); i++){
         shader.setVec4("texture_diffuse1_color", tmptr->meshes[i].color);
+        glBindVertexArray(tmptr->meshes[i].VAO);
+        glDrawElementsInstanced(GL_TRIANGLES, tmptr->meshes[i].indices.size(), GL_UNSIGNED_INT, 0, amount);
+        glBindVertexArray(0);
+    }
+}
+void Plants::GenerateShadow(const glm::mat4 &lightSpaceMatrix) {
+    Model* tmptr = ResourceManager::GetModel("crystal");
+    shadowshader.use();
+    shadowshader.setMat4("PVMatrix", lightSpaceMatrix);
+    for(int i = 0; i < tmptr->meshes.size(); i++){
         glBindVertexArray(tmptr->meshes[i].VAO);
         glDrawElementsInstanced(GL_TRIANGLES, tmptr->meshes[i].indices.size(), GL_UNSIGNED_INT, 0, amount);
         glBindVertexArray(0);

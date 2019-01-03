@@ -26,6 +26,7 @@ void Game::Init() {
     ResourceManager::LoadShader("../src/shader/instancemodel.vert", "../src/shader/instancemodel.frag", NULL, "instancemodel");
     ResourceManager::LoadShader("../src/shader/water.vert", "../src/shader/water.frag", "../src/shader/water.geom", "water");
     ResourceManager::LoadShader("../src/shader/shadowmap.vert", "../src/shader/shadowmap.frag", "../src/shader/shadowmap.geom", "shadowmap");
+    ResourceManager::LoadShader("../src/shader/modelshadow.vert", "../src/shader/modelshadow.frag", NULL, "modelshadow");
     ResourceManager::LoadShader("../src/shader/model.vert", "../src/shader/model.frag", NULL, "model");
     ResourceManager::LoadShader("../src/shader/gaussblur.vert", "../src/shader/gaussblur.frag", NULL, "gaussblur");
     ResourceManager::LoadShader("../src/shader/skybox.vert", "../src/shader/skybox.frag", NULL, "skybox");
@@ -71,9 +72,8 @@ void Game::Init() {
     scene->generate_scene();
     scene->Generate_Treeplace();
     std::cout << "QAQ => " << scene->Treeplace.size() << std::endl;
-    for(int i = 0; i < scene->Treeplace.size(); i++){
-        Tools::PrintVec3(scene->Treeplace[i].location);
-    }
+    scene->plant->shader = ResourceManager::GetShader("instancemodel");
+    scene->plant->shadowshader = ResourceManager::GetShader("modelshadow");
 
     shadowmap = new Shadowmap();
     Gaussblur::Initialize(ResourceManager::GetShader("gaussblur"));
@@ -107,6 +107,7 @@ void Game::Update(GLfloat dt) {
                                         glm::vec3(0.0f, 0.0f, 0.0f));
         shadowmap->BeginMakeMap();
         scene->Generate_ShadowMap(lightSpaceMatrix, viewmat);
+        scene->plant->GenerateShadow(lightSpaceMatrix);
         shadowmap->EndMakeMap();
 
         shadowmap->BluredShadow = Gaussblur::GaussBlur(shadowmap->DepthMap);
@@ -156,13 +157,7 @@ void Game::Render() {
 //
         scene->draw(PVMatrix, lightSpaceMatrix, shadowmap->DepthMap, shadowmap->BluredShadow);
 
-        Shader modelshader = ResourceManager::GetShader("instancemodel");
-        modelshader.use();
-        modelshader.setMat4("PVMatrix", PVMatrix);
-        modelshader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
-        glActiveTexture(GL_TEXTURE0);
-        shadowmap->BluredShadow.Bind();
-        scene->plant->Draw(modelshader);
+        scene->plant->Draw(PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
 
         //ResourceManager::Displayfont("This is a test", glm::vec3(25.0f, 830.0f, 0.0f), glm::vec3(1.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     }
