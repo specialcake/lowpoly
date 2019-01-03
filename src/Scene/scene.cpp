@@ -36,7 +36,7 @@ void Scene::Initialize() {
 
     this->generator = new Noise(NOISE_SIZE);
     this->water = new Water();
-    this->plant = new Plants();
+    this->plant = new Plants("crystal");
 
     for(GLint i = 0; i < CHUNK_SIZE; i++){
         for(GLint j = 0; j < CHUNK_SIZE; j++){
