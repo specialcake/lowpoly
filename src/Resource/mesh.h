@@ -25,6 +25,7 @@ struct Texture{
 
 class Mesh{
 public:
+    unsigned int VAO;
     std::vector<Vertex> vertices;
     std::vector<unsigned int> indices;
     std::vector<Texture> textures;
@@ -32,7 +33,7 @@ public:
     Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures, glm::vec4 colors);
     void Draw(Shader shader);
 private:
-    unsigned int VAO, VBO, EBO;
+    unsigned int VBO, EBO;
     void setupMesh();
 };
 

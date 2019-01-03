@@ -66,8 +66,12 @@ void Submesh::draw_water() {
 glm::vec3 Submesh::get_Position() {
     static Scene* top_scene = this->parent->parent;
     glm::vec3 ret = top_scene->offset;
-    ret += top_scene->chunk_offset[this->parent->pos_x][this->parent->pos_z];
-    ret += top_scene->mesh_offset[this->pos_x][this->pos_z];
+    ret += glm::vec3((this->parent->pos_x - CHUNK_RADIUS) * CHUNK_LENGTH,
+                     0.0f,
+                     (this->parent->pos_z - CHUNK_RADIUS) * CHUNK_LENGTH);
+    ret += glm::vec3((this->pos_x - MESH_RADIUS - 0.5f) * MESH_LENGTH,
+                     0.0f,
+                     (this->pos_z - MESH_RADIUS - 0.5f) * MESH_LENGTH);
     return ret;
     return top_scene->offset
            + top_scene->chunk_offset[this->parent->pos_x][this->parent->pos_z]

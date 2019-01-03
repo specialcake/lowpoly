@@ -13,7 +13,9 @@
 #include "../Resource/shader.h"
 #include "noise.h"
 #include "water.h"
+#include "plant.h"
 #include <iostream>
+#include <set>
 #include <vector>
 
 class Scene {
@@ -28,11 +30,14 @@ public:
     glm::vec3 chunk_offset[CHUNK_SIZE][CHUNK_SIZE];
     glm::vec3 mesh_offset[MESH_SIZE + 1][MESH_SIZE + 1];
 
+    std::vector<Treeinfo> Treeplace;
+
     Noise* generator;
     Texture2D HeightMap;
     Texture2D NormalMap0, NormalMap1, pNormalMap;
 
     Water* water;
+    Plants* plant;
 
     Shader map_shader, map_instance_shader, water_shader, shadow_shader;
     GLuint VAO, VBO, instanceVAO, instanceVBO;
@@ -48,10 +53,12 @@ public:
     void UpdateChunks();
     void UpdateNeighbor(GLint x, GLint y);
     void GetLocationbyCamera(GLint& cx, GLint& cz, GLint& ms, GLint& mz);
+    void UpdateTreeplace();
 
     Texture2D Generate_HeightMap();
     Texture2D Generate_NormalMap(int th);
     Texture2D Generate_pNormalMap();
+    void Generate_Treeplace();
     void Generate_ShadowMap(const glm::mat4& lightSpaceMatrix, const glm::mat4& view);
 private:
 

@@ -41,7 +41,7 @@ void Chunk::recycle(GLint x, GLint z) {
 }
 void Chunk::Updateinfo() { //After all height generated
     this->generate_water();
-    this->generate_normal();
+//    this->generate_normal();
 }
 
 void Chunk::generate_height() {

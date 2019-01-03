@@ -20,8 +20,8 @@
 
 //Scene
 #define SCENE_LENGTH 53.0f
-#define CHUNK_SIZE 3
-#define CHUNK_RADIUS 1
+#define CHUNK_SIZE 5
+#define CHUNK_RADIUS 2
 #define CHUNK_LENGTH (SCENE_LENGTH / CHUNK_SIZE)
 #define MESH_SIZE 21
 #define MESH_RADIUS 10
@@ -34,6 +34,9 @@
 
 #define MAX_HEIGHT 4.0f
 #define NOISE_SIZE 29
+
+#define TREEPLACER 4
+#define ROCKPLACER 5
 
 enum Meshtype{
     LAND,

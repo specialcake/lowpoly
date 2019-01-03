@@ -23,6 +23,7 @@ void Game::Init() {
     ResourceManager::LoadShader("../src/shader/scene.vert", "../src/shader/scene.frag", NULL, "scene");
     ResourceManager::LoadShader("../src/shader/sprite.vert", "../src/shader/sprite.frag", NULL, "sprite");
     ResourceManager::LoadShader("../src/shader/instancescene.vert", "../src/shader/instancescene.frag", "../src/shader/instancescene.geom", "instancescene");
+    ResourceManager::LoadShader("../src/shader/instancemodel.vert", "../src/shader/instancemodel.frag", NULL, "instancemodel");
     ResourceManager::LoadShader("../src/shader/water.vert", "../src/shader/water.frag", "../src/shader/water.geom", "water");
     ResourceManager::LoadShader("../src/shader/shadowmap.vert", "../src/shader/shadowmap.frag", "../src/shader/shadowmap.geom", "shadowmap");
     ResourceManager::LoadShader("../src/shader/model.vert", "../src/shader/model.frag", NULL, "model");
@@ -65,6 +66,11 @@ void Game::Init() {
     scene->water_shader = ResourceManager::GetShader("water");
     scene->shadow_shader = ResourceManager::GetShader("shadowmap");
     scene->generate_scene();
+    scene->Generate_Treeplace();
+    std::cout << "QAQ => " << scene->Treeplace.size() << std::endl;
+    for(int i = 0; i < scene->Treeplace.size(); i++){
+        Tools::PrintVec3(scene->Treeplace[i].location);
+    }
 
     shadowmap = new Shadowmap();
     Gaussblur::Initialize(ResourceManager::GetShader("gaussblur"));
@@ -87,6 +93,8 @@ void Game::Update(GLfloat dt) {
 
     if(ResourceManager::dir != ORIGIN_POS || first_time){
         scene->HeightMap = scene->Generate_HeightMap();
+        scene->plant->SetParam(scene->Treeplace);
+//        scene->UpdateTreeplace();
 
         shadowmap->UpdateFrustum(scene);
 
@@ -135,23 +143,20 @@ void Game::Render() {
         ResourceManager::skybox->Draw(skymap->skymap);
         glDepthFunc(GL_LESS);
 
-//        littlewindow->shader.use();
-//        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
-//        littlewindow->DrawSprite(shadowmap->BluredShadow, glm::vec3(-0.1f, 0.5f, 0.0f), glm::vec3(0.5f));
+        littlewindow->shader.use();
+        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
+        littlewindow->DrawSprite(shadowmap->DepthMap, glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.5f));
+//
+        littlewindow->shader.use();
+        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
+        littlewindow->DrawSprite(shadowmap->BluredShadow, glm::vec3(-0.1f, 0.5f, 0.0f), glm::vec3(0.5f));
 //
         scene->draw(PVMatrix, lightSpaceMatrix, shadowmap->DepthMap, shadowmap->BluredShadow);
 
-//        Model* mymodel = ResourceManager::GetModel("crystal");
-//        Shader model_shader = ResourceManager::GetShader("model");
-//        model_shader.use();
-//        model_shader.setMat4("PVMatrix", PVMatrix);
-//        model_shader.setLight(ResourceManager::camera.Position);
-//
-//        glm::mat4 model = glm::mat4(1.0f);
-//        model = glm::translate(model, glm::vec3(-mymodel->cx, -mymodel->cy + 4.0f, -mymodel->cz - 14.0f));
-//        model = glm::scale(model, glm::vec3(0.3f));
-//        model_shader.setMat4("model", model);
-//        ResourceManager::GetModel("crystal")->Draw(model_shader);
+        Shader modelshader = ResourceManager::GetShader("instancemodel");
+        modelshader.use();
+        modelshader.setMat4("PVMatrix", PVMatrix);
+        scene->plant->Draw(modelshader);
 
         //ResourceManager::Displayfont("This is a test", glm::vec3(25.0f, 830.0f, 0.0f), glm::vec3(1.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     }
