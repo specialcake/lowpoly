@@ -28,6 +28,7 @@ void Game::Init() {
     ResourceManager::LoadShader("../src/shader/shadowmap.vert", "../src/shader/shadowmap.frag", "../src/shader/shadowmap.geom", "shadowmap");
     ResourceManager::LoadShader("../src/shader/modelshadow.vert", "../src/shader/modelshadow.frag", NULL, "modelshadow");
     ResourceManager::LoadShader("../src/shader/model.vert", "../src/shader/model.frag", NULL, "model");
+    ResourceManager::LoadShader("../src/shader/sun.vert", "../src/shader/sun.frag", NULL, "sun");
     ResourceManager::LoadShader("../src/shader/gaussblur.vert", "../src/shader/gaussblur.frag", NULL, "gaussblur");
     ResourceManager::LoadShader("../src/shader/skybox.vert", "../src/shader/skybox.frag", NULL, "skybox");
     ResourceManager::LoadShader("../src/shader/skymap.vert", "../src/shader/skymap.frag", NULL, "skymap");
@@ -62,7 +63,8 @@ void Game::Init() {
     ResourceManager::GetShader("skybox").setInt("Back", 5);
     ResourceManager::GetShader("skybox").setInt("Cloud", 6);
 
-    ResourceManager::LoadModel("../resource/model/bushytree/bushytree.obj", "bushytree");
+    ResourceManager::LoadModel("../resource/model/widetree/widetree.obj", "bushytree");
+    ResourceManager::LoadModel("../resource/model/polyball/polyball.obj", "polyball");
 
     littlewindow = new SpriteRenderer(ResourceManager::GetShader("sprite"));
 
@@ -140,7 +142,7 @@ void Game::ProcessInput(GLfloat dt) {
 
 void Game::Render() {
     if(this->State == GAME_ACTIVE) {
-        glm::mat4 projection = glm::perspective(glm::radians(ResourceManager::camera.Zoom), (float)Width / (float)Height, 0.1f, 200.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(ResourceManager::camera.Zoom), (float)Width / (float)Height, 0.1f, 400.0f);
 #ifdef lightview
         projection = glm::ortho(-40.0f, 40.0f, -12.0f, 14.0f, 0.1f, 150.0f);
 #endif //lightview
@@ -167,6 +169,22 @@ void Game::Render() {
         scene->draw(PVMatrix, lightSpaceMatrix, shadowmap->DepthMap, shadowmap->BluredShadow);
 
         scene->plant->Draw(PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
+
+
+        glDepthFunc(GL_LEQUAL);
+        Model* Sun = ResourceManager::GetModel("polyball");
+        Shader sunshader = ResourceManager::GetShader("sun");
+        sunshader.use();
+        glm::mat4 model = glm::mat4(1.0f);
+//        model = glm::translate(model, glm::vec3(1.0f, 2.0f, -5.0f));
+        model = glm::translate(model, -8.0f * PARLIGHT_DIR);
+        model = glm::scale(model, glm::vec3(25.0f));
+        sunshader.setMat4("model", model);
+        sunshader.setMat4("PVMatrix", projection * glm::mat4(glm::mat3(ResourceManager::camera.GetViewMatrix())));
+        sunshader.setVec3("lightdir", PARLIGHT_DIR);
+
+        Sun->Draw(sunshader);
+        glDepthFunc(GL_LESS);
 
         //ResourceManager::Displayfont("This is a test", glm::vec3(25.0f, 830.0f, 0.0f), glm::vec3(1.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     }
