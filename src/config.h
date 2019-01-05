@@ -38,6 +38,8 @@
 #define TREEPLACER 3
 #define ROCKPLACER 5
 
+#define CLOUDDIR glm::vec3(0.70711f, 0.0f, 0.70711f)
+
 enum Meshtype{
     LAND,
     WATER

@@ -98,6 +98,13 @@ void Scene::InitBuffer() {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 }
+void Scene::generate_cloud(GLfloat dt) {
+    for(GLint i = 0; i < CHUNK_SIZE; i++) {
+        for (GLint j = 0; j < CHUNK_SIZE; j++) {
+            chunk[i][j]->generate_cloud(dt);
+        }
+    }
+}
 
 void Scene::generate_scene() {
     for(GLint i = 0; i < CHUNK_SIZE; i++) {
@@ -105,6 +112,7 @@ void Scene::generate_scene() {
             chunk[i][j]->generate_height();
         }
     }
+    generate_cloud(0.0f);
     for(GLint i = 0; i < CHUNK_SIZE; i++) {
         for (GLint j = 0; j < CHUNK_SIZE; j++) {
             chunk[i][j]->Updateinfo();
@@ -427,8 +435,39 @@ Texture2D Scene::Generate_HeightMap() {
     for(GLint i = 0; i < limit; i++){
         data[i] = data[i] * 0.1f;
     }
-    this->CloudMap = ResourceManager::MakeTexture(len, len, GL_RED, data, "Could", GL_LINEAR, GL_LINEAR);
     return ResourceManager::MakeTexture(len, len, GL_RED, data, "HeightMap");
+}
+Texture2D Scene::Generate_CloudMap(){
+    GLint p = 0;
+    GLint limit = CHUNK_SIZE * CHUNK_SIZE * MESH_SIZE * MESH_SIZE + CHUNK_SIZE * MESH_SIZE * 2 + 1;
+    GLuint len = CHUNK_SIZE * MESH_SIZE + 1;
+    static GLfloat* data = new GLfloat[limit];
+    for(GLint i = 0; i < CHUNK_SIZE; i++){
+        for(GLint j = 0; j < MESH_SIZE; j++){
+            for(GLint k = 0; k < CHUNK_SIZE; k++){
+                if(this->debugflag) {
+                    for (GLint h = 0; h < MESH_SIZE; h++) {
+                        printf("%.3lf ", chunk[i][k]->cloud[j][h]);
+                    }
+                    if(k == CHUNK_SIZE - 1){
+                        printf("%.3lf", chunk[i][k]->cloud[j][MESH_SIZE]);
+                    }
+                }
+                memcpy(data + p, chunk[i][k]->cloud[j], sizeof(GLfloat) * (MESH_SIZE + 1));
+                p += MESH_SIZE;
+            }
+            p++;
+            if(this->debugflag) {
+                printf("\n");
+            }
+        }
+    }
+    for(GLint i = 0; i < CHUNK_SIZE; i++){
+        memcpy(data + p, chunk[CHUNK_SIZE - 1][i]->cloud[MESH_SIZE], sizeof(GLfloat) * (MESH_SIZE + 1));
+        p += MESH_SIZE;
+    }
+    p++;
+    return ResourceManager::MakeTexture(len, len, GL_RED, data, "Could", GL_LINEAR, GL_LINEAR);
 }
 Texture2D Scene::Generate_NormalMap(int th) {
     GLint p = 0;

@@ -92,11 +92,17 @@ void Game::Init() {
 
 void Game::Update(GLfloat dt) {
     static int first_time = 1;
+    static GLfloat accumulate_time = 0.0f;
+    accumulate_time += dt;
 
     scene->UpdateChunks();
 
+//    scene->generate_cloud(accumulate_time);
+//    scene->CloudMap = scene->Generate_CloudMap();
+
     if(ResourceManager::dir != ORIGIN_POS || first_time){
         scene->HeightMap = scene->Generate_HeightMap();
+        scene->CloudMap = scene->Generate_CloudMap();
         scene->plant->SetParam(scene->Treeplace);
 //        scene->UpdateTreeplace();
 

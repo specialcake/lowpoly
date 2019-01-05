@@ -17,6 +17,7 @@ public:
     GLint pos_x, pos_z;
     Submesh* submesh[MESH_SIZE + 1][MESH_SIZE + 1];
     GLfloat height[MESH_SIZE + 1][MESH_SIZE + 1];
+    GLfloat cloud[MESH_SIZE + 1][MESH_SIZE + 1];
     glm::vec3 normal[2][MESH_SIZE][MESH_SIZE];
     glm::vec3 pnormal[MESH_SIZE][MESH_SIZE];
     Scene* parent;
@@ -26,6 +27,7 @@ public:
     void Initialize();
 
     void generate_height();
+    void generate_cloud(GLfloat dt);
     void generate_water();
     void generate_mountain();
     void generate_tree();

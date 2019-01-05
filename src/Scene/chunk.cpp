@@ -52,6 +52,14 @@ void Chunk::generate_height() {
         }
     }
 }
+void Chunk::generate_cloud(GLfloat dt) {
+    glm::vec3 delta = CLOUDDIR * dt;
+    for(GLint i = 0; i <= MESH_SIZE; i++) {
+        for(GLint j = 0; j <= MESH_SIZE; j++) {
+            this->cloud[i][j] = this->parent->generator->CloudGenerate(this->submesh[i][j]->get_Position() + delta);
+        }
+    }
+}
 void Chunk::generate_water() {
     for(GLint i = 0; i < MESH_SIZE; i++) {
         for(GLint j = 0; j < MESH_SIZE; j++) {

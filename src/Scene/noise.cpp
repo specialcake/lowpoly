@@ -86,50 +86,43 @@ glm::vec2 Noise::processer(glm::vec2 p) {
 GLfloat Noise::Generate(glm::vec3 loc) {
     glm::vec2 p = glm::vec2(loc.x, loc.z);
     p *= 0.1f;
-//    Tools::PrintVec2(p);
+
     GLfloat ret = default_noise(p);
-//    printf("height => %.3lf\n", ret);
     ret = ret * 0.5f + 0.25f;
     ret *= 3.0f;
     if(ret < 0.0f) ret = 0.0f;
     ret = pow(ret, 3.76);
     return ret;
 }
-GLfloat Noise::default_noise(glm::vec2 p) {
-//    static bool debug_flag = true;
+GLfloat Noise::CloudGenerate(glm::vec3 loc) {
+    glm::vec2 p = glm::vec2(loc.x, loc.z);
+    p *= 0.1f;
+
+    GLfloat ret = cloud_noise(p);
+    ret = pow(ret, 2.5);
+    return ret;
+}
+GLfloat Noise::cloud_noise(glm::vec2 p) {
     GLfloat ret = 0.0f;
-//    printf("%f\n", ret);
+    GLfloat A = 1.0f;
+
+    for(GLint i = 0; i < 5; i++){
+        p = processer(p);
+        ret += A * glm::abs(perlin_noise(p));
+        p = 2.0f * p; A = 0.5f * A;
+    }
+    return ret;
+}
+GLfloat Noise::default_noise(glm::vec2 p) {
+    GLfloat ret = 0.0f;
     GLfloat A = 1.0f;
 
     for(GLint i = 0; i < 5; i++){
         p = processer(p);
         ret += A * perlin_noise(p);
-//        if(debug_flag == true){
-//            Tools::PrintVec2(p);
-//            printf("==> %f\n", ret);
-//        }
         p = 2.0f * p; A = 0.5f * A;
     }
-//    debug_flag = false;
-//    ret += 1.0000f * perlin_noise(p); p = 2.0f * p;
-//    printf("%f\n", ret);
-//    ret += 0.5000f * perlin_noise(p); p = 2.0f * p;
-//    printf("%f\n", ret);
-//    ret += 0.2500f * perlin_noise(p); p = 2.0f * p;
-//    printf("%f\n", ret);
-//    ret += 0.1250f * perlin_noise(p); p = 2.0f * p;
-//    printf("%f\n", ret);
-//    ret += 0.0625f * perlin_noise(p); p = 2.0f * p;
-//    printf("%f\n", ret);
     return ret;
-//    p = p * 4.0f;
-    ret += 1.0000f * abs(perlin_noise(p)); p = 2.0f * p;
-    ret += 0.5000f * abs(perlin_noise(p)); p = 2.0f * p;
-    ret += 0.2500f * abs(perlin_noise(p)); p = 2.0f * p;
-    ret += 0.1250f * abs(perlin_noise(p)); p = 2.0f * p;
-    ret += 0.0625f * abs(perlin_noise(p)); p = 2.0f * p;
-    return ret;
-    return perlin_noise(p);
 }
 
 GLfloat Noise::perlin_noise(glm::vec2 p) {

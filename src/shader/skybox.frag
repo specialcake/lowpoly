@@ -19,7 +19,8 @@ void main() {
     vec3 color = vec3(0.458824f, 0.780392f, 1.0f);
     FragColor = vec4(color * (Pos.y + 0.3), 1.0f);
 
-    vec2 sphereTexCoords = normalize(Pos * 2.0 - 1.0).xz * 0.5 + 0.5;
+    vec3 tmpos = normalize(Pos * 2.0 - 1.0);
+    vec2 sphereTexCoords = normalize(tmpos.xz) * cos(asin(tmpos.y)) * 0.5 + 0.5;
 
     if(Type == 0.0f){
         FragColor = texture(Right, TexCoords.zy);
