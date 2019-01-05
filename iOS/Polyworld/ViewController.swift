@@ -15,28 +15,18 @@ import simd
 class ViewController: UIViewController {
     
     // Setting
-    var device: MTLDevice! = nil
     var metalLayer: CAMetalLayer! = nil
-    var commandQueue: MTLCommandQueue!
     
     // Rendering
     var timer: CADisplayLink! = nil
     var lastFrameTimestamp: CFTimeInterval = 0.0
     
-    // PipelineState
-    var scenePipelineState: MTLRenderPipelineState! = nil
-    var instanceScenePipelineState: MTLRenderPipelineState! = nil
-    var waterPipelineState: MTLRenderPipelineState! = nil
-    
-    var textureLoader: MTKTextureLoader! = nil
-    var depthBufferDescriptor: MTLTextureDescriptor! = nil
-    
-    // Camera
-    // var cameraController: CameraController!
     var projectionMatrix: float4x4!
     var trackedTouch: UITouch?
     
-    var scene : Scene!
+    var scene: Scene!
+    
+    var skymap: Skymap!
     
     // UI
     @IBOutlet weak var gameView: UIView!
@@ -49,33 +39,40 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         // Setting
-        device = MTLCreateSystemDefaultDevice()
+        ResourceManager.device = MTLCreateSystemDefaultDevice()
         metalLayer = CAMetalLayer()          // 1
-        metalLayer.device = device           // 2
+        metalLayer.device = ResourceManager.device           // 2
         metalLayer.pixelFormat = .bgra8Unorm // 3
         metalLayer.framebufferOnly = true    // 4
         gameView.layer.addSublayer(metalLayer)   // 5
         
-        commandQueue = device.makeCommandQueue()
+        ResourceManager.commandQueue = ResourceManager.device.makeCommandQueue()
         
         // Rendering
         timer = CADisplayLink(target: self, selector: #selector(ViewController.newFrame(displayLink:)))
         timer.add(to: RunLoop.main, forMode: .default)
         
         registerShaders()
-        textureLoader = MTKTextureLoader(device: device)
-        depthBufferDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: Int(2 * self.view.bounds.size.width), height: Int(2 * self.view.bounds.size.height), mipmapped: false)
-        depthBufferDescriptor.usage = .renderTarget
+        
+        ResourceManager.depthBufferDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: Int(2 * self.view.bounds.size.width), height: Int(2 * self.view.bounds.size.height), mipmapped: false)
+        ResourceManager.depthBufferDescriptor.usage = .renderTarget
+        ResourceManager.depthTexture = ResourceManager.device.makeTexture(descriptor: ResourceManager.depthBufferDescriptor)
+        
+        ResourceManager.textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: Int(2 * self.view.bounds.size.width), height: Int(2 * self.view.bounds.size.height), mipmapped: false)
+        ResourceManager.textureDescriptor.usage = [.shaderRead, .shaderWrite, .renderTarget]
+        
+        ResourceManager.textureLoader = MTKTextureLoader(device: ResourceManager.device)
         
         ResourceManager.camera = CameraController()
+        
         projectionMatrix = float4x4(perspectiveProjectionFov: radian(45), aspectRatio: Float(self.view.bounds.size.width / self.view.bounds.size.height), nearZ: NEAR_PLANE, farZ: FAR_PLANE)
         
-        scene = Scene(device: device, initpos: float3(0), shader: scenePipelineState, textureLoader: textureLoader)
-        scene.mapInstancePipelineState = instanceScenePipelineState
-        scene.waterPipelineState = waterPipelineState
-        scene.depthBufferDescriptor = depthBufferDescriptor
-        
+        scene = Scene(initpos: float3(0))
         scene.generate_scene()
+        
+        ResourceManager.skybox = Skybox()
+        skymap = Skymap()
+        skymap.load()
     }
     
     override func viewDidLayoutSubviews() {
@@ -120,20 +117,28 @@ class ViewController: UIViewController {
     
     func render() {
         guard let drawable = metalLayer?.nextDrawable() else { return }
+        ResourceManager.commandBuffer = ResourceManager.commandQueue.makeCommandBuffer()!
+
+        //skymap.draw(drawable: drawable, sunPos: float3(0.0, 0.5, -1.0))
         
-        scene.draw(commandQueue: commandQueue, drawable: drawable, viewMatrix: ResourceManager.camera.viewMatrix, projectionMatrix: &projectionMatrix ,clearColor: nil)
+        ResourceManager.skybox.draw(drawable: drawable, skymap: skymap, viewMatrix: ResourceManager.camera.viewMatrix, projectionMatrix: projectionMatrix)
+        scene.draw(drawable: drawable, viewMatrix: ResourceManager.camera.viewMatrix, projectionMatrix: projectionMatrix ,clearColor: nil)
+        
+        ResourceManager.commandBuffer.present(drawable)
+        ResourceManager.commandBuffer.commit()
         
     }
     
     func registerShaders() {
-        scenePipelineState = buildShaders(vertexFunction: "sceneVertex", fragmentFunction: "sceneFragment", blend: false)
-        instanceScenePipelineState = buildShaders(vertexFunction: "instanceSceneVertex", fragmentFunction: "instanceSceneFragment", blend: false)
-        waterPipelineState = buildShaders(vertexFunction: "waterVertex", fragmentFunction: "waterFragment", blend: true)
-        
+        ResourceManager.scenePipelineState = buildShaders(vertexFunction: "sceneVertex", fragmentFunction: "sceneFragment", depth: true, blend: false)
+        ResourceManager.instanceScenePipelineState = buildShaders(vertexFunction: "instanceSceneVertex", fragmentFunction: "instanceSceneFragment", depth: true, blend: false)
+        ResourceManager.waterPipelineState = buildShaders(vertexFunction: "waterVertex", fragmentFunction: "waterFragment", depth: true, blend: true)
+        ResourceManager.skymapPipelineState = buildShaders(vertexFunction: "skymapVertex", fragmentFunction: "skymapFragment", depth: false, blend: false)
+        ResourceManager.skyboxPipelineState = buildShaders(vertexFunction: "skyboxVertex", fragmentFunction: "skyboxFragment", depth: false, blend: false)
     }
     
-    func buildShaders(vertexFunction: String, fragmentFunction: String, blend: Bool) -> MTLRenderPipelineState {
-        let defaultLibrary = device.makeDefaultLibrary()!
+    func buildShaders(vertexFunction: String, fragmentFunction: String, depth: Bool, blend: Bool) -> MTLRenderPipelineState {
+        let defaultLibrary = ResourceManager.device.makeDefaultLibrary()!
         let vertexProgram = defaultLibrary.makeFunction(name: vertexFunction)
         let fragmentProgram = defaultLibrary.makeFunction(name: fragmentFunction)
         
@@ -141,14 +146,16 @@ class ViewController: UIViewController {
         pipelineStateDescriptor.vertexFunction = vertexProgram
         pipelineStateDescriptor.fragmentFunction = fragmentProgram
         pipelineStateDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm
-        pipelineStateDescriptor.depthAttachmentPixelFormat = .depth32Float
+        if depth == true {
+            pipelineStateDescriptor.depthAttachmentPixelFormat = .depth32Float
+        }
         if blend == true {
             pipelineStateDescriptor.colorAttachments[0].isBlendingEnabled = true
             pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = .sourceAlpha
             pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = .oneMinusSourceAlpha
         }
         
-        let pipelineState = try! device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)
+        let pipelineState = try! ResourceManager.device.makeRenderPipelineState(descriptor: pipelineStateDescriptor)
         return pipelineState
     }
     

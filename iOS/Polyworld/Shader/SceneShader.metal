@@ -43,7 +43,7 @@ vertex SceneVertexOut sceneVertex(constant SceneVertexIn *vertices [[buffer(0)]]
 }
 
 fragment float4 sceneFragment(SceneVertexOut vert [[stage_in]],
-                               constant SceneFragmentUniform &uniforms [[buffer(1)]])
+                               constant SceneFragmentUniform &uniforms [[buffer(0)]])
 {
     return float4(vert.fragPosition.y * uniforms.land_color, 1.0);
 }

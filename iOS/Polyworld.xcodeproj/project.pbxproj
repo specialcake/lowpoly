@@ -7,8 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		900137A721DE2C4B004B4A8E /* SkymapShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 900137A621DE2C4B004B4A8E /* SkymapShader.metal */; };
 		9060E66C21DBD5D5004BFF6F /* WaterShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 9060E66B21DBD5D5004BFF6F /* WaterShader.metal */; };
 		9060E66E21DBD7A3004BFF6F /* Water.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9060E66D21DBD7A3004BFF6F /* Water.swift */; };
+		9068D66D21DD438200BAFA46 /* Skymap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9068D66C21DD438200BAFA46 /* Skymap.swift */; };
+		9068D66F21DD439400BAFA46 /* Skybox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9068D66E21DD439400BAFA46 /* Skybox.swift */; };
 		909A886721DB636900AE91DF /* up_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 909A885F21DB636900AE91DF /* up_normal.png */; };
 		909A886821DB636900AE91DF /* down_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 909A886021DB636900AE91DF /* down_normal.png */; };
 		909A886921DB636900AE91DF /* right_highlight.png in Resources */ = {isa = PBXBuildFile; fileRef = 909A886121DB636900AE91DF /* right_highlight.png */; };
@@ -34,11 +37,21 @@
 		90B4C1A921CA6009008ECBB3 /* Scene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B4C1A821CA6009008ECBB3 /* Scene.swift */; };
 		90B4C1AB21CA6877008ECBB3 /* Noise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B4C1AA21CA6877008ECBB3 /* Noise.swift */; };
 		90B4C1AD21CA786E008ECBB3 /* SceneShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 90B4C1AC21CA786E008ECBB3 /* SceneShader.metal */; };
+		90F7E44221E0797900246AFE /* SkyboxShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 90F7E44121E0797900246AFE /* SkyboxShader.metal */; };
+		90F7E46521E0CB6F00246AFE /* Right.png in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E45F21E0CB6E00246AFE /* Right.png */; };
+		90F7E46621E0CB6F00246AFE /* Back.png in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E46021E0CB6E00246AFE /* Back.png */; };
+		90F7E46721E0CB6F00246AFE /* Front.png in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E46121E0CB6E00246AFE /* Front.png */; };
+		90F7E46821E0CB6F00246AFE /* Bottom.png in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E46221E0CB6E00246AFE /* Bottom.png */; };
+		90F7E46921E0CB6F00246AFE /* Left.png in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E46321E0CB6E00246AFE /* Left.png */; };
+		90F7E46A21E0CB6F00246AFE /* Top.png in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E46421E0CB6E00246AFE /* Top.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		900137A621DE2C4B004B4A8E /* SkymapShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = SkymapShader.metal; sourceTree = "<group>"; };
 		9060E66B21DBD5D5004BFF6F /* WaterShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = WaterShader.metal; sourceTree = "<group>"; };
 		9060E66D21DBD7A3004BFF6F /* Water.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Water.swift; sourceTree = "<group>"; };
+		9068D66C21DD438200BAFA46 /* Skymap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Skymap.swift; sourceTree = "<group>"; };
+		9068D66E21DD439400BAFA46 /* Skybox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Skybox.swift; sourceTree = "<group>"; };
 		909A885F21DB636900AE91DF /* up_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = up_normal.png; sourceTree = "<group>"; };
 		909A886021DB636900AE91DF /* down_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = down_normal.png; sourceTree = "<group>"; };
 		909A886121DB636900AE91DF /* right_highlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = right_highlight.png; sourceTree = "<group>"; };
@@ -66,6 +79,13 @@
 		90B4C1A821CA6009008ECBB3 /* Scene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scene.swift; sourceTree = "<group>"; };
 		90B4C1AA21CA6877008ECBB3 /* Noise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Noise.swift; sourceTree = "<group>"; };
 		90B4C1AC21CA786E008ECBB3 /* SceneShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = SceneShader.metal; sourceTree = "<group>"; };
+		90F7E44121E0797900246AFE /* SkyboxShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = SkyboxShader.metal; sourceTree = "<group>"; };
+		90F7E45F21E0CB6E00246AFE /* Right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Right.png; sourceTree = "<group>"; };
+		90F7E46021E0CB6E00246AFE /* Back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Back.png; sourceTree = "<group>"; };
+		90F7E46121E0CB6E00246AFE /* Front.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Front.png; sourceTree = "<group>"; };
+		90F7E46221E0CB6E00246AFE /* Bottom.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Bottom.png; sourceTree = "<group>"; };
+		90F7E46321E0CB6E00246AFE /* Left.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Left.png; sourceTree = "<group>"; };
+		90F7E46421E0CB6E00246AFE /* Top.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Top.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -85,6 +105,8 @@
 				90B4C1AC21CA786E008ECBB3 /* SceneShader.metal */,
 				909DFF9821DA69B400241714 /* InstanceSceneShader.metal */,
 				9060E66B21DBD5D5004BFF6F /* WaterShader.metal */,
+				900137A621DE2C4B004B4A8E /* SkymapShader.metal */,
+				90F7E44121E0797900246AFE /* SkyboxShader.metal */,
 			);
 			path = Shader;
 			sourceTree = "<group>";
@@ -123,17 +145,18 @@
 		90B4BE1A21CA572A008ECBB3 /* Polyworld */ = {
 			isa = PBXGroup;
 			children = (
+				90F7E46B21E0CC2A00246AFE /* Image */,
 				909A885E21DB636900AE91DF /* Button */,
 				9031781321DA1E4A00D18E39 /* Shader */,
+				90F7E44321E0832100246AFE /* Skybox */,
 				90B4C1A321CA5B98008ECBB3 /* Scene */,
+				90F7E44421E0833C00246AFE /* Tool */,
 				90B4C1A121CA5A91008ECBB3 /* Config.swift */,
-				909A886F21DBAB3800AE91DF /* ParallelLight.swift */,
 				90B4BE1B21CA572A008ECBB3 /* AppDelegate.swift */,
 				90B4BE1D21CA572B008ECBB3 /* ViewController.swift */,
 				909DFF9C21DAA2B000241714 /* ResourceManager.swift */,
-				90B4BE2D21CA57D8008ECBB3 /* MathUtilities.swift */,
-				909DFF9A21DA8C5A00241714 /* MetalTexture.swift */,
 				90B4BE2F21CA57F0008ECBB3 /* CameraController.swift */,
+				909A886F21DBAB3800AE91DF /* ParallelLight.swift */,
 				90B4BE1F21CA572B008ECBB3 /* Main.storyboard */,
 				90B4BE2221CA572C008ECBB3 /* Assets.xcassets */,
 				90B4BE2421CA572C008ECBB3 /* LaunchScreen.storyboard */,
@@ -152,6 +175,37 @@
 				9060E66D21DBD7A3004BFF6F /* Water.swift */,
 			);
 			path = Scene;
+			sourceTree = "<group>";
+		};
+		90F7E44321E0832100246AFE /* Skybox */ = {
+			isa = PBXGroup;
+			children = (
+				9068D66C21DD438200BAFA46 /* Skymap.swift */,
+				9068D66E21DD439400BAFA46 /* Skybox.swift */,
+			);
+			path = Skybox;
+			sourceTree = "<group>";
+		};
+		90F7E44421E0833C00246AFE /* Tool */ = {
+			isa = PBXGroup;
+			children = (
+				90B4BE2D21CA57D8008ECBB3 /* MathUtilities.swift */,
+				909DFF9A21DA8C5A00241714 /* MetalTexture.swift */,
+			);
+			path = Tool;
+			sourceTree = "<group>";
+		};
+		90F7E46B21E0CC2A00246AFE /* Image */ = {
+			isa = PBXGroup;
+			children = (
+				90F7E46021E0CB6E00246AFE /* Back.png */,
+				90F7E46221E0CB6E00246AFE /* Bottom.png */,
+				90F7E46121E0CB6E00246AFE /* Front.png */,
+				90F7E46321E0CB6E00246AFE /* Left.png */,
+				90F7E45F21E0CB6E00246AFE /* Right.png */,
+				90F7E46421E0CB6E00246AFE /* Top.png */,
+			);
+			path = Image;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -212,16 +266,22 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90F7E46A21E0CB6F00246AFE /* Top.png in Resources */,
 				909A886C21DB636900AE91DF /* down_highlight.png in Resources */,
 				90B4BE2621CA572C008ECBB3 /* LaunchScreen.storyboard in Resources */,
+				90F7E46521E0CB6F00246AFE /* Right.png in Resources */,
 				909A886821DB636900AE91DF /* down_normal.png in Resources */,
 				909A886D21DB636900AE91DF /* right_normal.png in Resources */,
+				90F7E46721E0CB6F00246AFE /* Front.png in Resources */,
+				90F7E46921E0CB6F00246AFE /* Left.png in Resources */,
 				909A886A21DB636900AE91DF /* left_highlight.png in Resources */,
 				909A886721DB636900AE91DF /* up_normal.png in Resources */,
+				90F7E46821E0CB6F00246AFE /* Bottom.png in Resources */,
 				909A886921DB636900AE91DF /* right_highlight.png in Resources */,
 				909A886B21DB636900AE91DF /* left_normal.png in Resources */,
 				90B4BE2321CA572C008ECBB3 /* Assets.xcassets in Resources */,
 				909A886E21DB636900AE91DF /* up_highlight.png in Resources */,
+				90F7E46621E0CB6F00246AFE /* Back.png in Resources */,
 				90B4BE2121CA572B008ECBB3 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -234,6 +294,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				90B4BE1E21CA572B008ECBB3 /* ViewController.swift in Sources */,
+				9068D66F21DD439400BAFA46 /* Skybox.swift in Sources */,
+				900137A721DE2C4B004B4A8E /* SkymapShader.metal in Sources */,
 				909A887021DBAB3800AE91DF /* ParallelLight.swift in Sources */,
 				909DFF9B21DA8C5A00241714 /* MetalTexture.swift in Sources */,
 				90B4BE2E21CA57D8008ECBB3 /* MathUtilities.swift in Sources */,
@@ -241,6 +303,8 @@
 				90B4C1AB21CA6877008ECBB3 /* Noise.swift in Sources */,
 				90B4C1A721CA5CAE008ECBB3 /* Chunk.swift in Sources */,
 				90B4C1A221CA5A91008ECBB3 /* Config.swift in Sources */,
+				90F7E44221E0797900246AFE /* SkyboxShader.metal in Sources */,
+				9068D66D21DD438200BAFA46 /* Skymap.swift in Sources */,
 				90B4C1AD21CA786E008ECBB3 /* SceneShader.metal in Sources */,
 				9060E66E21DBD7A3004BFF6F /* Water.swift in Sources */,
 				90B4BE3021CA57F0008ECBB3 /* CameraController.swift in Sources */,

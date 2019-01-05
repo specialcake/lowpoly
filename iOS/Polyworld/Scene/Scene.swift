@@ -11,21 +11,8 @@ import Metal
 import MetalKit
 import simd
 
-struct InstanceSceneVertexUniform {
-    var scene_size: UInt32
-    var scalefactor: Float
-    var scene_offset: float3
-    
-    var lower_color: float3
-    var land_color: float3
-    var rock_color: float3
-    var PVMatrix: float4x4
-    //var lightSpaceMatrix: float4x4
-}
-
 class Scene {
 public
-    let device: MTLDevice
     var debugFlag: Bool = false
     var chunk = [[Chunk]]()
     var cur_Chunk: Chunk!
@@ -38,15 +25,7 @@ public
     
     var generator: Noise!
     
-    // PipelineState
-    var mapPipelineState: MTLRenderPipelineState! = nil
-    var mapInstancePipelineState: MTLRenderPipelineState! = nil
-    var waterPipelineState: MTLRenderPipelineState! = nil
-    var shadowPipelineState: MTLRenderPipelineState! = nil
-    
     // Texture
-    var textureLoader: MTKTextureLoader!
-    var depthBufferDescriptor: MTLTextureDescriptor! = nil
     var NormalMap0: MTLTexture! = nil
     var NormalMap1: MTLTexture! = nil
     var pNormalMap: MTLTexture! = nil
@@ -62,11 +41,8 @@ public
     var water: Water
     var timeInterval: CFTimeInterval
     
-    init(device: MTLDevice, initpos: float3, shader: MTLRenderPipelineState, textureLoader: MTKTextureLoader) {
-        self.device = device
+    init(initpos: float3) {
         self.offset = initpos
-        self.mapPipelineState = shader
-        self.textureLoader = textureLoader
         self.water = Water()
         self.timeInterval = 0
         
@@ -121,9 +97,10 @@ public
             
             0.0, 1.0,
             1.0, 0.0,
-            0.0, 0.0]
+            0.0, 0.0
+        ]
         
-        vertexBuffer = device.makeBuffer(bytes: vertices, length: MemoryLayout<Float>.size * vertices.count, options:[])
+        vertexBuffer = ResourceManager.device.makeBuffer(bytes: vertices, length: MemoryLayout<Float>.size * vertices.count, options:[])
         
         let instance_vertices: [Float] = [
             1.0, 1.0, -1.0,
@@ -132,30 +109,30 @@ public
             
             0.0, 1.0, 1.0,
             1.0, 0.0, 1.0,
-            0.0, 0.0, 1.0]
+            0.0, 0.0, 1.0
+        ]
         
-        instanceVertexBuffer = device.makeBuffer(bytes: instance_vertices, length: MemoryLayout<Float>.size * instance_vertices.count, options:[])
+        instanceVertexBuffer = ResourceManager.device.makeBuffer(bytes: instance_vertices, length: MemoryLayout<Float>.size * instance_vertices.count, options:[])
         
     }
     
-    func draw(commandQueue: MTLCommandQueue, drawable: CAMetalDrawable, viewMatrix: float4x4, projectionMatrix: inout float4x4, clearColor: MTLClearColor?) {
+    func draw(drawable: CAMetalDrawable, viewMatrix: float4x4, projectionMatrix: float4x4, clearColor: MTLClearColor?) {
         
-        let bleen = MTLClearColor(red: 1, green: 1, blue: 1, alpha: 1)
+        let white = MTLClearColor(red: 1, green: 1, blue: 1, alpha: 1)
         let renderPassDescriptor = MTLRenderPassDescriptor()
         renderPassDescriptor.colorAttachments[0].texture = drawable.texture
-        renderPassDescriptor.colorAttachments[0].loadAction = .clear
-        renderPassDescriptor.colorAttachments[0].clearColor = bleen
+        renderPassDescriptor.colorAttachments[0].loadAction = .load
+        renderPassDescriptor.colorAttachments[0].clearColor = white
         renderPassDescriptor.colorAttachments[0].storeAction = .store
         
-        renderPassDescriptor.depthAttachment.texture = device.makeTexture(descriptor: depthBufferDescriptor)
+        renderPassDescriptor.depthAttachment.texture = ResourceManager.depthTexture
         renderPassDescriptor.depthAttachment.loadAction = .clear
         renderPassDescriptor.depthAttachment.storeAction = .store
         
-        let commandBuffer = commandQueue.makeCommandBuffer()!
-        let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
+        let renderEncoder = ResourceManager.commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
         
         var sizeOfUniformsBuffer = MemoryLayout<UInt32>.size + MemoryLayout<Float>.size * 31
-        vertexUniformBuffer = device.makeBuffer(length: sizeOfUniformsBuffer, options: [])!
+        vertexUniformBuffer = ResourceManager.device.makeBuffer(length: sizeOfUniformsBuffer, options: [])!
         var bufferPointer = vertexUniformBuffer.contents()
         
         var offset = 0
@@ -184,7 +161,7 @@ public
         offset += MemoryLayout<Float>.size * float4x4.numberOfElements
         
         sizeOfUniformsBuffer = MemoryLayout<Float>.size * 5 + ParallelLight.size()
-        fragmentUniformBuffer = device.makeBuffer(length: sizeOfUniformsBuffer, options: [])!
+        fragmentUniformBuffer = ResourceManager.device.makeBuffer(length: sizeOfUniformsBuffer, options: [])!
         bufferPointer = fragmentUniformBuffer.contents()
         
         var near_plane = NEAR_PLANE
@@ -201,7 +178,7 @@ public
         offset += MemoryLayout<Float>.size * 3
         memcpy(bufferPointer + offset, dirLight.raw(), ParallelLight.size())
         
-        renderEncoder.setRenderPipelineState(mapInstancePipelineState)
+        renderEncoder.setRenderPipelineState(ResourceManager.instanceScenePipelineState)
         renderEncoder.setVertexBuffer(instanceVertexBuffer, offset: 0, index: 0)
         renderEncoder.setVertexBuffer(instanceHeightBuffer, offset: 0, index: 1)
         renderEncoder.setVertexBuffer(vertexUniformBuffer, offset: 0, index: 2)
@@ -215,14 +192,14 @@ public
         let depthStencilDescriptor = MTLDepthStencilDescriptor()
         depthStencilDescriptor.depthCompareFunction = .less
         depthStencilDescriptor.isDepthWriteEnabled = true
-        let depthStencilState = device.makeDepthStencilState(descriptor: depthStencilDescriptor)
+        let depthStencilState = ResourceManager.device.makeDepthStencilState(descriptor: depthStencilDescriptor)
         renderEncoder.setDepthStencilState(depthStencilState)
         
         renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6, instanceCount: MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE)
         
         // Water
         sizeOfUniformsBuffer = MemoryLayout<Float>.size * 48
-        vertexUniformBuffer = device.makeBuffer(length: sizeOfUniformsBuffer, options: [])!
+        vertexUniformBuffer = ResourceManager.device.makeBuffer(length: sizeOfUniformsBuffer, options: [])!
         bufferPointer = vertexUniformBuffer.contents()
         
         var water_height = SEA_LEVEL
@@ -244,7 +221,7 @@ public
         memcpy(bufferPointer + offset, water.raw(), MemoryLayout<Float>.size * 24)
         
         sizeOfUniformsBuffer = MemoryLayout<Float>.size * 18
-        fragmentUniformBuffer = device.makeBuffer(length: sizeOfUniformsBuffer, options: [])!
+        fragmentUniformBuffer = ResourceManager.device.makeBuffer(length: sizeOfUniformsBuffer, options: [])!
         bufferPointer = fragmentUniformBuffer.contents()
         
         var water_color = WATER_COLOR
@@ -256,7 +233,7 @@ public
         offset += MemoryLayout<Float>.size * 3
         memcpy(bufferPointer + offset, dirLight.raw(), ParallelLight.size())
         
-        renderEncoder.setRenderPipelineState(waterPipelineState)
+        renderEncoder.setRenderPipelineState(ResourceManager.waterPipelineState)
         renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
         renderEncoder.setVertexBuffer(vertexUniformBuffer, offset: 0, index: 1)
         renderEncoder.setFragmentBuffer(fragmentUniformBuffer, offset: 0, index: 0)
@@ -264,9 +241,6 @@ public
         renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6, instanceCount: MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE)
         
         renderEncoder.endEncoding()
-        
-        commandBuffer.present(drawable)
-        commandBuffer.commit()
     }
     
     func generate_scene() {
@@ -481,7 +455,7 @@ public
                 data[i] *= 0.1
         }
         
-        instanceHeightBuffer = device.makeBuffer(bytes: data, length: MemoryLayout<Float>.size * limit, options:[])
+        instanceHeightBuffer = ResourceManager.device.makeBuffer(bytes: data, length: MemoryLayout<Float>.size * limit, options:[])
     }
     
 //    Texture2D Generate_NormalMap(int th)
