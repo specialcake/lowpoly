@@ -36,7 +36,7 @@ void Scene::Initialize() {
 
     this->generator = new Noise(NOISE_SIZE);
     this->water = new Water();
-    this->plant = new Plants("crystal");
+    this->plant = new Plants("bushytree");
 
     for(GLint i = 0; i < CHUNK_SIZE; i++){
         for(GLint j = 0; j < CHUNK_SIZE; j++){
@@ -427,6 +427,7 @@ Texture2D Scene::Generate_HeightMap() {
     for(GLint i = 0; i < limit; i++){
         data[i] = data[i] * 0.1f;
     }
+    this->CloudMap = ResourceManager::MakeTexture(len, len, GL_RED, data, "Could", GL_LINEAR, GL_LINEAR);
     return ResourceManager::MakeTexture(len, len, GL_RED, data, "HeightMap");
 }
 Texture2D Scene::Generate_NormalMap(int th) {

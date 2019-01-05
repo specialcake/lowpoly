@@ -13,20 +13,47 @@ uniform sampler2D Bottom;
 uniform sampler2D Front;
 uniform sampler2D Back;
 
+uniform sampler2D Cloud;
+
 void main() {
     vec3 color = vec3(0.458824f, 0.780392f, 1.0f);
     FragColor = vec4(color * (Pos.y + 0.3), 1.0f);
 
-    if(Type == 0.0f)
+    vec2 sphereTexCoords = normalize(Pos * 2.0 - 1.0).xz * 0.5 + 0.5;
+
+    if(Type == 0.0f){
         FragColor = texture(Right, TexCoords.zy);
-    else if(Type == 1.0f)
+        if(TexCoords.y > 0.5f){
+            float Factory = texture(Cloud, sphereTexCoords).r;
+            FragColor = mix(FragColor, vec4(1.0f, 1.0f, 1.0f, 1.0f), Factory);
+        }
+    }
+    else if(Type == 1.0f){
         FragColor = texture(Left, TexCoords.zy);
-    else if(Type == 2.0f)
-        FragColor = texture(Top, TexCoords.xz);
+        if(TexCoords.y > 0.5f){
+            float Factory = texture(Cloud, sphereTexCoords).r;
+            FragColor = mix(FragColor, vec4(1.0f, 1.0f, 1.0f, 1.0f), Factory);
+        }
+    }
+    else if(Type == 2.0f){
+        float Factory = texture(Cloud, sphereTexCoords).r;
+        FragColor = mix(texture(Top, TexCoords.xz), vec4(1.0f, 1.0f, 1.0f, 1.0f), Factory);
+    }
     else if(Type == 3.0f)
         FragColor = texture(Bottom, TexCoords.xz);
-    else if(Type == 4.0f)
+    else if(Type == 4.0f){
         FragColor = texture(Front, TexCoords.xy);
-    else
+        if(TexCoords.y > 0.5f){
+            float Factory = texture(Cloud, sphereTexCoords).r;
+            FragColor = mix(FragColor, vec4(1.0f, 1.0f, 1.0f, 1.0f), Factory);
+        }
+    }
+    else{
         FragColor = texture(Back, TexCoords.xy);
+        if(TexCoords.y > 0.5f){
+            float Factory = texture(Cloud, sphereTexCoords).r;
+            FragColor = mix(FragColor, vec4(1.0f, 1.0f, 1.0f, 1.0f), Factory);
+        }
+    }
+//    FragColor = vec4(sphereTexCoords, 0.0f, 1.0f);
 }

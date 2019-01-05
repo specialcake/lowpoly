@@ -33,7 +33,7 @@ public:
     std::vector<Treeinfo> Treeplace;
 
     Noise* generator;
-    Texture2D HeightMap;
+    Texture2D HeightMap, CloudMap;
     Texture2D NormalMap0, NormalMap1, pNormalMap;
 
     Water* water;

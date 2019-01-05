@@ -31,11 +31,12 @@ Texture2D ResourceManager::LoadTexture(const GLchar *file, GLuint format, std::s
     Textures[name] = loadTextureFromFile(file, format);
     return Textures[name];
 }
-Texture2D ResourceManager::MakeTexture(const GLuint width, const GLuint height, GLuint format, GLfloat* data, std::string name) {
+Texture2D ResourceManager::MakeTexture(const GLuint width, const GLuint height, GLuint format, GLfloat* data, std::string name, GLuint FilterMin, GLuint FilterMax) {
     if(Textures.count(name)){
         glDeleteTextures(1, &Textures[name].ID);
     }
     Texture2D texture;
+    texture.Filter_Min = FilterMin, texture.Filter_Max = FilterMax;
     texture.Internal_Format = texture.Image_Format = format;
     if(data != nullptr){
         texture.Generatefloat(static_cast<GLuint>(width), static_cast<GLuint>(height), data);

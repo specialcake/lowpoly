@@ -60,8 +60,9 @@ void Game::Init() {
     ResourceManager::GetShader("skybox").setInt("Bottom", 3);
     ResourceManager::GetShader("skybox").setInt("Front", 4);
     ResourceManager::GetShader("skybox").setInt("Back", 5);
+    ResourceManager::GetShader("skybox").setInt("Cloud", 6);
 
-    ResourceManager::LoadModel("../resource/model/widetree/widetree.obj", "crystal");
+    ResourceManager::LoadModel("../resource/model/bushytree/bushytree.obj", "bushytree");
 
     littlewindow = new SpriteRenderer(ResourceManager::GetShader("sprite"));
 
@@ -143,17 +144,19 @@ void Game::Render() {
 
         glDepthFunc(GL_LEQUAL);
         ResourceManager::skybox->shader.use();
+        glActiveTexture(GL_TEXTURE6);
+        scene->CloudMap.Bind();
         ResourceManager::skybox->shader.setMat4("PVMatrix", projection * glm::mat4(glm::mat3(ResourceManager::camera.GetViewMatrix())));
         ResourceManager::skybox->Draw(skymap->skymap);
         glDepthFunc(GL_LESS);
 
         littlewindow->shader.use();
         littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
-        littlewindow->DrawSprite(shadowmap->DepthMap, glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.5f));
+        littlewindow->DrawSprite(scene->CloudMap, glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.5f));
 //
-        littlewindow->shader.use();
-        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
-        littlewindow->DrawSprite(shadowmap->BluredShadow, glm::vec3(-0.1f, 0.5f, 0.0f), glm::vec3(0.5f));
+//        littlewindow->shader.use();
+//        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
+//        littlewindow->DrawSprite(shadowmap->BluredShadow, glm::vec3(-0.1f, 0.5f, 0.0f), glm::vec3(0.5f));
 //
         scene->draw(PVMatrix, lightSpaceMatrix, shadowmap->DepthMap, shadowmap->BluredShadow);
 
