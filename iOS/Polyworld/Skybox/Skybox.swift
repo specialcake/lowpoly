@@ -75,8 +75,7 @@ class Skybox {
         renderPassDescriptor.colorAttachments[0].clearColor = white
         renderPassDescriptor.colorAttachments[0].storeAction = .store
         
-        let commandBuffer = ResourceManager.commandQueue.makeCommandBuffer()!
-        let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
+        let renderEncoder = ResourceManager.commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
         
         let sizeOfUniformsBuffer = MemoryLayout<Float>.size * 16
         vertexUniformBuffer = ResourceManager.device.makeBuffer(length: sizeOfUniformsBuffer, options: [])!
@@ -105,7 +104,6 @@ class Skybox {
         
         renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 36)
         renderEncoder.endEncoding()
-        commandBuffer.commit()
     }
     
     func defaultSampler(device: MTLDevice) -> MTLSamplerState {

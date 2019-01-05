@@ -13,6 +13,7 @@ class ResourceManager {
     
     static var device: MTLDevice!
     static var commandQueue: MTLCommandQueue!
+    static var commandBuffer: MTLCommandBuffer!
     
     // renderPipelineState
     static var scenePipelineState: MTLRenderPipelineState!

@@ -83,7 +83,6 @@ class ViewController: UIViewController {
         skymap = Skymap()
         skymap.draw(sunPos: float3(0.0, 0.5, -1.0))
         
-        
         var model = float4x4(translationBy: -8.0 * PARLIGHT_DIR) * float4x4(scaleBy: 25.0)
         sun = Sun(device: ResourceManager.device, modelMatrix: model, forResourse: "polyball", withExtension: "obj")
     }
@@ -130,11 +129,14 @@ class ViewController: UIViewController {
     
     func render() {
         guard let drawable = metalLayer?.nextDrawable() else { return }
+        ResourceManager.commandBuffer = ResourceManager.commandQueue.makeCommandBuffer()!
         
         skybox.draw(drawable: drawable, skymap: skymap, viewMatrix: ResourceManager.camera.viewMatrix, projectionMatrix: ResourceManager.projectionMatrix)
         sun.draw(drawable: drawable)
         scene.draw(drawable: drawable, viewMatrix: ResourceManager.camera.viewMatrix, projectionMatrix: ResourceManager.projectionMatrix ,clearColor: nil)
         
+        ResourceManager.commandBuffer.present(drawable)
+        ResourceManager.commandBuffer.commit()
     }
     
     func registerShaders() {

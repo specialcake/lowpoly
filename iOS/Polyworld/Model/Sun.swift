@@ -174,8 +174,6 @@ class Sun: NSObject {
     func draw(drawable: CAMetalDrawable) {
         updateScene(drawable: drawable)
         
-        let commandBuffer = commandQueue.makeCommandBuffer()!
-        
         let white = MTLClearColor(red: 1, green: 1, blue: 1, alpha: 1)
         let renderPassDescriptor = MTLRenderPassDescriptor()
         renderPassDescriptor.colorAttachments[0].texture = drawable.texture
@@ -187,7 +185,7 @@ class Sun: NSObject {
         renderPassDescriptor.depthAttachment.loadAction = .clear
         renderPassDescriptor.depthAttachment.storeAction = .store
         
-        let commandEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
+        let commandEncoder = ResourceManager.commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
         commandEncoder.setRenderPipelineState(renderPipeline)
         commandEncoder.setDepthStencilState(depthStencilState)
         
@@ -196,7 +194,6 @@ class Sun: NSObject {
         }
         
         commandEncoder.endEncoding()
-        commandBuffer.commit()
     }
     
     func draw(_ node: Node, in commandEncoder: MTLRenderCommandEncoder) {

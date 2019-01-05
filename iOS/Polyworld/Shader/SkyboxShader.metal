@@ -31,7 +31,7 @@ vertex SkyboxVertexOut skyboxVertex(constant SkyboxVertexIn *vertices [[buffer(0
 {
     SkyboxVertexIn in = vertices[vid];
     SkyboxVertexOut out;
-    float scale = 50;
+    float scale = 100;
     float4x4 PVMatrix = uniforms.PVMatrix;
     float4 pos = float4(in.position.x * scale, (in.position.y - 0.2) * scale, in.position.z * scale, 1.0);
     pos = PVMatrix * pos;
