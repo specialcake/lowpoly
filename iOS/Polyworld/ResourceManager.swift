@@ -13,14 +13,17 @@ class ResourceManager {
     
     static var device: MTLDevice!
     static var commandQueue: MTLCommandQueue!
-    static var commandBuffer: MTLCommandBuffer!
     
-    // PipelineState
+    // renderPipelineState
     static var scenePipelineState: MTLRenderPipelineState!
     static var instanceScenePipelineState: MTLRenderPipelineState!
     static var waterPipelineState: MTLRenderPipelineState!
-    static var skymapPipelineState: MTLRenderPipelineState!
     static var skyboxPipelineState: MTLRenderPipelineState!
+    
+    // computePipelineState
+    static var skymapPipelineState: MTLComputePipelineState!
+    static var threadgroupSize: MTLSize!
+    static var threadgroupCount: MTLSize!
     
     static var depthBufferDescriptor: MTLTextureDescriptor!
     static var depthTexture: MTLTexture!
@@ -30,6 +33,4 @@ class ResourceManager {
     static var textureLoader: MTKTextureLoader! = nil
     
     static var camera: CameraController!
-    
-    static var skybox: Skybox!
 }

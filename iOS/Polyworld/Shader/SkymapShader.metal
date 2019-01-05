@@ -13,28 +13,6 @@ using namespace metal;
 #define iSteps 16
 #define jSteps 8
 
-/*
-float4 GetColor(float3 vPosition){
-    float3 color = atmosphere(
-        normalize(vPosition),           // normalized ray direction
-        float3(0,6372e3,0),             // ray origin
-        uSunPos,                        // position of the sun
-        32.0,                           // intensity of the sun
-        6371e3,                         // radius of the planet in meters
-        6471e3,                         // radius of the atmosphere in meters
-        float3(5.5e-6, 13.0e-6, 22.4e-6), // Rayleigh scattering coefficient
-        21e-6,                          // Mie scattering coefficient
-        8e3,                            // Rayleigh scale height
-        1.2e3,                          // Mie scale height
-        0.758                           // Mie preferred scattering direction
-    );
-    
-    color = 1.0 - exp(-1.0 * color);
-    
-    return float4(color, 1.0f);
-}
-*/
-
 float2 rsi(float3 r0, float3 rd, float sr) {
     // ray-sphere intersection that assumes
     // the sphere is centered at the origin.
@@ -45,9 +23,9 @@ float2 rsi(float3 r0, float3 rd, float sr) {
     float d = (b*b) - 4.0*a*c;
     if (d < 0.0) return float2(1e5,-1e5);
     return float2(
-                (-b - sqrt(d))/(2.0*a),
-                (-b + sqrt(d))/(2.0*a)
-                );
+                  (-b - sqrt(d))/(2.0*a),
+                  (-b + sqrt(d))/(2.0*a)
+                  );
 }
 
 float3 atmosphere(float3 r, float3 r0, float3 pSun, float iSun, float rPlanet, float rAtmos, float3 kRlh, float kMie, float shRlh, float shMie, float g) {
@@ -139,49 +117,60 @@ float3 atmosphere(float3 r, float3 r0, float3 pSun, float iSun, float rPlanet, f
     return iSun * (pRlh * kRlh * totalRlh + pMie * kMie * totalMie);
 }
 
-
-struct SkymapVertexOut {
-    float4 position [[position]];
-    float3 fragPosition;
-};
-
-vertex SkymapVertexOut skymapVertex(constant packed_float3 *vertices [[buffer(0)]],
-                           constant float &type [[buffer(1)]],
-                           uint vid [[vertex_id]])
-{
-    float3 in = vertices[vid];
-    SkymapVertexOut out;
-    
-    out.position = float4(in.xy,0.0,1.0);
-    if (type == 0)      out.fragPosition = float3( in.x,  in.y,  in.z); // front
-    else if (type == 1) out.fragPosition = float3( in.x,  in.y, -in.z); // back
-    else if (type == 2) out.fragPosition = float3(-in.z,  in.y,  in.x); // right
-    else if (type == 3) out.fragPosition = float3( in.z,  in.y,  in.x); // left
-    else if (type == 4) out.fragPosition = float3( in.x, -in.z,  in.y); // top
-    else                out.fragPosition = float3( in.x,  in.z, -in.y); // bottom
-    return out;
-}
-
-fragment float4 skymapFragment(SkymapVertexOut vert [[stage_in]],
-                              constant packed_float3 &uSunPos [[buffer(0)]])
-{
-    //return GetColor(vert.fragPosition);
-    
+float4 GetColor(float3 vPosition, float3 uSunPos){
     float3 color = atmosphere(
-              normalize(vert.fragPosition),           // normalized ray direction
-              float3(0,6372e3,0),             // ray origin
-              uSunPos,                        // position of the sun
-              32.0,                           // intensity of the sun
-              6371e3,                         // radius of the planet in meters
-              6471e3,                         // radius of the atmosphere in meters
-              float3(5.5e-6, 13.0e-6, 22.4e-6), // Rayleigh scattering coefficient
-              21e-6,                          // Mie scattering coefficient
-              8e3,                            // Rayleigh scale height
-              1.2e3,                          // Mie scale height
-              0.758                           // Mie preferred scattering direction
-            );
-
+        normalize(vPosition),           // normalized ray direction
+        float3(0,6372e3,0),             // ray origin
+        uSunPos,                        // position of the sun
+        32.0,                           // intensity of the sun
+        6371e3,                         // radius of the planet in meters
+        6471e3,                         // radius of the atmosphere in meters
+        float3(5.5e-6, 13.0e-6, 22.4e-6), // Rayleigh scattering coefficient
+        21e-6,                          // Mie scattering coefficient
+        8e3,                            // Rayleigh scale height
+        1.2e3,                          // Mie scale height
+        0.758                           // Mie preferred scattering direction
+    );
+    
     color = 1.0 - exp(-1.0 * color);
     
     return float4(color, 1.0f);
+}
+
+kernel void skymapCompute(texture2d<float, access::write> front  [[texture(0)]],
+                          texture2d<float, access::write> back   [[texture(1)]],
+                          texture2d<float, access::write> right  [[texture(2)]],
+                          texture2d<float, access::write> left   [[texture(3)]],
+                          texture2d<float, access::write> top    [[texture(4)]],
+                          texture2d<float, access::write> bottom [[texture(5)]],
+                          uint2 gid [[thread_position_in_grid]])
+{
+    int width = front.get_width();
+    int height = front.get_height();
+    float3 sunPos = float3(0.0, 0.5, -1.0);
+    float2 uv = float2(gid) / float2(width, height);
+    float2 pos = uv * 2 - 1;
+    float3 fragPosition = float3(pos.x, pos.y, -1.0);
+    float4 color = GetColor(fragPosition, sunPos);
+    front.write(color, gid);
+
+    fragPosition = float3(pos.x, pos.y, 1.0);
+    color = GetColor(fragPosition, sunPos);
+    back.write(color, gid);
+    
+    fragPosition = float3(1.0, pos.y, pos.x);
+    color = GetColor(fragPosition, sunPos);
+    right.write(color, gid);
+    
+    fragPosition = float3(-1.0, pos.y, pos.x);
+    color = GetColor(fragPosition, sunPos);
+    left.write(color, gid);
+    
+    fragPosition = float3(pos.x, 1.0, pos.y);
+    color = GetColor(fragPosition, sunPos);
+    top.write(color, gid);
+    
+    fragPosition = float3(pos.x, -1.0, pos.y);
+    color = GetColor(fragPosition, sunPos);
+    bottom.write(color, gid);
 }

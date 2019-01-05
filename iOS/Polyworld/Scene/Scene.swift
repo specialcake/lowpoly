@@ -129,7 +129,8 @@ public
         renderPassDescriptor.depthAttachment.loadAction = .clear
         renderPassDescriptor.depthAttachment.storeAction = .store
         
-        let renderEncoder = ResourceManager.commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
+        let commandBuffer = ResourceManager.commandQueue.makeCommandBuffer()!
+        let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
         
         var sizeOfUniformsBuffer = MemoryLayout<UInt32>.size + MemoryLayout<Float>.size * 31
         vertexUniformBuffer = ResourceManager.device.makeBuffer(length: sizeOfUniformsBuffer, options: [])!
@@ -241,6 +242,8 @@ public
         renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6, instanceCount: MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE)
         
         renderEncoder.endEncoding()
+        commandBuffer.present(drawable)
+        commandBuffer.commit()
     }
     
     func generate_scene() {

@@ -25,8 +25,8 @@ class ViewController: UIViewController {
     var trackedTouch: UITouch?
     
     var scene: Scene!
-    
     var skymap: Skymap!
+    var skybox: Skybox!
     
     // UI
     @IBOutlet weak var gameView: UIView!
@@ -54,11 +54,14 @@ class ViewController: UIViewController {
         
         registerShaders()
         
-        ResourceManager.depthBufferDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: Int(2 * self.view.bounds.size.width), height: Int(2 * self.view.bounds.size.height), mipmapped: false)
+        let textureWidth = Int(2 * self.view.bounds.size.width)
+        let textureHeight = Int(2 * self.view.bounds.size.height)
+        
+        ResourceManager.depthBufferDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: textureWidth, height: textureHeight, mipmapped: false)
         ResourceManager.depthBufferDescriptor.usage = .renderTarget
         ResourceManager.depthTexture = ResourceManager.device.makeTexture(descriptor: ResourceManager.depthBufferDescriptor)
         
-        ResourceManager.textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: Int(2 * self.view.bounds.size.width), height: Int(2 * self.view.bounds.size.height), mipmapped: false)
+        ResourceManager.textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: textureWidth, height: textureHeight, mipmapped: false)
         ResourceManager.textureDescriptor.usage = [.shaderRead, .shaderWrite, .renderTarget]
         
         ResourceManager.textureLoader = MTKTextureLoader(device: ResourceManager.device)
@@ -67,12 +70,18 @@ class ViewController: UIViewController {
         
         projectionMatrix = float4x4(perspectiveProjectionFov: radian(45), aspectRatio: Float(self.view.bounds.size.width / self.view.bounds.size.height), nearZ: NEAR_PLANE, farZ: FAR_PLANE)
         
+        ResourceManager.threadgroupSize = MTLSizeMake(16, 16, 1)
+        ResourceManager.threadgroupCount = MTLSizeMake(0, 0, 0)
+        ResourceManager.threadgroupCount.width  = (textureWidth + ResourceManager.threadgroupSize.width - 1) / ResourceManager.threadgroupSize.width;
+        ResourceManager.threadgroupCount.height = (textureHeight + ResourceManager.threadgroupSize.height - 1) / ResourceManager.threadgroupSize.height;
+        ResourceManager.threadgroupCount.depth = 1;
+        
         scene = Scene(initpos: float3(0))
         scene.generate_scene()
         
-        ResourceManager.skybox = Skybox()
+        skybox = Skybox()
         skymap = Skymap()
-        skymap.load()
+        skymap.draw(sunPos: float3(0.0, 0.5, -1.0))
     }
     
     override func viewDidLayoutSubviews() {
@@ -117,23 +126,20 @@ class ViewController: UIViewController {
     
     func render() {
         guard let drawable = metalLayer?.nextDrawable() else { return }
-        ResourceManager.commandBuffer = ResourceManager.commandQueue.makeCommandBuffer()!
-
-        //skymap.draw(drawable: drawable, sunPos: float3(0.0, 0.5, -1.0))
         
-        ResourceManager.skybox.draw(drawable: drawable, skymap: skymap, viewMatrix: ResourceManager.camera.viewMatrix, projectionMatrix: projectionMatrix)
+        skybox.draw(drawable: drawable, skymap: skymap, viewMatrix: ResourceManager.camera.viewMatrix, projectionMatrix: projectionMatrix)
         scene.draw(drawable: drawable, viewMatrix: ResourceManager.camera.viewMatrix, projectionMatrix: projectionMatrix ,clearColor: nil)
-        
-        ResourceManager.commandBuffer.present(drawable)
-        ResourceManager.commandBuffer.commit()
-        
     }
     
     func registerShaders() {
         ResourceManager.scenePipelineState = buildShaders(vertexFunction: "sceneVertex", fragmentFunction: "sceneFragment", depth: true, blend: false)
         ResourceManager.instanceScenePipelineState = buildShaders(vertexFunction: "instanceSceneVertex", fragmentFunction: "instanceSceneFragment", depth: true, blend: false)
         ResourceManager.waterPipelineState = buildShaders(vertexFunction: "waterVertex", fragmentFunction: "waterFragment", depth: true, blend: true)
-        ResourceManager.skymapPipelineState = buildShaders(vertexFunction: "skymapVertex", fragmentFunction: "skymapFragment", depth: false, blend: false)
+
+        let defaultLibrary = ResourceManager.device.makeDefaultLibrary()!
+        let kernelFunction = defaultLibrary.makeFunction(name: "skymapCompute")!
+        ResourceManager.skymapPipelineState = try! ResourceManager.device.makeComputePipelineState(function: kernelFunction)
+        
         ResourceManager.skyboxPipelineState = buildShaders(vertexFunction: "skyboxVertex", fragmentFunction: "skyboxFragment", depth: false, blend: false)
     }
     
