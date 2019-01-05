@@ -33,4 +33,5 @@ class ResourceManager {
     static var textureLoader: MTKTextureLoader! = nil
     
     static var camera: CameraController!
+    static var projectionMatrix: float4x4!
 }

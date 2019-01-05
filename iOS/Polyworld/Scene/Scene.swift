@@ -126,7 +126,7 @@ public
         renderPassDescriptor.colorAttachments[0].storeAction = .store
         
         renderPassDescriptor.depthAttachment.texture = ResourceManager.depthTexture
-        renderPassDescriptor.depthAttachment.loadAction = .clear
+        renderPassDescriptor.depthAttachment.loadAction = .load
         renderPassDescriptor.depthAttachment.storeAction = .store
         
         let commandBuffer = ResourceManager.commandQueue.makeCommandBuffer()!

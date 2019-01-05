@@ -20,13 +20,13 @@ class ViewController: UIViewController {
     // Rendering
     var timer: CADisplayLink! = nil
     var lastFrameTimestamp: CFTimeInterval = 0.0
-    
-    var projectionMatrix: float4x4!
+
     var trackedTouch: UITouch?
     
     var scene: Scene!
     var skymap: Skymap!
     var skybox: Skybox!
+    var sun: Sun!
     
     // UI
     @IBOutlet weak var gameView: UIView!
@@ -68,7 +68,7 @@ class ViewController: UIViewController {
         
         ResourceManager.camera = CameraController()
         
-        projectionMatrix = float4x4(perspectiveProjectionFov: radian(45), aspectRatio: Float(self.view.bounds.size.width / self.view.bounds.size.height), nearZ: NEAR_PLANE, farZ: FAR_PLANE)
+        ResourceManager.projectionMatrix = float4x4(perspectiveProjectionFov: radian(45), aspectRatio: Float(self.view.bounds.size.width / self.view.bounds.size.height), nearZ: NEAR_PLANE, farZ: FAR_PLANE)
         
         ResourceManager.threadgroupSize = MTLSizeMake(16, 16, 1)
         ResourceManager.threadgroupCount = MTLSizeMake(0, 0, 0)
@@ -82,6 +82,10 @@ class ViewController: UIViewController {
         skybox = Skybox()
         skymap = Skymap()
         skymap.draw(sunPos: float3(0.0, 0.5, -1.0))
+        
+        
+        var model = float4x4(translationBy: -8.0 * PARLIGHT_DIR) * float4x4(scaleBy: 25.0)
+        sun = Sun(device: ResourceManager.device, modelMatrix: model, forResourse: "polyball", withExtension: "obj")
     }
     
     override func viewDidLayoutSubviews() {
@@ -96,7 +100,7 @@ class ViewController: UIViewController {
             metalLayer.drawableSize = CGSize(width: layerSize.width * scale, height: layerSize.height * scale)
         }
         
-        projectionMatrix = float4x4(perspectiveProjectionFov: radian(45), aspectRatio: Float(self.view.bounds.size.width / self.view.bounds.size.height), nearZ: NEAR_PLANE, farZ: FAR_PLANE)
+        ResourceManager.projectionMatrix = float4x4(perspectiveProjectionFov: radian(45), aspectRatio: Float(self.view.bounds.size.width / self.view.bounds.size.height), nearZ: NEAR_PLANE, farZ: FAR_PLANE)
     }
     
     @objc func newFrame(displayLink: CADisplayLink) {
@@ -127,8 +131,10 @@ class ViewController: UIViewController {
     func render() {
         guard let drawable = metalLayer?.nextDrawable() else { return }
         
-        skybox.draw(drawable: drawable, skymap: skymap, viewMatrix: ResourceManager.camera.viewMatrix, projectionMatrix: projectionMatrix)
-        scene.draw(drawable: drawable, viewMatrix: ResourceManager.camera.viewMatrix, projectionMatrix: projectionMatrix ,clearColor: nil)
+        skybox.draw(drawable: drawable, skymap: skymap, viewMatrix: ResourceManager.camera.viewMatrix, projectionMatrix: ResourceManager.projectionMatrix)
+        sun.draw(drawable: drawable)
+        scene.draw(drawable: drawable, viewMatrix: ResourceManager.camera.viewMatrix, projectionMatrix: ResourceManager.projectionMatrix ,clearColor: nil)
+        
     }
     
     func registerShaders() {

@@ -11,7 +11,7 @@ class CameraController {
         return lookAt(position, position + front, up)
     }
     
-    var position: float3 = float3(0, 5, 0)
+    var position: float3 = float3(0, 5, 3)
     var up: float3 = float3(0, 1, 0)
     var front: float3 = float3(0, 0, -1)
     var right: float3 = float3(1, 0, 0)
