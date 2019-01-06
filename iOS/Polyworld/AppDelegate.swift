@@ -14,6 +14,19 @@ import SafariServices
 class AppDelegate: UIResponder, UIApplicationDelegate, MFMailComposeViewControllerDelegate {
 
     var window: UIWindow?
+    
+    var blockRotation: UIInterfaceOrientationMask = .landscape {
+        didSet{
+            if blockRotation.contains(.portrait){
+                //强制设置成竖屏
+                UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
+            }else{
+                //强制设置成横屏
+                UIDevice.current.setValue(UIInterfaceOrientation.landscapeLeft.rawValue, forKey: "orientation")
+                
+            }
+        }
+    }
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
@@ -75,8 +88,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MFMailComposeViewControll
             mailComposer.setToRecipients(["shenxinyi@zju.edu.cn"])
             mailComposer.setSubject("About Polyworld")
             mailComposer.setMessageBody("Hello, this is an email from me.", isHTML: false)
-            
-            window?.rootViewController?.present(mailComposer, animated: true, completion: nil)
+            blockRotation = .portrait
+            window?.rootViewController?.present(mailComposer, animated: false, completion: nil)
         case "share":
             print("share")
         default:
@@ -85,8 +98,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MFMailComposeViewControll
     }
     
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
-        window?.rootViewController?.dismiss(animated: true, completion: nil)
+        blockRotation = .landscape
+        window?.rootViewController?.dismiss(animated: false, completion: nil)
     }
     
 }
 
+extension AppDelegate{
+    
+    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+        
+        return blockRotation
+    }
+}
