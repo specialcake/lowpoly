@@ -12,7 +12,7 @@
 class SSR {
 public:
     GLuint VAO;
-    Texture2D DepthMap, NormalMap, ColorMap;
+    Texture2D DepthMap, NormalMap, ColorMap, Reflectable;
     Shader SceneShader, ModelShader, SSRShader;
     SSR(Shader scene_shader, Shader model_shader, Shader ssr_shader);
     ~SSR();

@@ -56,6 +56,7 @@ void Game::Init() {
     ResourceManager::GetShader("SSR").setInt("DepthMap", 0);
     ResourceManager::GetShader("SSR").setInt("NormalMap", 1);
     ResourceManager::GetShader("SSR").setInt("ColorMap", 2);
+    ResourceManager::GetShader("SSR").setInt("Reflectable", 3);
 
     ResourceManager::GetShader("instancemodel").use();
     ResourceManager::GetShader("instancemodel").setInt("BlurShadow", 0);

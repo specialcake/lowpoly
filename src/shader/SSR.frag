@@ -13,5 +13,7 @@ uniform sampler2D NormalMap;
 uniform sampler2D ColorMap;
 
 void main() {
+    vec4 OirginColor = texture(ColorMap, TexCoords);
+
 	FragColor = texture(ColorMap, TexCoords);
 }

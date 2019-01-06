@@ -1,6 +1,7 @@
 #version 330 core
 layout (location = 0) out vec4 FragColor;
 layout (location = 1) out vec4 viewNormal;
+layout (location = 2) out vec4 reflectable;
 //out vec4 FragColor;
 
 in GS_OUT {
@@ -51,6 +52,7 @@ void main() {
 
     FragColor = vec4(aFragColor, 0.6f);
     viewNormal = vec4(fs_in.viewNormal, 1.0f);
+    reflectable = vec4(1.0f);
 }
 
 float ShadowCalculation(vec4 fragPosLightSpace){

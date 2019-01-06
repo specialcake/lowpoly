@@ -19,15 +19,18 @@ void SSR::Initialize(){
     DepthMap.GenerateShadowMap(SCREEN_WIDTH, SCREEN_HEIGHT);
     NormalMap.GenerateSkymap(SCREEN_WIDTH, SCREEN_HEIGHT);
     ColorMap.GenerateSkymap(SCREEN_WIDTH, SCREEN_HEIGHT);
+    Reflectable.GenerateSkymap(SCREEN_WIDTH, SCREEN_HEIGHT);
 
     glGenFramebuffers(1, &SSRFBO);
     glBindFramebuffer(GL_FRAMEBUFFER, SSRFBO);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, DepthMap.ID, 0);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ColorMap.ID, 0);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, NormalMap.ID, 0);
-    unsigned int attachments[2] = {GL_COLOR_ATTACHMENT0,
-                                   GL_COLOR_ATTACHMENT1};
-    glDrawBuffers(2, attachments);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, Reflectable.ID, 0);
+    unsigned int attachments[3] = {GL_COLOR_ATTACHMENT0,
+                                   GL_COLOR_ATTACHMENT1,
+                                   GL_COLOR_ATTACHMENT2};
+    glDrawBuffers(3, attachments);
     glReadBuffer(GL_NONE);
 
     if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE){
@@ -56,6 +59,8 @@ void SSR::Render() {
     NormalMap.Bind();
     glActiveTexture(GL_TEXTURE2);
     ColorMap.Bind();
+    glActiveTexture(GL_TEXTURE3);
+    Reflectable.Bind();
     SSRShader.setFloat("near", NEAR_PLANE);
     SSRShader.setFloat("far", FAR_PLANE);
     glBindVertexArray(VAO);
