@@ -51,7 +51,7 @@ void main() {
     vec3 aFragColor = water_color * factory;
 
     FragColor = vec4(aFragColor, 0.6f);
-    viewNormal = vec4(fs_in.viewNormal, 1.0f);
+    viewNormal = vec4(fs_in.viewNormal * 0.5 + vec3(0.5), 1.0f);
     reflectable = vec4(1.0f);
 }
 

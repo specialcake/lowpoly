@@ -186,12 +186,12 @@ void Game::Render() {
         littlewindow->shader.use();
         littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
         littlewindow->DrawSprite(SSReflect->NormalMap, glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.5f));
+//
+//        littlewindow->shader.use();
+//        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
+//        littlewindow->DrawSprite(SSReflect->DepthMap, glm::vec3(-0.1f, 0.5f, 0.0f), glm::vec3(0.5f));
 
-        littlewindow->shader.use();
-        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
-        littlewindow->DrawSprite(SSReflect->ColorMap, glm::vec3(-0.1f, 0.5f, 0.0f), glm::vec3(0.5f));
-
-        SSReflect->Render();
+        SSReflect->Render(projection);
 
 //        glDepthFunc(GL_LEQUAL);
 //        Model* Sun = ResourceManager::GetModel("polyball");

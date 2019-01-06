@@ -51,7 +51,7 @@ void SSR::EndMakeUp() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void SSR::Render() {
+void SSR::Render(const glm::mat4& projMatrix) {
     this->SSRShader.use();
     glActiveTexture(GL_TEXTURE0);
     DepthMap.Bind();
@@ -61,6 +61,8 @@ void SSR::Render() {
     ColorMap.Bind();
     glActiveTexture(GL_TEXTURE3);
     Reflectable.Bind();
+    SSRShader.setMat4("projection", projMatrix);
+    SSRShader.setMat4("invProj", glm::inverse(projMatrix));
     SSRShader.setFloat("near", NEAR_PLANE);
     SSRShader.setFloat("far", FAR_PLANE);
     glBindVertexArray(VAO);

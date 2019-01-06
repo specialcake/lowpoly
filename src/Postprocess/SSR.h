@@ -20,7 +20,7 @@ public:
     void InitRenderData();
     void BeginMakeUp();
     void EndMakeUp();
-    void Render();
+    void Render(const glm::mat4& projMatrix);
 private:
     GLuint SSRFBO;
 };
