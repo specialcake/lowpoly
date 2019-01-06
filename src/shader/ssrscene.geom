@@ -5,7 +5,6 @@ layout (triangle_strip, max_vertices = 3) out;
 in VS_OUT {
     vec3 FragPos;
     vec3 viewPos;
-//    vec3 Normal;
     vec3 Color;
     vec4 FragPosLightSpace;
 } gs_in[];

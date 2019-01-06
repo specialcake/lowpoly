@@ -3,6 +3,7 @@ layout (location = 0) in vec2 aVertex;
 
 out VS_OUT {
     vec3 FragPos;
+    vec3 viewPos;
     vec4 FragPosLightSpace;
 } vs_out;
 
@@ -20,6 +21,7 @@ uniform float water_height;
 uniform Wave wave[wave_number];
 uniform float Timer;
 
+uniform mat4 view;
 uniform mat4 PVMatrix;
 uniform mat4 lightSpaceMatrix;
 
@@ -43,6 +45,6 @@ void main() {
 
     //world coordinate
     vs_out.FragPos = pos;
-
+    vs_out.viewPos = vec3(view * vec4(pos, 1.0f));
     vs_out.FragPosLightSpace = lightSpaceMatrix * vec4(vs_out.FragPos, 1.0);
 }

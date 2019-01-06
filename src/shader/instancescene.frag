@@ -1,9 +1,11 @@
 #version 330 core
-out vec4 FragColor;
+layout (location = 0) out vec4 FragColor;
+layout (location = 1) out vec4 viewNormal;
 
 in GS_OUT {
     vec3 FragPos;
     vec3 Normal;
+    vec3 viewNormal;
     vec3 Color;
     vec4 FragPosLightSpace;
 } fs_in;
@@ -57,6 +59,7 @@ void main() {
 
     vec3 aFragColor = fs_in.Color * factory;
     FragColor = vec4(aFragColor, 1.0f);
+    viewNormal = vec4(fs_in.viewNormal, 1.0f);
 
 //    if(shadoweffect > 0.0f) FragColor = vec4(1.0f, 0.0f, 0.0f, 1.0f);
 //    if(dot(fs_in.Normal, normalize(dirLight.direction)) < 0.0f) FragColor = vec4(0.0f, 1.0f, 1.0f, 1.0f);

@@ -1,9 +1,12 @@
 #version 330 core
-out vec4 FragColor;
+layout (location = 0) out vec4 FragColor;
+layout (location = 1) out vec4 viewNormal;
+//out vec4 FragColor;
 
 in VS_OUT {
     vec3 FragPos;
     vec3 Normal;
+    vec3 viewNormal;
     vec4 FragPosLightSpace;
 } fs_in;
 
@@ -30,6 +33,7 @@ void main(){
 
     vec3 aFragColor = 0.5 * texture_diffuse1_color.rgb * factory;
     FragColor = vec4(aFragColor, 1.0f);
+    viewNormal = vec4(fs_in.viewNormal, 1.0f);
 }
 
 float ShadowCalculation(vec4 fragPosLightSpace){

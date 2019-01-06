@@ -55,10 +55,11 @@ void Plants::SetParam(const std::vector<Treeinfo>& places) {
     }
 }
 
-void Plants::Draw(const glm::mat4& PVMatrix, const glm::mat4& lightSpaceMatrix, const Texture2D& BluredShadow) {
+void Plants::Draw(const glm::mat4& view, const glm::mat4& PVMatrix, const glm::mat4& lightSpaceMatrix, const Texture2D& BluredShadow) {
     shader.use();
     glActiveTexture(GL_TEXTURE0);
     BluredShadow.Bind();
+    shader.setMat4("view", view);
     shader.setMat4("PVMatrix", PVMatrix);
     shader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
     shader.setLight(ResourceManager::camera.Position);

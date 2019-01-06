@@ -29,7 +29,7 @@ public:
     ~Plants();
     void Initialize(std::string modelname);
     void SetParam(const std::vector<Treeinfo>& places);
-    void Draw(const glm::mat4& PVMatrix, const glm::mat4& lightSpaceMatrix, const Texture2D& BluredShadow);
+    void Draw(const glm::mat4& view, const glm::mat4& PVMatrix, const glm::mat4& lightSpaceMatrix, const Texture2D& BluredShadow);
     void GenerateShadow(const glm::mat4& lightSpaceMatrix);
 };
 

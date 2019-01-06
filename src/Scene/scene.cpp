@@ -125,7 +125,7 @@ void Scene::generate_scene() {
     Tools::PrintVec3(glm::normalize(vc));
 //    this->chunk[0][0]->height[1][1] = 3.0f;
 }
-void Scene::draw(const glm::mat4& PVMatrix, const glm::mat4& lightSpaceMatrix,
+void Scene::draw(const glm::mat4& view, const glm::mat4& PVMatrix, const glm::mat4& lightSpaceMatrix,
                  const Texture2D& ShadowMap, const Texture2D& BluredShadow) {
     if(ResourceManager::Keys[GLFW_KEY_H]){
         glEnable(GL_CULL_FACE);
@@ -138,6 +138,7 @@ void Scene::draw(const glm::mat4& PVMatrix, const glm::mat4& lightSpaceMatrix,
     ShadowMap.Bind();
     glActiveTexture(GL_TEXTURE5);
     BluredShadow.Bind();
+    map_instance_shader.setMat4("view", view);
     map_instance_shader.setMat4("PVMatrix", PVMatrix);
     map_instance_shader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
     map_instance_shader.setVec3("lower_color", LOWER_COLOR);
@@ -181,6 +182,7 @@ void Scene::draw(const glm::mat4& PVMatrix, const glm::mat4& lightSpaceMatrix,
     ShadowMap.Bind();
     glActiveTexture(GL_TEXTURE1);
     BluredShadow.Bind();
+    water_shader.setMat4("view", view);
     water_shader.setMat4("PVMatrix", PVMatrix);
     water_shader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
     water_shader.setFloat("water_height", SEA_LEVEL);
@@ -196,6 +198,30 @@ void Scene::draw(const glm::mat4& PVMatrix, const glm::mat4& lightSpaceMatrix,
     glBindVertexArray(0);
     glActiveTexture(GL_TEXTURE0);
     glDisable(GL_BLEND);
+}
+void Scene::drawssr(Shader shader, const glm::mat4 &PVMatrix, const glm::mat4 &viewmat,
+                    const glm::mat4 &lightSpaceMatrix, const Texture2D &BluredShadow) {
+    shader.use();
+    glActiveTexture(GL_TEXTURE0);
+    this->HeightMap.Bind();
+    glActiveTexture(GL_TEXTURE1);
+    BluredShadow.Bind();
+    shader.setMat4("PVMatrix", PVMatrix);
+    shader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
+    shader.setMat4("view", viewmat);
+    shader.setVec3("lower_color", LOWER_COLOR);
+    shader.setVec3("land_color", LAND_COLOR);
+    shader.setVec3("rock_color", ROCK_COLOR);
+    shader.setFloat("scalefactor", MESH_LENGTH);
+    shader.setVec3("scene_offset", this->offset);
+    shader.setInt("scene_size", MESH_SIZE * CHUNK_SIZE);
+    shader.setFloat("near_plane", NEAR_PLANE);
+    shader.setFloat("far_plane", FAR_PLANE);
+    shader.setLight(ResourceManager::camera.Position);
+
+    glBindVertexArray(this->instanceVAO);
+    glDrawArraysInstanced(GL_TRIANGLES, 0, 6, MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE);
+    glBindVertexArray(0);
 }
 
 void Scene::Generate_ShadowMap(const glm::mat4& lightSpaceMatrix, const glm::mat4& view) {
