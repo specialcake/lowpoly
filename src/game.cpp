@@ -159,7 +159,7 @@ void Game::ProcessInput(GLfloat dt) {
 
 void Game::Render() {
     if(this->State == GAME_ACTIVE) {
-        glm::mat4 projection = glm::perspective(glm::radians(ResourceManager::camera.Zoom), (float)Width / (float)Height, 0.1f, 400.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(ResourceManager::camera.Zoom), (float)Width / (float)Height, NEAR_PLANE, FAR_PLANE);
 #ifdef lightview
         projection = glm::ortho(-40.0f, 40.0f, -12.0f, 14.0f, 0.1f, 150.0f);
 #endif //lightview

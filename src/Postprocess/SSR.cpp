@@ -56,6 +56,8 @@ void SSR::Render() {
     NormalMap.Bind();
     glActiveTexture(GL_TEXTURE2);
     ColorMap.Bind();
+    SSRShader.setFloat("near", NEAR_PLANE);
+    SSRShader.setFloat("far", FAR_PLANE);
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
