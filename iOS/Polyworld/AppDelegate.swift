@@ -7,15 +7,32 @@
 //
 
 import UIKit
+import MessageUI
+import SafariServices
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, MFMailComposeViewControllerDelegate {
 
     var window: UIWindow?
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        let playIcon = UIApplicationShortcutIcon.init(type: .play)
+        let playItem = UIApplicationShortcutItem.init(type: "play", localizedTitle: "进入Polyworld", localizedSubtitle: nil, icon: playIcon, userInfo: nil)
+        
+        let ARIcon = UIApplicationShortcutIcon.init(type: .capturePhoto)
+        let ARItem = UIApplicationShortcutItem.init(type: "AR", localizedTitle: "体验AR", localizedSubtitle: nil, icon: ARIcon, userInfo: nil)
+        
+//        let loveIcon = UIApplicationShortcutIcon.init(type: .love)
+//        let loveItem = UIApplicationShortcutItem.init(type: "mail", localizedTitle: "点赞", localizedSubtitle: nil, icon: loveIcon, userInfo: nil)
+        
+        let mailIcon = UIApplicationShortcutIcon.init(type: .mail)
+        let mailItem = UIApplicationShortcutItem.init(type: "mail", localizedTitle: "与开发者联系", localizedSubtitle: nil, icon: mailIcon, userInfo: nil)
+        
+        let shareIcon = UIApplicationShortcutIcon.init(type: .share)
+        let shareItem = UIApplicationShortcutItem.init(type: "share", localizedTitle: "分享给好友", localizedSubtitle: nil, icon: shareIcon, userInfo: nil)
+        
+        UIApplication.shared.shortcutItems = [playItem, ARItem, mailItem, shareItem]
         return true
     }
 
@@ -40,7 +57,36 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-
-
+    
+    func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: (Bool) -> Void) {
+        switch shortcutItem.type {
+        case "play":
+            print("play game")
+        case "AR":
+            print("AR mode")
+        case "mail":
+            guard MFMailComposeViewController.canSendMail() else {
+                print("Can not send mail")
+                return
+            }
+            
+            let mailComposer = MFMailComposeViewController()
+            mailComposer.mailComposeDelegate = self
+            mailComposer.setToRecipients(["shenxinyi@zju.edu.cn"])
+            mailComposer.setSubject("About Polyworld")
+            mailComposer.setMessageBody("Hello, this is an email from me.", isHTML: false)
+            
+            window?.rootViewController?.present(mailComposer, animated: true, completion: nil)
+        case "share":
+            print("share")
+        default:
+            break
+        }
+    }
+    
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        window?.rootViewController?.dismiss(animated: true, completion: nil)
+    }
+    
 }
 
