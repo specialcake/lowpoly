@@ -28,7 +28,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MFMailComposeViewControll
         }
     }
 
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         let playIcon = UIApplicationShortcutIcon.init(type: .play)
         let playItem = UIApplicationShortcutItem.init(type: "play", localizedTitle: "进入Polyworld", localizedSubtitle: nil, icon: playIcon, userInfo: nil)
@@ -76,7 +75,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MFMailComposeViewControll
         case "play":
             print("play game")
         case "AR":
-            print("AR mode")
+            window?.rootViewController?.performSegue(withIdentifier: "ARmode", sender: nil)
         case "mail":
             guard MFMailComposeViewController.canSendMail() else {
                 print("Can not send mail")
@@ -91,7 +90,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MFMailComposeViewControll
             blockRotation = .portrait
             window?.rootViewController?.present(mailComposer, animated: false, completion: nil)
         case "share":
-            print("share")
+            guard let window = UIApplication.shared.keyWindow else { return }
+            
+            // 用下面这行而不是UIGraphicsBeginImageContext()，因为前者支持Retina
+            UIGraphicsBeginImageContextWithOptions(window.bounds.size, false, 0.0)
+            
+            window.layer.render(in: UIGraphicsGetCurrentContext()!)
+            
+            let image = UIGraphicsGetImageFromCurrentImageContext()
+            
+            UIGraphicsEndImageContext()
+            
+            let activityController = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+            activityController.popoverPresentationController?.sourceView = window.rootViewController?.view
+            window.rootViewController?.present(activityController, animated: true, completion: nil)
         default:
             break
         }
