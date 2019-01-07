@@ -22,10 +22,14 @@ public:
     std::vector<Texture> textures_loaded;
     std::vector<Mesh> meshes;
     std::string directory;
-    GLfloat minx, maxx, miny, maxy, minz, maxz, cx, cy, cz;
+    GLfloat minx, maxx, miny, maxy, minz, maxz;
+    GLfloat cx, cy, cz, Gx, Gy, Gz, total_count;
+    GLfloat delta_x, delta_y, delta_z;
 
     Model(){};
     Model(const char *path);
+    void SetBias(GLfloat dx, GLfloat dy, GLfloat dz);
+    glm::vec3 BiasVector();
     void Draw(Shader shader);
 private:
     void loadModel(std::string path);

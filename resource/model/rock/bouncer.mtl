@@ -1,0 +1,20 @@
+# 
+# Wavefront material file
+# Created with Kaydara FBX
+# 
+
+newmtl 5_5_Path
+Ka 0.000000 0.000000 0.000000
+Kd 0.522059 0.522059 0.522059
+Ks 0.000000 0.000000 0.000000
+illum 2
+Ns 0.000000
+Tr 1.000000
+
+newmtl otherworld_glow
+Ka 0.000000 0.000000 0.000000
+Kd 1.000000 1.000000 1.000000
+Ks 0.000000 0.000000 0.000000
+illum 2
+Ns 0.000000
+Tr 1.000000

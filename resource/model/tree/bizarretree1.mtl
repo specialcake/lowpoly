@@ -3,17 +3,17 @@
 # Created with Kaydara FBX
 # 
 
-newmtl treetop_green_1
+newmtl 5_4_three_branch_A_leaves
 Ka 0.000000 0.000000 0.000000
-Kd 0.199827 0.566176 0.199827
+Kd 0.500000 1.000000 1.000000
 Ks 0.000000 0.000000 0.000000
 illum 2
 Ns 0.000000
 Tr 1.000000
 
-newmtl tree_trunks
+newmtl 5_4_three_branch_A_trunk
 Ka 0.000000 0.000000 0.000000
-Kd 0.477941 0.304204 0.080828
+Kd 0.933824 0.833812 0.707234
 Ks 0.000000 0.000000 0.000000
 illum 2
 Ns 0.000000

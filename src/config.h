@@ -35,8 +35,10 @@
 #define MAX_HEIGHT 4.0f
 #define NOISE_SIZE 29
 
-#define TREEPLACER 3
+#define TREEPLACER 4
 #define ROCKPLACER 5
+#define TREENUMBER 2
+#define ROCKNUMBER 2
 
 #define CLOUDDIR glm::vec3(0.70711f, 0.0f, 0.70711f)
 

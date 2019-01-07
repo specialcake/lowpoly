@@ -36,7 +36,8 @@ void Scene::Initialize() {
 
     this->generator = new Noise(NOISE_SIZE);
     this->water = new Water();
-    this->plant = new Plants("bushytree");
+    this->plant[0] = new Plants("pine");
+    this->plant[1] = new Plants("normaltree");
 
     for(GLint i = 0; i < CHUNK_SIZE; i++){
         for(GLint j = 0; j < CHUNK_SIZE; j++){
@@ -374,58 +375,62 @@ void Scene::GetLocationbyCamera(GLint &cx, GLint &cz, GLint &mx, GLint &mz) {
         mz = static_cast<GLint>(position.z / MESH_LENGTH - 0.5f) + MESH_RADIUS;
 }
 
-void Scene::Generate_Treeplace() {
-//    GLuint length = MESH_SIZE * CHUNK_SIZE;
-    for(int i = 1; i < CHUNK_SIZE - 1; i++){
-        for(int j = 1; j < CHUNK_SIZE - 1; j++){
-            for(int k = 1; k < MESH_SIZE - 1; k++){
-                for(int h = 1; h < MESH_SIZE - 1; h++){
-                    if(this->chunk[i][j]->height[k][h] > 1.0f || this->chunk[i][j]->height[k][h] < 0.3f)
-                        continue;
-                    GLfloat height = this->chunk[i][j]->height[k][h];
-                    bool flag = true;
-                    for(int a = 0; a < TREEPLACER; a++){
-                        for(int b = 0; b < TREEPLACER; b++){
-                            if(a == 0 && b == 0) continue;
-                            GLfloat tmpheight;
-                            if(k >= a && h >= b)
-                                tmpheight = this->chunk[i][j]->height[k - a][h - b];
-                            else if(k < a && h < b)
-                                tmpheight = this->chunk[i - 1][j - 1]->height[MESH_SIZE + k - a][MESH_SIZE + h - b];
-                            else if(k < a)
-                                tmpheight = this->chunk[i - 1][j]->height[MESH_SIZE + k - a][h - b];
-                            else
-                                tmpheight = this->chunk[i][j - 1]->height[k - a][MESH_SIZE + h - b];
-                            if(height < tmpheight){
-                                flag = false;
-                                break;
-                            }
-                            if(k + a < MESH_SIZE && h + b < MESH_SIZE)
-                                tmpheight = this->chunk[i][j]->height[k + a][h + b];
-                            else if(k + a >= MESH_SIZE && h + b >= MESH_SIZE)
-                                tmpheight = this->chunk[i + 1][j + 1]->height[k + a - MESH_SIZE][h + b - MESH_SIZE];
-                            else if(k + a >= MESH_SIZE)
-                                tmpheight = this->chunk[i + 1][j]->height[k + a - MESH_SIZE][h + b];
-                            else
-                                tmpheight = this->chunk[i][j + 1]->height[k + a][h + b - MESH_SIZE];
-                            if(height < tmpheight){
-                                flag = false;
-                                break;
-                            }
-                        }
-                        if(flag == false) break;
-                    }
-                    if(flag == true){
-                        Treeinfo tmptree;
-                        tmptree.chunk_number = i * CHUNK_SIZE + j;
-                        tmptree.height = height;
-                        tmptree.location = this->chunk[i][j]->submesh[k][h]->get_Position();
-                        Treeplace.push_back(tmptree);
-                    }
-                }
+int Scene::PlaceEnable(int i, int j, int k, int h){
+    GLfloat height = this->chunk[i][j]->height[k][h];
+    bool flag[] = {true, true};
+    for(int a = 0; a < TREEPLACER; a++){
+        for(int b = 0; b < TREEPLACER; b++){
+            if(a == 0 && b == 0) continue;
+            GLfloat tmpheight;
+            if(k >= a && h >= b)
+                tmpheight = this->chunk[i][j]->height[k - a][h - b];
+            else if(k < a && h < b)
+                tmpheight = this->chunk[i - 1][j - 1]->height[MESH_SIZE + k - a][MESH_SIZE + h - b];
+            else if(k < a)
+                tmpheight = this->chunk[i - 1][j]->height[MESH_SIZE + k - a][h - b];
+            else
+                tmpheight = this->chunk[i][j - 1]->height[k - a][MESH_SIZE + h - b];
+            if(height < tmpheight)
+                flag[0] = false;
+            if(height > tmpheight)
+                flag[1] = false;
+            if(k + a < MESH_SIZE && h + b < MESH_SIZE)
+                tmpheight = this->chunk[i][j]->height[k + a][h + b];
+            else if(k + a >= MESH_SIZE && h + b >= MESH_SIZE)
+                tmpheight = this->chunk[i + 1][j + 1]->height[k + a - MESH_SIZE][h + b - MESH_SIZE];
+            else if(k + a >= MESH_SIZE)
+                tmpheight = this->chunk[i + 1][j]->height[k + a - MESH_SIZE][h + b];
+            else
+                tmpheight = this->chunk[i][j + 1]->height[k + a][h + b - MESH_SIZE];
+            if(height < tmpheight) {
+                flag[0] = false;
+                flag[1] = false;
             }
         }
     }
+    for(int i = 0; i < TREENUMBER; i++)
+        if(flag[i])
+            return i;
+    return -1;
+}
+void Scene::Generate_Treeplace() {
+//    GLuint length = MESH_SIZE * CHUNK_SIZE;
+    for(int i = 1; i < CHUNK_SIZE - 1; i++)
+        for(int j = 1; j < CHUNK_SIZE - 1; j++)
+            for(int k = 1; k < MESH_SIZE - 1; k++)
+                for(int h = 1; h < MESH_SIZE - 1; h++){
+                    if(this->chunk[i][j]->height[k][h] > 1.0f || this->chunk[i][j]->height[k][h] < 0.3f)
+                        continue;
+
+                    int TreeType = PlaceEnable(i, j, k, h);
+                    if(TreeType == -1) continue;
+
+                    Treeinfo tmptree;
+                    tmptree.chunk_number = i * CHUNK_SIZE + j;
+                    tmptree.height = this->chunk[i][j]->height[k][h];
+                    tmptree.location = this->chunk[i][j]->submesh[k][h]->get_Position();
+                    Treeplace[TreeType].push_back(tmptree);
+                }
 }
 
 Texture2D Scene::Generate_HeightMap() {

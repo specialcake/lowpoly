@@ -57,4 +57,7 @@ void main() {
     if(vs_out.FragPos.y > 1.0f) vs_out.Color = rock_color;
     else if(vs_out.FragPos.y > 0.3f) vs_out.Color = land_color;
     else vs_out.Color = lower_color;
+
+    if(abs(vs_out.FragPos.x) <= scalefactor && abs(vs_out.FragPos.z) <= scalefactor)
+        vs_out.Color = vec3(1.0f, 0.0f, 0.0f);
 }

@@ -24,8 +24,8 @@ void Plants::SetParam(const std::vector<Treeinfo>& places) {
 
     for(int i = 0; i < amount; i++){
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, glm::vec3(-modelptr->cx, -modelptr->miny - 1.0f + places[i].height, -modelptr->cz));
-        model = glm::translate(model, places[i].location);
+        model = glm::translate(model, modelptr->BiasVector());
+        model = glm::translate(model, places[i].location + glm::vec3(0.0f, places[i].height, 0.0f));
         model = glm::scale(model, glm::vec3(0.3f));
         matrixs[i] = model;
     }
@@ -56,6 +56,7 @@ void Plants::SetParam(const std::vector<Treeinfo>& places) {
 }
 
 void Plants::Draw(const glm::mat4& view, const glm::mat4& PVMatrix, const glm::mat4& lightSpaceMatrix, const Texture2D& BluredShadow) {
+    if(amount == 0) return ;
     shader.use();
     glActiveTexture(GL_TEXTURE0);
     BluredShadow.Bind();
@@ -71,6 +72,7 @@ void Plants::Draw(const glm::mat4& view, const glm::mat4& PVMatrix, const glm::m
     }
 }
 void Plants::GenerateShadow(const glm::mat4 &lightSpaceMatrix) {
+    if(amount == 0) return ;
     shadowshader.use();
     shadowshader.setMat4("PVMatrix", lightSpaceMatrix);
     for(int i = 0; i < modelptr->meshes.size(); i++){

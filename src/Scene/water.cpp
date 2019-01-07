@@ -40,6 +40,6 @@ void Water::Setwater(Shader shader) {
         shader.setFloat(name + "w", wave[i].w);
         shader.setVec2(name + "D", wave[i].D);
     }
-//    shader.setFloat("Timer", glfwGetTime());
-    shader.setFloat("Timer", 0.0f);
+    shader.setFloat("Timer", glfwGetTime());
+//    shader.setFloat("Timer", 0.0f);
 }

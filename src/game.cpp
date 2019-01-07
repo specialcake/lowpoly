@@ -77,8 +77,11 @@ void Game::Init() {
     ResourceManager::GetShader("skybox").setInt("Back", 5);
     ResourceManager::GetShader("skybox").setInt("Cloud", 6);
 
-    ResourceManager::LoadModel("../resource/model/widetree/widetree.obj", "bushytree");
+    ResourceManager::LoadModel("../resource/model/tree/pine.obj", "pine");
+    ResourceManager::LoadModel("../resource/model/tree/normaltree.obj", "normaltree");
     ResourceManager::LoadModel("../resource/model/polyball/polyball.obj", "polyball");
+    ResourceManager::GetModel("pine")->SetBias(4.0f, 0.0f, 27.0f);
+    ResourceManager::GetModel("normaltree")->SetBias(-9.0f, -6.8f, 38.0f);
 
     littlewindow = new SpriteRenderer(ResourceManager::GetShader("sprite"));
 
@@ -88,9 +91,11 @@ void Game::Init() {
     scene->shadow_shader = ResourceManager::GetShader("shadowmap");
     scene->generate_scene();
     scene->Generate_Treeplace();
-    std::cout << "QAQ => " << scene->Treeplace.size() << std::endl;
-    scene->plant->shader = ResourceManager::GetShader("instancemodel");
-    scene->plant->shadowshader = ResourceManager::GetShader("modelshadow");
+    for(int i = 0; i < TREENUMBER; i++){
+        std::cout << "QAQ[" << i << "] => " << scene->Treeplace[i].size() << std::endl;
+        scene->plant[i]->shader = ResourceManager::GetShader("instancemodel");
+        scene->plant[i]->shadowshader = ResourceManager::GetShader("modelshadow");
+    }
 
     shadowmap = new Shadowmap();
     Gaussblur::Initialize(ResourceManager::GetShader("gaussblur"));
@@ -103,9 +108,9 @@ void Game::Init() {
     skymap->Draw(glm::vec3(0.0f, 0.5f, -1.0f));
     skymap->EndMakeMap();
 
-    SSReflect = new SSR(ResourceManager::GetShader("ssrscene"),
-                        ResourceManager::GetShader("ssrscene"),
-                        ResourceManager::GetShader("SSR"));
+//    SSReflect = new SSR(ResourceManager::GetShader("ssrscene"),
+//                        ResourceManager::GetShader("ssrscene"),
+//                        ResourceManager::GetShader("SSR"));
 
 //    ResourceManager::skybox->LoadTexture(skymap->skymap);
 }
@@ -123,7 +128,9 @@ void Game::Update(GLfloat dt) {
     if(ResourceManager::dir != ORIGIN_POS || first_time){
         scene->HeightMap = scene->Generate_HeightMap();
         scene->CloudMap = scene->Generate_CloudMap();
-        scene->plant->SetParam(scene->Treeplace);
+        for(int i = 0; i < TREENUMBER; i++)
+            scene->plant[i]->SetParam(scene->Treeplace[i]);
+
 //        scene->UpdateTreeplace();
 
         shadowmap->UpdateFrustum(scene);
@@ -134,7 +141,8 @@ void Game::Update(GLfloat dt) {
                                         glm::vec3(0.0f, 0.0f, 0.0f));
         shadowmap->BeginMakeMap();
         scene->Generate_ShadowMap(lightSpaceMatrix, viewmat);
-        scene->plant->GenerateShadow(lightSpaceMatrix);
+        for(int i = 0; i < TREENUMBER; i++)
+            scene->plant[i]->GenerateShadow(lightSpaceMatrix);
         shadowmap->EndMakeMap();
 
         shadowmap->BluredShadow = Gaussblur::GaussBlur(shadowmap->DepthMap);
@@ -168,8 +176,6 @@ void Game::Render() {
         glm::mat4 PVMatrix = projection * view;
         glm::mat4 lightSpaceMatrix = shadowmap->GetlightSpaceMatrix(scene);
 
-        SSReflect->BeginMakeUp();
-
         glDepthFunc(GL_LEQUAL);
         ResourceManager::skybox->shader.use();
         glActiveTexture(GL_TEXTURE6);
@@ -179,19 +185,28 @@ void Game::Render() {
         glDepthFunc(GL_LESS);
 
         scene->draw(view, PVMatrix, lightSpaceMatrix, shadowmap->DepthMap, shadowmap->BluredShadow);
-        scene->plant->Draw(view, PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
+        for(int i = 0; i < TREENUMBER; i++)
+            scene->plant[i]->Draw(view, PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
 
-        SSReflect->EndMakeUp();
+//        Model* test = ResourceManager::GetModel("normaltree");
+//        Shader modelshader = ResourceManager::GetShader("model");
+//        modelshader.use();
+//        glm::mat4 model = glm::mat4(1.0f);
+//        model = glm::translate(model, test->BiasVector());
+//        model = glm::scale(model, glm::vec3(0.3f));
+//        modelshader.setMat4("model", model);
+//        modelshader.setMat4("PVMatrix", PVMatrix);
+//        test->Draw(modelshader);
 
-        littlewindow->shader.use();
-        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
-        littlewindow->DrawSprite(SSReflect->NormalMap, glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.5f));
+//        littlewindow->shader.use();
+//        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
+//        littlewindow->DrawSprite(SSReflect->NormalMap, glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.5f));
 //
 //        littlewindow->shader.use();
 //        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
 //        littlewindow->DrawSprite(SSReflect->DepthMap, glm::vec3(-0.1f, 0.5f, 0.0f), glm::vec3(0.5f));
 
-        SSReflect->Render(projection);
+//        SSReflect->Render(projection);
 
 //        glDepthFunc(GL_LEQUAL);
 //        Model* Sun = ResourceManager::GetModel("polyball");

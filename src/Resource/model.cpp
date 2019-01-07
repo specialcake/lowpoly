@@ -13,11 +13,16 @@
 Model::Model(const char *path) {
     maxx = maxy = maxz = -10000000.0f;
     minx = miny = minz = 10000000.0f;
+    Gx = Gy = Gz = 0.0f;
+    delta_x = delta_y = delta_z = 0.0f;
+    total_count = 0.0f;
     loadModel(path);
     cx = (minx + maxx) / 2.0f;
     cy = (miny + maxy) / 2.0f;
     cz = (minz + maxz) / 2.0f;
-    printf("x: %f, y: %f, z: %f\n", cx, cy, cz);
+    Gx /= total_count, Gy /= total_count, Gz /= total_count;
+    printf("Gx: %f, Gy: %f, Gz: %f\n", Gx, Gy, Gz);
+    printf("cx: %f, cy: %f, cz: %f\n", cx, cy, cz);
     printf("min x: %f, y: %f, z: %f\n", minx ,miny, minz);
     printf("max x: %f, y: %f, z: %f\n", maxx, maxy, maxz);
 }
@@ -25,6 +30,12 @@ void Model::Draw(Shader shader) {
     for(unsigned int i = 0; i < meshes.size(); i++){
         meshes[i].Draw(shader);
     }
+}
+void Model::SetBias(GLfloat dx, GLfloat dy, GLfloat dz) {
+    delta_x = dx, delta_y = dy, delta_z = dz;
+}
+glm::vec3 Model::BiasVector() {
+    return glm::vec3(delta_x, delta_y, delta_z) + glm::vec3(-Gx, -Gy, -Gz);
 }
 
 void Model::loadModel(std::string path) {
@@ -70,6 +81,8 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene) {
 
         minx = glm::min(minx, v.Position.x); miny = glm::min(miny, v.Position.y); minz = glm::min(minz, v.Position.z);
         maxx = glm::max(maxx, v.Position.x); maxy = glm::max(maxy, v.Position.y); maxz = glm::max(maxz, v.Position.z);
+        this->Gx += v.Position.x;this->Gy += v.Position.y;this->Gz += v.Position.z;
+        this->total_count += 1.0f;
     }
     for(unsigned int i = 0; i < mesh->mNumFaces; i++){
         aiFace face = mesh->mFaces[i];

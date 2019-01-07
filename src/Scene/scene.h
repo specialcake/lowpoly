@@ -30,14 +30,14 @@ public:
     glm::vec3 chunk_offset[CHUNK_SIZE][CHUNK_SIZE];
     glm::vec3 mesh_offset[MESH_SIZE + 1][MESH_SIZE + 1];
 
-    std::vector<Treeinfo> Treeplace;
+    std::vector<Treeinfo> Treeplace[TREENUMBER];
 
     Noise* generator;
     Texture2D HeightMap, CloudMap;
     Texture2D NormalMap0, NormalMap1, pNormalMap;
 
     Water* water;
-    Plants* plant;
+    Plants* plant[TREENUMBER];
 
     Shader map_shader, map_instance_shader, water_shader, shadow_shader;
     GLuint VAO, VBO, instanceVAO, instanceVBO;
@@ -62,6 +62,8 @@ public:
     Texture2D Generate_NormalMap(int th);
     Texture2D Generate_pNormalMap();
     void Generate_Treeplace();
+    void Generate_Rockplace();
+    int PlaceEnable(int i, int j, int k, int h);
     void Generate_ShadowMap(const glm::mat4& lightSpaceMatrix, const glm::mat4& view);
 private:
 

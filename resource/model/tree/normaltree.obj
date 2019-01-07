@@ -2,7 +2,7 @@
 # Wavefront OBJ file
 # Created with Kaydara FBX
 # 
-mtllib bushytree.mtl
+mtllib normaltree.mtl
 
 g top_0
 v -14.801818 -11.564226 53.961358
