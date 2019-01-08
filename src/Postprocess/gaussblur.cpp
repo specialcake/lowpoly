@@ -7,12 +7,6 @@
 #include "gaussblur.h"
 #include "../config.h"
 
-
-GLuint Gaussblur::pingpongFBO[2];
-GLuint Gaussblur::pingpongBuffer[2];
-Shader Gaussblur::shaderBlur;
-GLuint Gaussblur::VAO;
-
 void Gaussblur::Initialize(const Shader& shader) {
     shaderBlur = shader;
     glGenFramebuffers(2, pingpongFBO);
@@ -31,11 +25,8 @@ void Gaussblur::Initialize(const Shader& shader) {
     initRenderData();
 }
 
-GLuint Gaussblur::GaussBlur(const Texture2D& texture) {
-    return GaussBlur(texture.ID);
-}
-GLuint Gaussblur::GaussBlur(const GLuint& textureID){
-    glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+GLuint Gaussblur::GaussBlur(const Texture2D& texture){
+    glViewport(0, 0, texture.Width, texture.Height);
     GLboolean horizontal = GL_TRUE, first_iteration = GL_TRUE;
     shaderBlur.use();
     glBindVertexArray(VAO);
@@ -43,7 +34,7 @@ GLuint Gaussblur::GaussBlur(const GLuint& textureID){
         glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[horizontal]);
         shaderBlur.setBool("horizontal", horizontal);
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, first_iteration ? textureID : pingpongBuffer[!horizontal]);
+        glBindTexture(GL_TEXTURE_2D, first_iteration ? texture.ID : pingpongBuffer[!horizontal]);
 //        RenderQuad();
         glDrawArrays(GL_TRIANGLES, 0, 6);
         horizontal = !horizontal;

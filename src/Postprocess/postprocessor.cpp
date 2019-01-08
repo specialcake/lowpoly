@@ -13,8 +13,8 @@ PostProcessor::PostProcessor() {
 void PostProcessor::Initialize() {
     Width = SCREEN_WIDTH, Height = SCREEN_HEIGHT;
     DepthTexture.GenerateShadowMap(Width, Height);
-    ColorTexture.GenerateSkymap(Width, Height);
-    BrightTexture.GenerateSkymap(Width, Height);
+    ColorTexture.GeneratePreciseMap(Width, Height);
+    BrightTexture.GeneratePreciseMap(Width, Height);
 
     glGenFramebuffers(1, &FBO);
     glBindFramebuffer(GL_FRAMEBUFFER, FBO);

@@ -12,16 +12,16 @@
 
 class Gaussblur {
 public:
-    static Shader shaderBlur;
-    static GLuint pingpongFBO[2];
-    static GLuint pingpongBuffer[2];
-    static void Initialize(const Shader& shader);
-    static GLuint GaussBlur(const Texture2D& texture);
-    static GLuint GaussBlur(const GLuint& textureID);
+    Gaussblur(){};
+    Shader shaderBlur;
+    GLuint pingpongFBO[2];
+    GLuint pingpongBuffer[2];
+    void Initialize(const Shader& shader);
+    GLuint GaussBlur(const Texture2D& texture);
 private:
-    static GLuint VAO;
-    static void initRenderData();
-    static void RenderQuad();
+    GLuint VAO;
+    void initRenderData();
+    void RenderQuad();
 
 };
 

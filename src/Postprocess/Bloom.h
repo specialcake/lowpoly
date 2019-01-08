@@ -6,19 +6,15 @@
 #define TMPER_BLOOM_H
 
 #include "../Resource/resourcemanager.h"
+#include "postprocessor.h"
+#include "gaussblur.h"
 
 class Bloom {
 public:
-    static GLuint FBO;
+    static Gaussblur Blurer;
     static Shader bloomShader;
-    static GLuint ColorBuffer[2];
     static void Initialize(const Shader& shader);
-    static void RenderBloom();
-    static void BeginMakeMap();
-    static void EndMakeMap();
-private:
-    static GLuint VAO;
-    static void initRenderData();
+    static void RenderBloom(PostProcessor* SceneMap);
 };
 
 

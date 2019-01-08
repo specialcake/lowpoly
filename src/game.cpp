@@ -107,7 +107,7 @@ void Game::Init() {
     }
 
     shadowmap = new Shadowmap();
-    Gaussblur::Initialize(ResourceManager::GetShader("gaussblur"));
+    shadowmap->Blurer.Initialize(ResourceManager::GetShader("gaussblur"));
 
     ResourceManager::skybox = new Skybox(ResourceManager::GetShader("skybox"));
 
@@ -119,6 +119,7 @@ void Game::Init() {
 
     SceneTexture = new PostProcessor();
     Bloom::Initialize(ResourceManager::GetShader("bloom"));
+    Bloom::Blurer.Initialize(ResourceManager::GetShader("gaussblur"));
 
 //    SSReflect = new SSR(ResourceManager::GetShader("ssrscene"),
 //                        ResourceManager::GetShader("ssrscene"),
@@ -157,7 +158,7 @@ void Game::Update(GLfloat dt) {
             scene->plant[i]->GenerateShadow(lightSpaceMatrix);
         shadowmap->EndMakeMap();
 
-        shadowmap->BluredShadow = Gaussblur::GaussBlur(shadowmap->DepthMap);
+        shadowmap->BluredShadow = shadowmap->Blurer.GaussBlur(shadowmap->DepthMap);
     }
 
     first_time = 0;
@@ -190,14 +191,6 @@ void Game::Render() {
 
         SceneTexture->BeginRender();
 
-        glDepthFunc(GL_LEQUAL);
-        ResourceManager::skybox->shader.use();
-        glActiveTexture(GL_TEXTURE6);
-        scene->CloudMap.Bind();
-        ResourceManager::skybox->shader.setMat4("PVMatrix", projection * glm::mat4(glm::mat3(ResourceManager::camera.GetViewMatrix())));
-        ResourceManager::skybox->Draw(skymap->skymap);
-        glDepthFunc(GL_LESS);
-
         scene->draw(view, PVMatrix, lightSpaceMatrix, shadowmap->DepthMap, shadowmap->BluredShadow);
         for(int i = 0; i < TREENUMBER; i++)
             scene->plant[i]->Draw(view, PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
@@ -215,6 +208,13 @@ void Game::Render() {
 //        SSReflect->Render(projection);
 
         glDepthFunc(GL_LEQUAL);
+        ResourceManager::skybox->shader.use();
+        glActiveTexture(GL_TEXTURE6);
+        scene->CloudMap.Bind();
+        ResourceManager::skybox->shader.setMat4("PVMatrix", projection * glm::mat4(glm::mat3(ResourceManager::camera.GetViewMatrix())));
+        ResourceManager::skybox->Draw(skymap->skymap);
+        glActiveTexture(GL_TEXTURE0);
+
         Model* Sun = ResourceManager::GetModel("polyball");
         Shader sunshader = ResourceManager::GetShader("sun");
         sunshader.use();
@@ -226,24 +226,19 @@ void Game::Render() {
         sunshader.setVec3("lightdir", PARLIGHT_DIR);
 
         Sun->Draw(sunshader);
-        glDepthFunc(GL_LESS);
 
-//        glDepthFunc(GL_LEQUAL);
-//        ResourceManager::skybox->shader.use();
-//        glActiveTexture(GL_TEXTURE6);
-//        scene->CloudMap.Bind();
-//        ResourceManager::skybox->shader.setMat4("PVMatrix", projection * glm::mat4(glm::mat3(ResourceManager::camera.GetViewMatrix())));
-//        ResourceManager::skybox->Draw(skymap->skymap);
-//        glDepthFunc(GL_LESS);
+        glDepthFunc(GL_LESS);
 
         SceneTexture->EndRender();
 
-        littlewindow->shader.use();
-        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
-        littlewindow->DrawSprite(SceneTexture->ColorTexture, glm::vec3(-1.0f, -1.0f, 0.0f), glm::vec3(2.0f));
+        Texture2D blurscene = Bloom::Blurer.GaussBlur(SceneTexture->BrightTexture);
 
         littlewindow->shader.use();
         littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
-        littlewindow->DrawSprite(SceneTexture->BrightTexture, glm::vec3(-0.1f, 0.5f, -0.5f), glm::vec3(0.5f));
+        littlewindow->DrawSprite(SceneTexture->ColorTexture, glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.5f));
+
+        littlewindow->shader.use();
+        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
+        littlewindow->DrawSprite(blurscene, glm::vec3(-0.1f, 0.5f, -0.5f), glm::vec3(0.5f));
     }
 }

@@ -8,10 +8,12 @@
 #include "../Resource/resourcemanager.h"
 #include "../Resource/texture.h"
 #include "../Scene/scene.h"
+#include "gaussblur.h"
 
 class Shadowmap {
 public:
     Texture2D DepthMap, BluredShadow;
+    Gaussblur Blurer;
     Shadowmap();
     ~Shadowmap();
     void Initialize();
