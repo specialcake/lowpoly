@@ -38,6 +38,7 @@ void Scene::Initialize() {
     this->water = new Water();
     this->plant[0] = new Plants("pine");
     this->plant[1] = new Plants("normaltree");
+    this->plant[2] = new Plants("bigrock");
 
     for(GLint i = 0; i < CHUNK_SIZE; i++){
         for(GLint j = 0; j < CHUNK_SIZE; j++){
@@ -377,7 +378,7 @@ void Scene::GetLocationbyCamera(GLint &cx, GLint &cz, GLint &mx, GLint &mz) {
 
 int Scene::PlaceEnable(int i, int j, int k, int h){
     GLfloat height = this->chunk[i][j]->height[k][h];
-    bool flag[] = {true, true};
+    bool flag[] = {true, true, true};
     for(int a = 0; a < TREEPLACER; a++){
         for(int b = 0; b < TREEPLACER; b++){
             if(a == 0 && b == 0) continue;
@@ -392,8 +393,10 @@ int Scene::PlaceEnable(int i, int j, int k, int h){
                 tmpheight = this->chunk[i][j - 1]->height[k - a][MESH_SIZE + h - b];
             if(height < tmpheight)
                 flag[0] = false;
-            if(height > tmpheight)
+            if(height > tmpheight) {
                 flag[1] = false;
+                flag[2] = false;
+            }
             if(k + a < MESH_SIZE && h + b < MESH_SIZE)
                 tmpheight = this->chunk[i][j]->height[k + a][h + b];
             else if(k + a >= MESH_SIZE && h + b >= MESH_SIZE)
@@ -406,6 +409,8 @@ int Scene::PlaceEnable(int i, int j, int k, int h){
                 flag[0] = false;
                 flag[1] = false;
             }
+            if(height > tmpheight)
+                flag[2] = false;
         }
     }
     for(int i = 0; i < TREENUMBER; i++)
@@ -426,6 +431,7 @@ void Scene::Generate_Treeplace() {
                     if(TreeType == -1) continue;
 
                     Treeinfo tmptree;
+                    tmptree.type = TreeType < 2 ? 0 : 1;
                     tmptree.chunk_number = i * CHUNK_SIZE + j;
                     tmptree.height = this->chunk[i][j]->height[k][h];
                     tmptree.location = this->chunk[i][j]->submesh[k][h]->get_Position();

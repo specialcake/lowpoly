@@ -80,8 +80,10 @@ void Game::Init() {
     ResourceManager::LoadModel("../resource/model/tree/pine.obj", "pine");
     ResourceManager::LoadModel("../resource/model/tree/normaltree.obj", "normaltree");
     ResourceManager::LoadModel("../resource/model/polyball/polyball.obj", "polyball");
-    ResourceManager::GetModel("pine")->SetBias(4.0f, 0.0f, 27.0f);
+    ResourceManager::LoadModel("../resource/model/rock/bigrock.obj", "bigrock");
+    ResourceManager::GetModel("pine")->SetBias(4.0f, -0.8f, 27.0f);
     ResourceManager::GetModel("normaltree")->SetBias(-9.0f, -6.8f, 38.0f);
+    ResourceManager::GetModel("bigrock")->SetBias(-1.0f, 1.5f, 2.7f);
 
     littlewindow = new SpriteRenderer(ResourceManager::GetShader("sprite"));
 
@@ -188,15 +190,15 @@ void Game::Render() {
         for(int i = 0; i < TREENUMBER; i++)
             scene->plant[i]->Draw(view, PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
 
-//        Model* test = ResourceManager::GetModel("normaltree");
-//        Shader modelshader = ResourceManager::GetShader("model");
-//        modelshader.use();
-//        glm::mat4 model = glm::mat4(1.0f);
-//        model = glm::translate(model, test->BiasVector());
-//        model = glm::scale(model, glm::vec3(0.3f));
-//        modelshader.setMat4("model", model);
-//        modelshader.setMat4("PVMatrix", PVMatrix);
-//        test->Draw(modelshader);
+        Model* test = ResourceManager::GetModel("bigrock");
+        Shader modelshader = ResourceManager::GetShader("model");
+        modelshader.use();
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, test->BiasVector());
+        model = glm::scale(model, glm::vec3(0.05f));
+        modelshader.setMat4("model", model);
+        modelshader.setMat4("PVMatrix", PVMatrix);
+        test->Draw(modelshader);
 
 //        littlewindow->shader.use();
 //        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));

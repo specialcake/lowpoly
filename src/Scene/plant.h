@@ -14,7 +14,7 @@
 #include <vector>
 
 struct Treeinfo{
-    int chunk_number;
+    int chunk_number, type;
     GLfloat height;
     glm::vec3 location;
 };
