@@ -220,7 +220,7 @@ void Game::Render() {
         sunshader.use();
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, -8.0f * PARLIGHT_DIR);
-        model = glm::scale(model, glm::vec3(35.0f));
+        model = glm::scale(model, glm::vec3(40.0f));
         sunshader.setMat4("model", model);
         sunshader.setMat4("PVMatrix", projection * glm::mat4(glm::mat3(ResourceManager::camera.GetViewMatrix())));
         sunshader.setVec3("lightdir", PARLIGHT_DIR);
