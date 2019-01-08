@@ -7,12 +7,14 @@
 #include "Postprocess/skymap.h"
 #include "Postprocess/postprocessor.h"
 #include "Postprocess/Bloom.h"
+#include "Polyball/polyball.h"
 
 Scene* scene;
 SpriteRenderer* littlewindow;
 Shadowmap* shadowmap;
 Skymap* skymap;
 PostProcessor* SceneTexture;
+Polyball* polyball;
 //SSR* SSReflect;
 //Terrian* plane;
 
@@ -39,6 +41,7 @@ void Game::Init() {
     ResourceManager::LoadShader("../src/shader/skybox.vert", "../src/shader/skybox.frag", NULL, "skybox");
     ResourceManager::LoadShader("../src/shader/skymap.vert", "../src/shader/skymap.frag", NULL, "skymap");
     ResourceManager::LoadShader("../src/shader/bloom.vert", "../src/shader/bloom.frag", NULL, "bloom");
+    ResourceManager::LoadShader("../src/shader/polyball.vert", "../src/shader/polyball.frag", NULL, "polyball");
 
     ResourceManager::GetShader("sprite").use();
     ResourceManager::GetShader("sprite").setInt("image", 0);
@@ -49,6 +52,9 @@ void Game::Init() {
     ResourceManager::GetShader("bloom").use();
     ResourceManager::GetShader("bloom").setInt("scene", 0);
     ResourceManager::GetShader("bloom").setInt("bloomBlur", 1);
+
+    ResourceManager::GetShader("polyball").use();
+    ResourceManager::GetShader("polyball").setInt("BlurShadow", 0);
 
     ResourceManager::GetShader("instancescene").use();
     ResourceManager::GetShader("instancescene").setInt("HeightMap", 0);
@@ -120,6 +126,8 @@ void Game::Init() {
     SceneTexture = new PostProcessor();
     Bloom::Initialize(ResourceManager::GetShader("bloom"));
     Bloom::Blurer.Initialize(ResourceManager::GetShader("gaussblur"));
+
+    polyball = new Polyball(ResourceManager::GetShader("polyball"));
 
 //    SSReflect = new SSR(ResourceManager::GetShader("ssrscene"),
 //                        ResourceManager::GetShader("ssrscene"),
@@ -228,6 +236,8 @@ void Game::Render() {
         Sun->Draw(sunshader);
 
         glDepthFunc(GL_LESS);
+
+        polyball->Render(view, PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
 
         SceneTexture->EndRender();
 
