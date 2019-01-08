@@ -100,6 +100,23 @@ void Texture2D::GeneratePreciseMap(GLuint width, GLuint height) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 }
+void Texture2D::GenerateMultiSampledPreciseMap(GLuint width, GLuint height) {
+    this->Width = width, this->Height = height;
+    this->Internal_Format = GL_RGB16F;
+    this->Image_Format = GL_RGB;
+
+    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, this->ID);
+    glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, this->Internal_Format, this->Width, this->Height, GL_TRUE);
+    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
+}
+void Texture2D::GenerateMultiSampledShadowMap(GLuint width, GLuint height) {
+    this->Width = width, this->Height = height;
+    this->Internal_Format = this->Image_Format = GL_DEPTH_COMPONENT;
+
+    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, this->ID);
+    glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, this->Internal_Format, this->Width, this->Height, GL_TRUE);
+    glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0);
+}
 
 void Texture2D::Bind() const {
     glBindTexture(GL_TEXTURE_2D, this->ID);

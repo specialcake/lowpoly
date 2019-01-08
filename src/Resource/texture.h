@@ -30,6 +30,8 @@ public:
     void GenerateShadowMap(GLuint width, GLuint height);
     void GenerateSkymap(GLuint width, GLuint height);
     void GeneratePreciseMap(GLuint width, GLuint height);
+    void GenerateMultiSampledPreciseMap(GLuint width, GLuint height);
+    void GenerateMultiSampledShadowMap(GLuint width, GLuint height);
     void Bind() const;
 };
 

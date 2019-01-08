@@ -235,9 +235,9 @@ void Game::Render() {
 
 //        Texture2D blurscene = Bloom::Blurer.GaussBlur(SceneTexture->BrightTexture);
 
-//        littlewindow->shader.use();
-//        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
-//        littlewindow->DrawSprite(SceneTexture->ColorTexture, glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.5f));
+        littlewindow->shader.use();
+        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
+        littlewindow->DrawSprite(SceneTexture->ColorTexture, glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.5f));
 
 //        littlewindow->shader.use();
 //        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));

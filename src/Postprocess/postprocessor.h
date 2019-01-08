@@ -15,8 +15,9 @@
 class PostProcessor {
 public:
     Texture2D ColorTexture, BrightTexture, DepthTexture;
+    Texture2D ColorMultiSampled, BrightMultiSampled, DepthMultiSampled;
     GLuint Width, Height;
-    GLuint VAO, FBO;
+    GLuint VAO, FBO, IntermediateFBO;
     PostProcessor();
 
     void Initialize();
