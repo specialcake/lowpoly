@@ -39,6 +39,7 @@ public:
     static Texture2D MakeTexture(const GLuint width, const GLuint height, GLuint format, GLfloat* data, std::string name, GLuint FilterMin = GL_NEAREST, GLuint FilterMax = GL_NEAREST);
     static Texture2D MakeTexture(const GLuint width, const GLuint height, GLuint format, glm::vec3* data, std::string name);
     static Texture2D GetTexture(std::string name);
+    static Texture2D MakeTexturebyID(const GLuint& textureID);
 
     static Model* LoadModel(const GLchar *file, std::string name);
     static Model* GetModel(std::string name);

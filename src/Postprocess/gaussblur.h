@@ -17,6 +17,7 @@ public:
     static GLuint pingpongBuffer[2];
     static void Initialize(const Shader& shader);
     static GLuint GaussBlur(const Texture2D& texture);
+    static GLuint GaussBlur(const GLuint& textureID);
 private:
     static GLuint VAO;
     static void initRenderData();

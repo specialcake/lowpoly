@@ -32,6 +32,9 @@ void Gaussblur::Initialize(const Shader& shader) {
 }
 
 GLuint Gaussblur::GaussBlur(const Texture2D& texture) {
+    return GaussBlur(texture.ID);
+}
+GLuint Gaussblur::GaussBlur(const GLuint& textureID){
     glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
     GLboolean horizontal = GL_TRUE, first_iteration = GL_TRUE;
     shaderBlur.use();
@@ -40,7 +43,7 @@ GLuint Gaussblur::GaussBlur(const Texture2D& texture) {
         glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[horizontal]);
         shaderBlur.setBool("horizontal", horizontal);
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, first_iteration ? texture.ID : pingpongBuffer[!horizontal]);
+        glBindTexture(GL_TEXTURE_2D, first_iteration ? textureID : pingpongBuffer[!horizontal]);
 //        RenderQuad();
         glDrawArrays(GL_TRIANGLES, 0, 6);
         horizontal = !horizontal;

@@ -14,21 +14,16 @@
 
 class PostProcessor {
 public:
-    Shader PostProcessingShader;
-    Texture2D Texture;
+    Texture2D ColorTexture, BrightTexture, DepthTexture;
     GLuint Width, Height;
+    GLuint VAO, FBO;
+    PostProcessor();
 
-    PostProcessor(Shader shader, GLuint width, GLuint height);
+    void Initialize();
 
     void BeginRender();
     void EndRender();
-
-    void Render();
 private:
-    GLuint MSFBO, FBO;
-    GLuint RBO;
-    GLuint VAO;
-
     void initRenderData();
 };
 

@@ -62,6 +62,10 @@ Texture2D ResourceManager::MakeTexture(const GLuint width, const GLuint height, 
     Textures[name] = texture;
     return texture;
 }
+Texture2D ResourceManager::MakeTexturebyID(const GLuint &textureID) {
+    return Texture2D(textureID);
+}
+
 Texture2D ResourceManager::GetTexture(std::string name) {
     return Textures[name];
 }
