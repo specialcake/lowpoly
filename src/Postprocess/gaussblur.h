@@ -17,7 +17,7 @@ public:
     GLuint pingpongFBO[2];
     GLuint pingpongBuffer[2];
     void Initialize(const Shader& shader);
-    GLuint GaussBlur(const Texture2D& texture);
+    GLuint GaussBlur(const Texture2D& texture, int RoundNumber = GAUSSBLUR_ROUND);
 private:
     GLuint VAO;
     void initRenderData();

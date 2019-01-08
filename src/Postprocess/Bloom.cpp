@@ -13,13 +13,13 @@ void Bloom::Initialize(const Shader &shader) {
 }
 
 void Bloom::RenderBloom(PostProcessor* SceneMap) {
-    SceneMap->BrightTexture.ID = Blurer.GaussBlur(SceneMap->BrightTexture);
+    GLuint BluredID = Blurer.GaussBlur(SceneMap->BrightTexture, 20);
 
     bloomShader.use();
     glActiveTexture(GL_TEXTURE0);
     SceneMap->ColorTexture.Bind();
     glActiveTexture(GL_TEXTURE1);
-    SceneMap->BrightTexture.Bind();
+    glBindTexture(GL_TEXTURE_2D, BluredID);
 
     glBindVertexArray(SceneMap->VAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);

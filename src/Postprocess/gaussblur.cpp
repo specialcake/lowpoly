@@ -25,12 +25,12 @@ void Gaussblur::Initialize(const Shader& shader) {
     initRenderData();
 }
 
-GLuint Gaussblur::GaussBlur(const Texture2D& texture){
+GLuint Gaussblur::GaussBlur(const Texture2D& texture, int RoundNumber){
     glViewport(0, 0, texture.Width, texture.Height);
     GLboolean horizontal = GL_TRUE, first_iteration = GL_TRUE;
     shaderBlur.use();
     glBindVertexArray(VAO);
-    for (GLuint i = 0; i < GAUSSBLUR_ROUND; i++) {
+    for (GLuint i = 0; i < RoundNumber; i++) {
         glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[horizontal]);
         shaderBlur.setBool("horizontal", horizontal);
         glActiveTexture(GL_TEXTURE0);

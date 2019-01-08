@@ -220,7 +220,7 @@ void Game::Render() {
         sunshader.use();
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, -8.0f * PARLIGHT_DIR);
-        model = glm::scale(model, glm::vec3(25.0f));
+        model = glm::scale(model, glm::vec3(35.0f));
         sunshader.setMat4("model", model);
         sunshader.setMat4("PVMatrix", projection * glm::mat4(glm::mat3(ResourceManager::camera.GetViewMatrix())));
         sunshader.setVec3("lightdir", PARLIGHT_DIR);
@@ -231,14 +231,16 @@ void Game::Render() {
 
         SceneTexture->EndRender();
 
-        Texture2D blurscene = Bloom::Blurer.GaussBlur(SceneTexture->BrightTexture);
+        Bloom::RenderBloom(SceneTexture);
 
-        littlewindow->shader.use();
-        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
-        littlewindow->DrawSprite(SceneTexture->ColorTexture, glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.5f));
+//        Texture2D blurscene = Bloom::Blurer.GaussBlur(SceneTexture->BrightTexture);
 
-        littlewindow->shader.use();
-        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
-        littlewindow->DrawSprite(blurscene, glm::vec3(-0.1f, 0.5f, -0.5f), glm::vec3(0.5f));
+//        littlewindow->shader.use();
+//        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
+//        littlewindow->DrawSprite(SceneTexture->ColorTexture, glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.5f));
+
+//        littlewindow->shader.use();
+//        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
+//        littlewindow->DrawSprite(blurscene, glm::vec3(-0.1f, 0.5f, -0.5f), glm::vec3(0.5f));
     }
 }
