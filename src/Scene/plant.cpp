@@ -21,15 +21,15 @@ bool operator < (const Treeinfo& x, const Treeinfo& y){
 
 void Plants::SetParam(const std::vector<Treeinfo>& places) {
     this->amount = places.size();
+    glm::vec3 scale;
+    if(places[0].type == 1) scale = glm::vec3(0.05f);
+    else scale = glm::vec3(0.3f);
 
     for(int i = 0; i < amount; i++){
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, modelptr->BiasVector());
+        model = glm::translate(model, modelptr->BiasVector() * scale);
         model = glm::translate(model, places[i].location + glm::vec3(0.0f, places[i].height, 0.0f));
-        if(places[i].type != 1)
-            model = glm::scale(model, glm::vec3(0.3f));
-        else
-            model = glm::scale(model, glm::vec3(0.05f));
+        model = glm::scale(model, scale);
         matrixs[i] = model;
     }
 

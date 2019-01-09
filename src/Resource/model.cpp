@@ -35,7 +35,7 @@ void Model::SetBias(GLfloat dx, GLfloat dy, GLfloat dz) {
     delta_x = dx, delta_y = dy, delta_z = dz;
 }
 glm::vec3 Model::BiasVector() {
-    return glm::vec3(delta_x, delta_y, delta_z) + glm::vec3(-Gx, -Gy, -Gz);
+    return glm::vec3(delta_x, delta_y, delta_z) + glm::vec3(-Gx, -miny, -Gz);
 }
 
 void Model::loadModel(std::string path) {

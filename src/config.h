@@ -37,7 +37,7 @@
 #define NOISE_SIZE 29
 
 #define TREEPLACER 4
-#define TREENUMBER 2
+#define TREENUMBER 3
 
 #define BLOOMTHRESHOLD glm::vec3(0.2126, 0.7152, 0.0722)
 

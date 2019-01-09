@@ -22,5 +22,5 @@ void main(){
         diffuse_color = texture(texture_diffuse1, TexCoords);
 
     FragColor = vec4((diff1 + diff2) * diffuse_color.rgb, 1.0f);
-//    FragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+//    FragColor = vec4(1.0f, 0.0f, 1.0f, 1.0f);
 }

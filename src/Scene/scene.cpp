@@ -38,7 +38,7 @@ void Scene::Initialize() {
     this->water = new Water();
     this->plant[0] = new Plants("pine");
     this->plant[1] = new Plants("normaltree");
-    this->plant[2] = new Plants("bigrock");
+    this->plant[2] = new Plants("smallrock");
 
     for(GLint i = 0; i < CHUNK_SIZE; i++){
         for(GLint j = 0; j < CHUNK_SIZE; j++){
