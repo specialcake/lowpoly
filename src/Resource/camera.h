@@ -75,6 +75,9 @@ public:
             Yaw += YAW_SPEED;
         updateCameraVectors();
     }
+    void SetPosition(glm::vec3 position) {
+        Position = position;
+    }
 
     void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true) {
         xoffset *= MouseSensitivity;
@@ -100,8 +103,6 @@ public:
         if (Zoom >= MAX_ZOOM)
             Zoom = MAX_ZOOM;
     }
-
-private:
 
     void updateCameraVectors() {
         glm::vec3 front;

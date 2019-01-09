@@ -187,6 +187,10 @@ void Game::ProcessInput(GLfloat dt) {
         ResourceManager::camera.ProcessKeyboard(ROLL_LEFT, dt);
     if (ResourceManager::Keys[GLFW_KEY_E])
         ResourceManager::camera.ProcessKeyboard(ROLL_RIGHT, dt);
+    if (ResourceManager::Keys[GLFW_KEY_F])
+        ResourceManager::followMode ^= 1;
+    if(ResourceManager::followMode)
+        ResourceManager::camera.SetPosition(polyball->GenCameraPosition());
 }
 
 void Game::Render() {

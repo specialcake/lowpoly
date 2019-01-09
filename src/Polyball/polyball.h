@@ -8,18 +8,31 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include "../Resource/resourcemanager.h"
+#include "../Resource/camera.h"
 #include "../Scene/scene.h"
+#include "../config.h"
+#include "../utils/tools.h"
 
-class Polyball {
+struct Collision{
+    bool exist;
+    glm::vec3 Point;
+    glm::vec3 Normal;
+};
+
+class Polyball{
 public:
-    glm::vec3 pos, v;
+    GLfloat Speed;
+    glm::vec3 movdir, Position;
+    glm::vec3 Front, Up, Right;
+    Collision collision;
 
     Model* modelptr;
     Shader BallShader;
 
-    Polyball(Shader shader, glm::vec3 initial_position = glm::vec3(0.0f, 3.0f, 2.0f));
+    Polyball(Shader shader);
     ~Polyball();
     void Initialize();
+    glm::vec3 GenCameraPosition();
     void Update();
     void Render(glm::mat4 view, glm::mat4 PVMatrix, glm::mat4 lightSpaceMatrix, Texture2D BlurShadow);
 };

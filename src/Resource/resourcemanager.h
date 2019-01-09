@@ -19,6 +19,7 @@ class ResourceManager {
 public:
     static GLFWwindow* window;
     static GLfloat lastX, lastY;
+    static GLboolean followMode;
     static GLboolean firstMouse;
     static GLboolean Keys[1024];
     static Direction dir;
