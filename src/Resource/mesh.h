@@ -32,9 +32,9 @@ public:
     glm::vec4 color;
     Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures, glm::vec4 colors);
     void Draw(Shader shader);
+    void setupMesh();
 private:
     unsigned int VBO, EBO;
-    void setupMesh();
 };
 
 

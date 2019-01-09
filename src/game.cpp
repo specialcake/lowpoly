@@ -205,13 +205,12 @@ void Game::Render() {
         for(int i = 0; i < TREENUMBER; i++)
             scene->plant[i]->Draw(view, PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
 
-//        Model* test = ResourceManager::GetModel("normaltree");
+//        Model* test = ResourceManager::GetModel("pine");
 //        Shader modelshader = ResourceManager::GetShader("model");
 //        modelshader.use();
 //        glm::mat4 model = glm::mat4(1.0f);
-//        glm::vec3 scale = glm::vec3(0.3);
-//        model = glm::translate(model, test->BiasVector() * scale);
-//        model = glm::scale(model, scale);
+//        model = glm::translate(model, test->BiasVector());
+//        model = glm::scale(model, glm::vec3(0.3));
 //        modelshader.setMat4("model", model);
 //        modelshader.setMat4("PVMatrix", PVMatrix);
 //        test->Draw(modelshader);

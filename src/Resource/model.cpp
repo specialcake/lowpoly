@@ -21,6 +21,15 @@ Model::Model(const char *path) {
     cy = (miny + maxy) / 2.0f;
     cz = (minz + maxz) / 2.0f;
     Gx /= total_count, Gy /= total_count, Gz /= total_count;
+
+    glm::vec3 delta = glm::vec3(-Gx, -miny, -Gz);
+
+    for(int i = 0; i < meshes.size(); i++){
+        for(int j = 0; j < meshes[i].vertices.size(); j++)
+            meshes[i].vertices[j].Position += delta;
+        meshes[i].setupMesh();
+    }
+
     printf("Gx: %f, Gy: %f, Gz: %f\n", Gx, Gy, Gz);
     printf("cx: %f, cy: %f, cz: %f\n", cx, cy, cz);
     printf("min x: %f, y: %f, z: %f\n", minx ,miny, minz);
@@ -35,7 +44,7 @@ void Model::SetBias(GLfloat dx, GLfloat dy, GLfloat dz) {
     delta_x = dx, delta_y = dy, delta_z = dz;
 }
 glm::vec3 Model::BiasVector() {
-    return glm::vec3(delta_x, delta_y, delta_z) + glm::vec3(-Gx, -miny, -Gz);
+    return glm::vec3(delta_x, delta_y, delta_z);
 }
 
 void Model::loadModel(std::string path) {

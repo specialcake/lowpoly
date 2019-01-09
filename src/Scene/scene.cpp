@@ -376,12 +376,16 @@ void Scene::GetLocationbyCamera(GLint &cx, GLint &cz, GLint &mx, GLint &mz) {
         mz = static_cast<GLint>(position.z / MESH_LENGTH - 0.5f) + MESH_RADIUS;
 }
 
-int Scene::PlaceEnable(int i, int j, int k, int h){
+int Scene::PlaceEnable(int i, int j, int k, int h, bool insea){
+    static int Radius[] = {3, 4, 2};
+    const int maxRadius = 4;
+
     GLfloat height = this->chunk[i][j]->height[k][h];
-    bool flag[] = {true, true, true};
-    for(int a = 0; a < TREEPLACER; a++){
-        for(int b = 0; b < TREEPLACER; b++){
+    bool flag[] = {!insea, !insea, !insea};
+    for(int a = 0; a < maxRadius; a++){
+        for(int b = 0; b < maxRadius; b++){
             if(a == 0 && b == 0) continue;
+            int curRadius = glm::max(a, b);
             GLfloat tmpheight;
             if(k >= a && h >= b)
                 tmpheight = this->chunk[i][j]->height[k - a][h - b];
@@ -391,12 +395,12 @@ int Scene::PlaceEnable(int i, int j, int k, int h){
                 tmpheight = this->chunk[i - 1][j]->height[MESH_SIZE + k - a][h - b];
             else
                 tmpheight = this->chunk[i][j - 1]->height[k - a][MESH_SIZE + h - b];
-            if(height < tmpheight)
+            if(height < tmpheight && Radius[0] > curRadius)
                 flag[0] = false;
-            if(height > tmpheight) {
+            if(height > tmpheight && Radius[1] > curRadius)
                 flag[1] = false;
+            if(height > tmpheight && Radius[2] > curRadius)
                 flag[2] = false;
-            }
             if(k + a < MESH_SIZE && h + b < MESH_SIZE)
                 tmpheight = this->chunk[i][j]->height[k + a][h + b];
             else if(k + a >= MESH_SIZE && h + b >= MESH_SIZE)
@@ -405,11 +409,11 @@ int Scene::PlaceEnable(int i, int j, int k, int h){
                 tmpheight = this->chunk[i + 1][j]->height[k + a - MESH_SIZE][h + b];
             else
                 tmpheight = this->chunk[i][j + 1]->height[k + a][h + b - MESH_SIZE];
-            if(height < tmpheight) {
+            if(height < tmpheight && Radius[0] > curRadius)
                 flag[0] = false;
+            if(height < tmpheight && Radius[1] > curRadius)
                 flag[1] = false;
-            }
-            if(height > tmpheight)
+            if(height > tmpheight && Radius[2] > curRadius)
                 flag[2] = false;
         }
     }
@@ -424,10 +428,11 @@ void Scene::Generate_Treeplace() {
         for(int j = 1; j < CHUNK_SIZE - 1; j++)
             for(int k = 1; k < MESH_SIZE - 1; k++)
                 for(int h = 1; h < MESH_SIZE - 1; h++){
-                    if(this->chunk[i][j]->height[k][h] > 1.0f || this->chunk[i][j]->height[k][h] < 0.3f)
+                    if(this->chunk[i][j]->height[k][h] > 1.0f)
                         continue;
+                    bool Insea = this->chunk[i][j]->height[k][h] < 0.3f;
 
-                    int TreeType = PlaceEnable(i, j, k, h);
+                    int TreeType = PlaceEnable(i, j, k, h, Insea);
                     if(TreeType == -1) continue;
 
                     Treeinfo tmptree;
@@ -435,6 +440,8 @@ void Scene::Generate_Treeplace() {
                     tmptree.chunk_number = i * CHUNK_SIZE + j;
                     tmptree.height = this->chunk[i][j]->height[k][h];
                     tmptree.location = this->chunk[i][j]->submesh[k][h]->get_Position();
+                    tmptree.axis = tmptree.type == 0 ? glm::vec3(0.0, 1.0, 0.0) : Tools::random_vec3();
+                    tmptree.angle = Tools::random_angle();
                     Treeplace[TreeType].push_back(tmptree);
                 }
 }

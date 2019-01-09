@@ -3,6 +3,7 @@
 //
 
 #include "tools.h"
+#include "../config.h"
 #include <cstdio>
 #include <cmath>
 
@@ -15,7 +16,15 @@ GLfloat Tools::random(GLfloat l, GLfloat r) {
 GLfloat Tools::random_11(){
     return random01() * 2 - 1.0f;
 }
-
+GLfloat Tools::random_angle() {
+    return random01() * PI;
+}
+glm::vec2 Tools::random_vec2() {
+    return glm::normalize(glm::vec2(random01(), random01()));
+}
+glm::vec3 Tools::random_vec3() {
+    return glm::normalize(glm::vec3(random01(), random01(), random01()));
+}
 GLfloat Tools::distance(glm::vec2 a, glm::vec2 b) {
     return sqrt((a.x - b.x) * (a.x - b.x) +
                 (a.y - b.y) * (a.y - b.y));

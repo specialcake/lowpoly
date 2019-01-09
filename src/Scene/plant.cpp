@@ -30,6 +30,7 @@ void Plants::SetParam(const std::vector<Treeinfo>& places) {
         model = glm::translate(model, modelptr->BiasVector() * scale);
         model = glm::translate(model, places[i].location + glm::vec3(0.0f, places[i].height, 0.0f));
         model = glm::scale(model, scale);
+        model = glm::rotate(model, places[i].angle, places[i].axis);
         matrixs[i] = model;
     }
 

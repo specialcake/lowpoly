@@ -63,7 +63,7 @@ public:
     Texture2D Generate_pNormalMap();
     void Generate_Treeplace();
     void Generate_Rockplace();
-    int PlaceEnable(int i, int j, int k, int h);
+    int PlaceEnable(int i, int j, int k, int h, bool insea);
     void Generate_ShadowMap(const glm::mat4& lightSpaceMatrix, const glm::mat4& view);
 private:
 
