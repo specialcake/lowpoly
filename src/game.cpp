@@ -107,7 +107,6 @@ void Game::Init() {
     scene->water_shader = ResourceManager::GetShader("water");
     scene->shadow_shader = ResourceManager::GetShader("shadowmap");
     scene->generate_scene();
-    scene->Generate_Treeplace();
     for(int i = 0; i < TREENUMBER; i++){
         std::cout << "QAQ[" << i << "] => " << scene->Treeplace[i].size() << std::endl;
         scene->plant[i]->shader = ResourceManager::GetShader("instancemodel");
@@ -151,6 +150,7 @@ void Game::Update(GLfloat dt) {
     if(ResourceManager::dir != ORIGIN_POS || first_time){
         scene->HeightMap = scene->Generate_HeightMap();
         scene->CloudMap = scene->Generate_CloudMap();
+        scene->Generate_Treeplace();
         for(int i = 0; i < TREENUMBER; i++)
             scene->plant[i]->SetParam(scene->Treeplace[i]);
 

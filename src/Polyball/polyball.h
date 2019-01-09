@@ -13,6 +13,7 @@
 class Polyball {
 public:
     glm::vec3 pos, v;
+
     Model* modelptr;
     Shader BallShader;
 

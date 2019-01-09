@@ -348,9 +348,9 @@ void Scene::GetLocationbyCamera(GLint &cx, GLint &cz, GLint &mx, GLint &mz) {
     glm::vec3 position = ResourceManager::camera.Position -
                          chunk[CHUNK_RADIUS][CHUNK_RADIUS]->submesh[MESH_RADIUS][MESH_RADIUS]->get_Position() -
                          glm::vec3(MESH_LENGTH / 2.0f, 0.0f, MESH_LENGTH / 2.0f);
-    position = glm::vec3(0.0f) -
-               chunk[CHUNK_RADIUS][CHUNK_RADIUS]->submesh[MESH_RADIUS][MESH_RADIUS]->get_Position() -
-               glm::vec3(MESH_LENGTH / 2.0f, 0.0f, MESH_LENGTH / 2.0f);
+//    position = glm::vec3(0.0f) -
+//               chunk[CHUNK_RADIUS][CHUNK_RADIUS]->submesh[MESH_RADIUS][MESH_RADIUS]->get_Position() -
+//               glm::vec3(MESH_LENGTH / 2.0f, 0.0f, MESH_LENGTH / 2.0f);
 //    printf("camera position = ");
 //    Tools::PrintVec3(ResourceManager::camera.Position);
 //    printf("center position = ");
@@ -424,6 +424,8 @@ int Scene::PlaceEnable(int i, int j, int k, int h, bool insea){
 }
 void Scene::Generate_Treeplace() {
 //    GLuint length = MESH_SIZE * CHUNK_SIZE;
+    for(int i = 0; i < TREENUMBER; i++)
+        Treeplace[i].clear();
     for(int i = 1; i < CHUNK_SIZE - 1; i++)
         for(int j = 1; j < CHUNK_SIZE - 1; j++)
             for(int k = 1; k < MESH_SIZE - 1; k++)
