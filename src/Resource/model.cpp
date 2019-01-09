@@ -30,10 +30,10 @@ Model::Model(const char *path) {
         meshes[i].setupMesh();
     }
 
-    printf("Gx: %f, Gy: %f, Gz: %f\n", Gx, Gy, Gz);
-    printf("cx: %f, cy: %f, cz: %f\n", cx, cy, cz);
-    printf("min x: %f, y: %f, z: %f\n", minx ,miny, minz);
-    printf("max x: %f, y: %f, z: %f\n", maxx, maxy, maxz);
+//    printf("Gx: %f, Gy: %f, Gz: %f\n", Gx, Gy, Gz);
+//    printf("cx: %f, cy: %f, cz: %f\n", cx, cy, cz);
+//    printf("min x: %f, y: %f, z: %f\n", minx ,miny, minz);
+//    printf("max x: %f, y: %f, z: %f\n", maxx, maxy, maxz);
 }
 void Model::Draw(Shader shader) {
     for(unsigned int i = 0; i < meshes.size(); i++){
@@ -56,8 +56,8 @@ void Model::loadModel(std::string path) {
     }
     directory = path.substr(0, path.find_last_of('/'));
     processNode(scene->mRootNode, scene);
-    std::cout << "textureloaded : " << this->textures_loaded.size() << std::endl;
-    std::cout << "meshesloaded : " << this->meshes.size() << std::endl;
+//    std::cout << "textureloaded : " << this->textures_loaded.size() << std::endl;
+//    std::cout << "meshesloaded : " << this->meshes.size() << std::endl;
 }
 
 void Model::processNode(aiNode *node, const aiScene *scene) {

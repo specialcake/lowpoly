@@ -348,9 +348,9 @@ void Scene::GetLocationbyCamera(GLint &cx, GLint &cz, GLint &mx, GLint &mz) {
     glm::vec3 position = ResourceManager::camera.Position -
                          chunk[CHUNK_RADIUS][CHUNK_RADIUS]->submesh[MESH_RADIUS][MESH_RADIUS]->get_Position() -
                          glm::vec3(MESH_LENGTH / 2.0f, 0.0f, MESH_LENGTH / 2.0f);
-//    position = glm::vec3(0.0f) -
-//               chunk[CHUNK_RADIUS][CHUNK_RADIUS]->submesh[MESH_RADIUS][MESH_RADIUS]->get_Position() -
-//               glm::vec3(MESH_LENGTH / 2.0f, 0.0f, MESH_LENGTH / 2.0f);
+    position = glm::vec3(0.0f) -
+               chunk[CHUNK_RADIUS][CHUNK_RADIUS]->submesh[MESH_RADIUS][MESH_RADIUS]->get_Position() -
+               glm::vec3(MESH_LENGTH / 2.0f, 0.0f, MESH_LENGTH / 2.0f);
 //    printf("camera position = ");
 //    Tools::PrintVec3(ResourceManager::camera.Position);
 //    printf("center position = ");
@@ -442,8 +442,11 @@ void Scene::Generate_Treeplace() {
                     tmptree.chunk_number = i * CHUNK_SIZE + j;
                     tmptree.height = this->chunk[i][j]->height[k][h];
                     tmptree.location = this->chunk[i][j]->submesh[k][h]->get_Position();
-                    tmptree.axis = tmptree.type == 0 ? glm::vec3(0.0, 1.0, 0.0) : Tools::random_vec3();
-                    tmptree.angle = Tools::random_angle();
+                    tmptree.axis = tmptree.type == 0 ? glm::vec3(0.0, 1.0, 0.0) :
+                                   glm::normalize(glm::vec3(int(tmptree.height * 10) % 10 / 10.0,
+                                                            int(tmptree.height * 100) % 10 / 10.0,
+                                                            int(tmptree.height * 1000) % 10 / 10.0));
+                    tmptree.angle = int(tmptree.height * 10000.0) % 100 / 50.0 * PI;
                     Treeplace[TreeType].push_back(tmptree);
                 }
 }
