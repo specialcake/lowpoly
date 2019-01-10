@@ -8,13 +8,17 @@
 
 /* Begin PBXBuildFile section */
 		900137A721DE2C4B004B4A8E /* SkymapShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 900137A621DE2C4B004B4A8E /* SkymapShader.metal */; };
+		905BA9E521E72ACF00E64755 /* ARpolyball.scn in Resources */ = {isa = PBXBuildFile; fileRef = 905BA9E421E729B200E64755 /* ARpolyball.scn */; };
+		905BA9E721E732E800E64755 /* moon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 905BA9E621E732E800E64755 /* moon.jpg */; };
+		905BA9E921E7357D00E64755 /* mars.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 905BA9E821E7357D00E64755 /* mars.jpg */; };
+		905BA9EB21E7366E00E64755 /* sun.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 905BA9EA21E7366E00E64755 /* sun.jpg */; };
+		905BA9ED21E7368800E64755 /* venus.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 905BA9EC21E7368800E64755 /* venus.jpg */; };
 		9060E66C21DBD5D5004BFF6F /* WaterShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 9060E66B21DBD5D5004BFF6F /* WaterShader.metal */; };
 		9060E66E21DBD7A3004BFF6F /* Water.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9060E66D21DBD7A3004BFF6F /* Water.swift */; };
 		9068D66D21DD438200BAFA46 /* Skymap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9068D66C21DD438200BAFA46 /* Skymap.swift */; };
 		9068D66F21DD439400BAFA46 /* Skybox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9068D66E21DD439400BAFA46 /* Skybox.swift */; };
 		906C195E21E1E64F00A7FA14 /* Plane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 906C195C21E1E64F00A7FA14 /* Plane.swift */; };
 		906C195F21E1E64F00A7FA14 /* ARViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 906C195D21E1E64F00A7FA14 /* ARViewController.swift */; };
-		906C196121E1EFF600A7FA14 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 906C196021E1EFF600A7FA14 /* ShareViewController.swift */; };
 		909A886721DB636900AE91DF /* up_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 909A885F21DB636900AE91DF /* up_normal.png */; };
 		909A886821DB636900AE91DF /* down_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 909A886021DB636900AE91DF /* down_normal.png */; };
 		909A886921DB636900AE91DF /* right_highlight.png in Resources */ = {isa = PBXBuildFile; fileRef = 909A886121DB636900AE91DF /* right_highlight.png */; };
@@ -27,6 +31,7 @@
 		909DFF9921DA69B400241714 /* InstanceSceneShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 909DFF9821DA69B400241714 /* InstanceSceneShader.metal */; };
 		909DFF9B21DA8C5A00241714 /* MetalTexture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 909DFF9A21DA8C5A00241714 /* MetalTexture.swift */; };
 		909DFF9D21DAA2B000241714 /* ResourceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 909DFF9C21DAA2B000241714 /* ResourceManager.swift */; };
+		90AC44BD21E423B000AEB5CA /* Shadowmap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AC44BC21E423B000AEB5CA /* Shadowmap.swift */; };
 		90B4BE1C21CA572A008ECBB3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B4BE1B21CA572A008ECBB3 /* AppDelegate.swift */; };
 		90B4BE1E21CA572B008ECBB3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B4BE1D21CA572B008ECBB3 /* ViewController.swift */; };
 		90B4BE2121CA572B008ECBB3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 90B4BE1F21CA572B008ECBB3 /* Main.storyboard */; };
@@ -40,6 +45,8 @@
 		90B4C1A921CA6009008ECBB3 /* Scene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B4C1A821CA6009008ECBB3 /* Scene.swift */; };
 		90B4C1AB21CA6877008ECBB3 /* Noise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B4C1AA21CA6877008ECBB3 /* Noise.swift */; };
 		90B4C1AD21CA786E008ECBB3 /* SceneShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 90B4C1AC21CA786E008ECBB3 /* SceneShader.metal */; };
+		90C77A3621E7149000A8E31C /* polyball.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 90C77A3521E7149000A8E31C /* polyball.mtl */; };
+		90C77A3821E714B200A8E31C /* polyball.obj in Resources */ = {isa = PBXBuildFile; fileRef = 90C77A3721E714B200A8E31C /* polyball.obj */; };
 		90CFCD3921E11158001B4560 /* Sun.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CFCD3721E11158001B4560 /* Sun.swift */; };
 		90CFCD3A21E11158001B4560 /* SunShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 90CFCD3821E11158001B4560 /* SunShader.metal */; };
 		90F7E44221E0797900246AFE /* SkyboxShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 90F7E44121E0797900246AFE /* SkyboxShader.metal */; };
@@ -78,8 +85,6 @@
 		90F7E85521E10D6100246AFE /* widetree.obj in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E84A21E10D6000246AFE /* widetree.obj */; };
 		90F7E85621E10D6100246AFE /* bushytree.obj in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E84C21E10D6000246AFE /* bushytree.obj */; };
 		90F7E85721E10D6100246AFE /* bushytree.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E84D21E10D6000246AFE /* bushytree.mtl */; };
-		90F7E85821E10D6100246AFE /* polyball.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E84F21E10D6100246AFE /* polyball.mtl */; };
-		90F7E85921E10D6100246AFE /* polyball.obj in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E85021E10D6100246AFE /* polyball.obj */; };
 		90F7E85A21E10D6100246AFE /* crystal.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E85221E10D6100246AFE /* crystal.mtl */; };
 		90F7E85B21E10D6100246AFE /* crystal.obj in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E85321E10D6100246AFE /* crystal.obj */; };
 		90F7E85E21E1106800246AFE /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F7E46C21E0F53100246AFE /* Renderer.swift */; };
@@ -87,13 +92,17 @@
 
 /* Begin PBXFileReference section */
 		900137A621DE2C4B004B4A8E /* SkymapShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = SkymapShader.metal; sourceTree = "<group>"; };
+		905BA9E421E729B200E64755 /* ARpolyball.scn */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = ARpolyball.scn; sourceTree = "<group>"; };
+		905BA9E621E732E800E64755 /* moon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = moon.jpg; sourceTree = "<group>"; };
+		905BA9E821E7357D00E64755 /* mars.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = mars.jpg; sourceTree = "<group>"; };
+		905BA9EA21E7366E00E64755 /* sun.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = sun.jpg; sourceTree = "<group>"; };
+		905BA9EC21E7368800E64755 /* venus.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = venus.jpg; sourceTree = "<group>"; };
 		9060E66B21DBD5D5004BFF6F /* WaterShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = WaterShader.metal; sourceTree = "<group>"; };
 		9060E66D21DBD7A3004BFF6F /* Water.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Water.swift; sourceTree = "<group>"; };
 		9068D66C21DD438200BAFA46 /* Skymap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Skymap.swift; sourceTree = "<group>"; };
 		9068D66E21DD439400BAFA46 /* Skybox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Skybox.swift; sourceTree = "<group>"; };
 		906C195C21E1E64F00A7FA14 /* Plane.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Plane.swift; sourceTree = "<group>"; };
 		906C195D21E1E64F00A7FA14 /* ARViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARViewController.swift; sourceTree = "<group>"; };
-		906C196021E1EFF600A7FA14 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		909A885F21DB636900AE91DF /* up_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = up_normal.png; sourceTree = "<group>"; };
 		909A886021DB636900AE91DF /* down_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = down_normal.png; sourceTree = "<group>"; };
 		909A886121DB636900AE91DF /* right_highlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = right_highlight.png; sourceTree = "<group>"; };
@@ -106,6 +115,7 @@
 		909DFF9821DA69B400241714 /* InstanceSceneShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = InstanceSceneShader.metal; sourceTree = "<group>"; };
 		909DFF9A21DA8C5A00241714 /* MetalTexture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetalTexture.swift; sourceTree = "<group>"; };
 		909DFF9C21DAA2B000241714 /* ResourceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ResourceManager.swift; path = Polyworld/Tool/ResourceManager.swift; sourceTree = SOURCE_ROOT; };
+		90AC44BC21E423B000AEB5CA /* Shadowmap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shadowmap.swift; sourceTree = "<group>"; };
 		90B4BE1821CA572A008ECBB3 /* Polyworld.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Polyworld.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		90B4BE1B21CA572A008ECBB3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		90B4BE1D21CA572B008ECBB3 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -121,6 +131,8 @@
 		90B4C1A821CA6009008ECBB3 /* Scene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scene.swift; sourceTree = "<group>"; };
 		90B4C1AA21CA6877008ECBB3 /* Noise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Noise.swift; sourceTree = "<group>"; };
 		90B4C1AC21CA786E008ECBB3 /* SceneShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = SceneShader.metal; sourceTree = "<group>"; };
+		90C77A3521E7149000A8E31C /* polyball.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = polyball.mtl; sourceTree = "<group>"; };
+		90C77A3721E714B200A8E31C /* polyball.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = polyball.obj; sourceTree = "<group>"; };
 		90CFCD3721E11158001B4560 /* Sun.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sun.swift; sourceTree = "<group>"; };
 		90CFCD3821E11158001B4560 /* SunShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = SunShader.metal; sourceTree = "<group>"; };
 		90F7E44121E0797900246AFE /* SkyboxShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = SkyboxShader.metal; sourceTree = "<group>"; };
@@ -160,8 +172,6 @@
 		90F7E84A21E10D6000246AFE /* widetree.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = widetree.obj; sourceTree = "<group>"; };
 		90F7E84C21E10D6000246AFE /* bushytree.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bushytree.obj; sourceTree = "<group>"; };
 		90F7E84D21E10D6000246AFE /* bushytree.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bushytree.mtl; sourceTree = "<group>"; };
-		90F7E84F21E10D6100246AFE /* polyball.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = polyball.mtl; sourceTree = "<group>"; };
-		90F7E85021E10D6100246AFE /* polyball.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = polyball.obj; sourceTree = "<group>"; };
 		90F7E85221E10D6100246AFE /* crystal.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = crystal.mtl; sourceTree = "<group>"; };
 		90F7E85321E10D6100246AFE /* crystal.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = crystal.obj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -188,6 +198,26 @@
 				90CFCD3821E11158001B4560 /* SunShader.metal */,
 			);
 			path = Shader;
+			sourceTree = "<group>";
+		};
+		905A835C21E1F48C00A03EE9 /* AR */ = {
+			isa = PBXGroup;
+			children = (
+				906C195D21E1E64F00A7FA14 /* ARViewController.swift */,
+				906C195C21E1E64F00A7FA14 /* Plane.swift */,
+			);
+			path = AR;
+			sourceTree = "<group>";
+		};
+		905BA9EE21E736D800E64755 /* planet */ = {
+			isa = PBXGroup;
+			children = (
+				905BA9E621E732E800E64755 /* moon.jpg */,
+				905BA9E821E7357D00E64755 /* mars.jpg */,
+				905BA9EA21E7366E00E64755 /* sun.jpg */,
+				905BA9EC21E7368800E64755 /* venus.jpg */,
+			);
+			path = planet;
 			sourceTree = "<group>";
 		};
 		909A885E21DB636900AE91DF /* button */ = {
@@ -231,11 +261,10 @@
 				90B4C1A321CA5B98008ECBB3 /* Scene */,
 				90F7E44421E0833C00246AFE /* Tool */,
 				90CFCD3B21E11AAC001B4560 /* Model */,
+				905A835C21E1F48C00A03EE9 /* AR */,
 				90B4BE1B21CA572A008ECBB3 /* AppDelegate.swift */,
 				90B4BE1D21CA572B008ECBB3 /* ViewController.swift */,
-				906C196021E1EFF600A7FA14 /* ShareViewController.swift */,
-				906C195D21E1E64F00A7FA14 /* ARViewController.swift */,
-				906C195C21E1E64F00A7FA14 /* Plane.swift */,
+				90AC44BC21E423B000AEB5CA /* Shadowmap.swift */,
 				90B4BE1F21CA572B008ECBB3 /* Main.storyboard */,
 				90B4BE2221CA572C008ECBB3 /* Assets.xcassets */,
 				90B4BE2421CA572C008ECBB3 /* LaunchScreen.storyboard */,
@@ -317,6 +346,7 @@
 		90F7E49B21E102F500246AFE /* Resource */ = {
 			isa = PBXGroup;
 			children = (
+				905BA9EE21E736D800E64755 /* planet */,
 				909A885E21DB636900AE91DF /* button */,
 				90F7E46E21E0F56100246AFE /* nanosuit */,
 				90F7E4B021E106E700246AFE /* helmet */,
@@ -366,8 +396,9 @@
 		90F7E84E21E10D6100246AFE /* polyball */ = {
 			isa = PBXGroup;
 			children = (
-				90F7E84F21E10D6100246AFE /* polyball.mtl */,
-				90F7E85021E10D6100246AFE /* polyball.obj */,
+				90C77A3521E7149000A8E31C /* polyball.mtl */,
+				90C77A3721E714B200A8E31C /* polyball.obj */,
+				905BA9E421E729B200E64755 /* ARpolyball.scn */,
 			);
 			path = polyball;
 			sourceTree = "<group>";
@@ -439,6 +470,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90C77A3821E714B200A8E31C /* polyball.obj in Resources */,
 				90F7E4AD21E102F500246AFE /* loft_pmrem.ktx in Resources */,
 				90F7E48921E0F56100246AFE /* hand_showroom_spec.png in Resources */,
 				90F7E48B21E0F56100246AFE /* nanosuit.mtl in Resources */,
@@ -452,10 +484,11 @@
 				90F7E48E21E0F56100246AFE /* glass_dif.png in Resources */,
 				90F7E85521E10D6100246AFE /* widetree.obj in Resources */,
 				90F7E4A921E102F500246AFE /* helmet_roughness.jpg in Resources */,
-				90F7E85821E10D6100246AFE /* polyball.mtl in Resources */,
 				90B4BE2621CA572C008ECBB3 /* LaunchScreen.storyboard in Resources */,
 				909A886821DB636900AE91DF /* down_normal.png in Resources */,
+				905BA9E921E7357D00E64755 /* mars.jpg in Resources */,
 				909A886D21DB636900AE91DF /* right_normal.png in Resources */,
+				905BA9EB21E7366E00E64755 /* sun.jpg in Resources */,
 				90F7E48D21E0F56100246AFE /* hand_showroom_ddn.png in Resources */,
 				90F7E48C21E0F56100246AFE /* body_dif.png in Resources */,
 				90F7E49821E0F56100246AFE /* hand_dif.png in Resources */,
@@ -463,6 +496,7 @@
 				909A886A21DB636900AE91DF /* left_highlight.png in Resources */,
 				90F7E4AF21E102F500246AFE /* helmet_metallic.jpg in Resources */,
 				909A886721DB636900AE91DF /* up_normal.png in Resources */,
+				905BA9E721E732E800E64755 /* moon.jpg in Resources */,
 				90F7E48721E0F56100246AFE /* arm_showroom_spec.png in Resources */,
 				90F7E4A821E102F500246AFE /* scene.mtl in Resources */,
 				90F7E4A621E102F500246AFE /* garage_pmrem.ktx in Resources */,
@@ -476,11 +510,13 @@
 				90F7E4AA21E102F500246AFE /* scene.obj in Resources */,
 				90F7E48421E0F56100246AFE /* body_showroom_ddn.png in Resources */,
 				90F7E49421E0F56100246AFE /* LICENSE.txt in Resources */,
-				90F7E85921E10D6100246AFE /* polyball.obj in Resources */,
+				905BA9ED21E7368800E64755 /* venus.jpg in Resources */,
 				90B4BE2321CA572C008ECBB3 /* Assets.xcassets in Resources */,
 				90F7E49521E0F56100246AFE /* helmet_showroom_spec.png in Resources */,
 				90F7E48F21E0F56100246AFE /* arm_dif.png in Resources */,
+				905BA9E521E72ACF00E64755 /* ARpolyball.scn in Resources */,
 				90F7E48621E0F56100246AFE /* arm_showroom_ddn.png in Resources */,
+				90C77A3621E7149000A8E31C /* polyball.mtl in Resources */,
 				90F7E49121E0F56100246AFE /* helmet_diff.png in Resources */,
 				90F7E48A21E0F56100246AFE /* glass_ddn.png in Resources */,
 				90F7E85A21E10D6100246AFE /* crystal.mtl in Resources */,
@@ -503,11 +539,11 @@
 				90CFCD3921E11158001B4560 /* Sun.swift in Sources */,
 				9068D66F21DD439400BAFA46 /* Skybox.swift in Sources */,
 				900137A721DE2C4B004B4A8E /* SkymapShader.metal in Sources */,
-				906C196121E1EFF600A7FA14 /* ShareViewController.swift in Sources */,
 				909A887021DBAB3800AE91DF /* ParallelLight.swift in Sources */,
 				90CFCD3A21E11158001B4560 /* SunShader.metal in Sources */,
 				909DFF9B21DA8C5A00241714 /* MetalTexture.swift in Sources */,
 				90F7E85E21E1106800246AFE /* Renderer.swift in Sources */,
+				90AC44BD21E423B000AEB5CA /* Shadowmap.swift in Sources */,
 				90B4BE2E21CA57D8008ECBB3 /* MathUtilities.swift in Sources */,
 				906C195F21E1E64F00A7FA14 /* ARViewController.swift in Sources */,
 				90B4C1A921CA6009008ECBB3 /* Scene.swift in Sources */,

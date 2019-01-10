@@ -73,25 +73,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MFMailComposeViewControll
     func application(_ application: UIApplication, performActionFor shortcutItem: UIApplicationShortcutItem, completionHandler: (Bool) -> Void) {
         switch shortcutItem.type {
         case "play":
+            blockRotation = .landscape
+            window?.rootViewController?.dismiss(animated: false, completion: nil)
             print("play game")
         case "AR":
+            //blockRotation = .portrait
+            window?.rootViewController?.dismiss(animated: false, completion: nil)
             window?.rootViewController?.performSegue(withIdentifier: "ARmode", sender: nil)
         case "mail":
             guard MFMailComposeViewController.canSendMail() else {
                 print("Can not send mail")
                 return
             }
-            
+            blockRotation = .portrait
             let mailComposer = MFMailComposeViewController()
             mailComposer.mailComposeDelegate = self
             mailComposer.setToRecipients(["shenxinyi@zju.edu.cn"])
             mailComposer.setSubject("About Polyworld")
             mailComposer.setMessageBody("Hello, this is an email from me.", isHTML: false)
-            blockRotation = .portrait
+            window?.rootViewController?.dismiss(animated: false, completion: nil)
             window?.rootViewController?.present(mailComposer, animated: false, completion: nil)
         case "share":
+            blockRotation = .landscape
             guard let window = UIApplication.shared.keyWindow else { return }
             
+            /*
             // 用下面这行而不是UIGraphicsBeginImageContext()，因为前者支持Retina
             UIGraphicsBeginImageContextWithOptions(window.bounds.size, false, 0.0)
             
@@ -100,10 +106,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, MFMailComposeViewControll
             let image = UIGraphicsGetImageFromCurrentImageContext()
             
             UIGraphicsEndImageContext()
+            */
             
-            let activityController = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+            let activityController = UIActivityViewController(activityItems: ["快来玩 Polyworld!"], applicationActivities: nil)
             activityController.popoverPresentationController?.sourceView = window.rootViewController?.view
+            window.rootViewController?.dismiss(animated: false, completion: nil)
             window.rootViewController?.present(activityController, animated: true, completion: nil)
+            
         default:
             break
         }

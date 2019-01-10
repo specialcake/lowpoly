@@ -52,6 +52,14 @@ extension float4x4 {
                   float4( 0,  0, wz,  1))
     }
     
+    init(orthoProjectionLeft left: Float, right: Float, bottom: Float, top: Float, near: Float, far: Float)
+    {
+        self.init(float4( 2 / (right - left), 0, 0, 0),
+                  float4( 0, 2 / (top - bottom), 0, 0),
+                  float4( 0, 0, -2 / (far - near), 0),
+                  float4( -(right + left) / (right - left), -(top + bottom) / (top - bottom), -(far + near) / (far - near), 1))
+    }
+    
     var normalMatrix: float3x3 {
         let upperLeft = float3x3(self[0].xyz, self[1].xyz, self[2].xyz)
         return upperLeft.transpose.inverse

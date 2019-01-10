@@ -22,6 +22,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
     @IBOutlet var sceneView: ARSCNView!
     var planes = [UUID:Plane]() // 字典，存储场景中当前渲染的所有平面
     var boxes = [SCNNode]()
+    var texture: Int = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,13 +64,13 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         sceneView.autoenablesDefaultLighting = true
         
         // 添加Debug信息
-        // sceneView.debugOptions = [ARSCNDebugOptions.showWorldOrigin, ARSCNDebugOptions.showFeaturePoints]
+        sceneView.debugOptions = [ARSCNDebugOptions.showPhysicsShapes, ARSCNDebugOptions.showFeaturePoints]
         
         // 设置 ARSCNViewDelegate——此协议会提供回调来处理新创建的几何体
         sceneView.delegate = self
         
         // 显示统计数据（statistics）如 fps 和 时长信息
-        sceneView.showsStatistics = true
+        // sceneView.showsStatistics = true
         
         // 将 scene 赋给 view
         sceneView.scene = scene
@@ -96,6 +97,21 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
     @objc func handleTapFrom(recognizer: UITapGestureRecognizer) {
         // 获取屏幕空间坐标并传递给 ARSCNView 实例的 hitTest 方法
         let tapPoint = recognizer.location(in: sceneView)
+        
+        // 触碰球
+        let results = sceneView.hitTest(tapPoint)
+        
+        if let node = results.first?.node, node.physicsBody?.type == .dynamic, let coord = results.first?.worldCoordinates {
+            let scale: Float = 0.3
+            let direction = SCNVector3(
+                scale * (node.position.x - coord.x),
+                scale * (node.position.y - coord.y),
+                scale * (node.position.z - coord.z)
+            )
+            node.physicsBody?.applyForce(direction, asImpulse: true)
+            return
+        }
+        
         let result = sceneView.hitTest(tapPoint, types: .existingPlaneUsingExtent)
         
         // 如果射线与某个平面几何体相交，就会返回该平面，以离摄像头的距离升序排序
@@ -112,27 +128,82 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
 //        let cube = SCNBox(width: dimension, height: dimension, length: dimension, chamferRadius: 0)
 //        let node = SCNNode(geometry: cube)
         
+//        guard let url = Bundle.main.url(forResource: "ARpolyball", withExtension: "obj") else { fatalError()
+//        }
+//        guard let node = SCNReferenceNode(url: url) else {
+//            fatalError("load baby_groot error.")
+//        }
         
-        guard let url = Bundle.main.url(forResource: "polyball", withExtension: "obj") else { fatalError()
+        let scene = SCNScene(named: "ARpolyball.scn")!
+        if let node = scene.rootNode.childNode(withName: "ball", recursively: true) {
+            
+            //node.load()
+            
+            // physicsBody 会让 SceneKit 用物理引擎控制该几何体
+            let sphere = SCNSphere(radius: 0.1)
+            let shape = SCNPhysicsShape(geometry: sphere, options: [SCNPhysicsShape.Option.type: SCNPhysicsShape.ShapeType.convexHull, SCNPhysicsShape.Option.scale: SCNVector3(0.1,0.1,0.1)])
+            node.physicsBody = SCNPhysicsBody(type: .dynamic, shape: shape)
+            node.physicsBody?.mass = 0.05
+            //node.physicsBody?.categoryBitMask = CollisionCategory.cube.rawValue
+        
+            change(node: node)
+            
+            // 把几何体插在用户点击的点再稍高一点的位置，以便使用物理引擎来掉落到平面上
+            let insertionYOffset: Float = 0.25
+            node.position = SCNVector3Make(
+                hitResult.worldTransform.columns.3.x,
+                hitResult.worldTransform.columns.3.y + insertionYOffset,
+                hitResult.worldTransform.columns.3.z
+            )
+            sceneView.scene.rootNode.addChildNode(node)
+            boxes.append(node)
+            
         }
-        
-        guard let node = SCNReferenceNode(url: url) else {
-            fatalError("load baby_groot error.")
-        }
-        node.load()
-        
-        // physicsBody 会让 SceneKit 用物理引擎控制该几何体
-        node.physicsBody = SCNPhysicsBody(type: .dynamic, shape: nil)
-        
-        node.physicsBody?.mass = 2
-        node.physicsBody?.categoryBitMask = CollisionCategory.cube.rawValue
-        
-        // 把几何体插在用户点击的点再稍高一点的位置，以便使用物理引擎来掉落到平面上
-        let insertionYOffset: Float = 3
-        node.position = SCNVector3Make(hitResult.worldTransform.columns.3.x, hitResult.worldTransform.columns.3.y + insertionYOffset, hitResult.worldTransform.columns.3.z)
-        sceneView.scene.rootNode.addChildNode(node)
-        boxes.append(node)
     }
+    
+    @IBAction func deleteGeometry(_ sender: UIBarButtonItem) {
+        if !boxes.isEmpty {
+            for ball in boxes {
+                ball.removeFromParentNode()
+            }
+        }
+    }
+    
+    @IBAction func changeColor(_ sender: UIBarButtonItem) {
+        
+        texture = (texture + 1) % 8
+    
+        if !boxes.isEmpty {
+            for ball in boxes {
+                change(node: ball)
+            }
+        }
+    }
+    
+    func change(node: SCNNode) {
+        let material = SCNMaterial()
+        
+        if (texture == 0) {
+            material.diffuse.contents = UIColor.white
+        } else if (texture == 1) {
+            material.diffuse.contents = UIColor(displayP3Red: 0.5, green: 1.0, blue: 0.5, alpha: 1)
+        } else if (texture == 2) {
+            material.diffuse.contents = UIColor(displayP3Red: 0.0, green: 0.5, blue: 1.0, alpha: 1)
+        } else if (texture == 3) {
+            material.diffuse.contents = UIColor(displayP3Red: 1.0, green: 0.5, blue: 0.5, alpha: 1)
+        } else if (texture == 4) {
+            material.diffuse.contents = UIImage(named: "moon.jpg")
+        } else if (texture == 5) {
+            material.diffuse.contents = UIImage(named: "mars.jpg")
+        } else if (texture == 6) {
+            material.diffuse.contents = UIImage(named: "sun.jpg")
+        } else if (texture == 7) {
+            material.diffuse.contents = UIImage(named: "venus.jpg")
+        }
+        
+        node.geometry?.materials = [material]
+    }
+
     
     // MARK: - ARSCNViewDelegate
     
@@ -149,6 +220,14 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
 //    func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
 //        return nil
 //    }
+    
+    override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        if !boxes.isEmpty {
+            for ball in boxes {
+                ball.physicsBody?.applyForce(SCNVector3(0, 0.1, 0), asImpulse: true)
+            }
+        }
+    }
     
     /**
      将新 node 映射到给定 anchor 时调用。
