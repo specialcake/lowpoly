@@ -82,6 +82,7 @@ enum Direction{
 
 //Value
 #define PI 3.1415926535f
+#define eps 0.0000001
 
 //Camera
 #define YAW -90.0f

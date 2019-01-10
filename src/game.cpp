@@ -42,6 +42,7 @@ void Game::Init() {
     ResourceManager::LoadShader("../src/shader/skymap.vert", "../src/shader/skymap.frag", NULL, "skymap");
     ResourceManager::LoadShader("../src/shader/bloom.vert", "../src/shader/bloom.frag", NULL, "bloom");
     ResourceManager::LoadShader("../src/shader/polyball.vert", "../src/shader/polyball.frag", NULL, "polyball");
+    ResourceManager::LoadShader("../src/shader/fontdisplay.vert", "../src/shader/fontdisplay.frag", NULL, "fontdisplay");
 
     ResourceManager::GetShader("sprite").use();
     ResourceManager::GetShader("sprite").setInt("image", 0);
@@ -90,6 +91,9 @@ void Game::Init() {
     ResourceManager::GetShader("skybox").setInt("Back", 5);
     ResourceManager::GetShader("skybox").setInt("Cloud", 6);
 
+    ResourceManager::GetShader("fontdisplay").use();
+    ResourceManager::GetShader("fontdisplay").setInt("text", 0);
+
     ResourceManager::LoadModel("../resource/model/tree/pine.obj", "pine");
     ResourceManager::LoadModel("../resource/model/tree/normaltree.obj", "normaltree");
     ResourceManager::LoadModel("../resource/model/polyball/polyball.obj", "polyball");
@@ -100,6 +104,8 @@ void Game::Init() {
     ResourceManager::GetModel("bigrock")->SetBias(-1.0f, 1.5f, 2.7f);
     ResourceManager::GetModel("smallrock")->SetBias(5.0f, 0.0f, 0.0f);
 
+    ResourceManager::fontdisplay.Initialize(ResourceManager::GetShader("fontdisplay"));
+
     littlewindow = new SpriteRenderer(ResourceManager::GetShader("sprite"));
 
     scene = new Scene(glm::vec3(0.0f), ResourceManager::GetShader("scene"));
@@ -107,8 +113,7 @@ void Game::Init() {
     scene->water_shader = ResourceManager::GetShader("water");
     scene->shadow_shader = ResourceManager::GetShader("shadowmap");
     scene->generate_scene();
-    for(int i = 0; i < TREENUMBER; i++){
-        std::cout << "QAQ[" << i << "] => " << scene->Treeplace[i].size() << std::endl;
+    for(int i = 0; i < TREENUMBER; i++) {
         scene->plant[i]->shader = ResourceManager::GetShader("instancemodel");
         scene->plant[i]->shadowshader = ResourceManager::GetShader("modelshadow");
     }
@@ -175,13 +180,13 @@ void Game::Update(GLfloat dt) {
 }
 
 void Game::ProcessInput(GLfloat dt) {
-    if (ResourceManager::Keys[GLFW_KEY_W])
+    if (ResourceManager::Keys[GLFW_KEY_UP])
         ResourceManager::camera.ProcessKeyboard(FORWARD, dt);
-    if (ResourceManager::Keys[GLFW_KEY_S])
+    if (ResourceManager::Keys[GLFW_KEY_DOWN])
         ResourceManager::camera.ProcessKeyboard(BACKWARD, dt);
-    if (ResourceManager::Keys[GLFW_KEY_A])
+    if (ResourceManager::Keys[GLFW_KEY_LEFT])
         ResourceManager::camera.ProcessKeyboard(LEFT, dt);
-    if (ResourceManager::Keys[GLFW_KEY_D])
+    if (ResourceManager::Keys[GLFW_KEY_RIGHT])
         ResourceManager::camera.ProcessKeyboard(RIGHT, dt);
     if (ResourceManager::Keys[GLFW_KEY_Q])
         ResourceManager::camera.ProcessKeyboard(ROLL_LEFT, dt);
@@ -189,6 +194,12 @@ void Game::ProcessInput(GLfloat dt) {
         ResourceManager::camera.ProcessKeyboard(ROLL_RIGHT, dt);
     if (ResourceManager::Keys[GLFW_KEY_F])
         ResourceManager::followMode ^= 1;
+    polyball->Cam.Front = ResourceManager::camera.Front;
+    polyball->Cam.Right = ResourceManager::camera.Right;
+    polyball->Cam.Up = ResourceManager::camera.Up;
+
+    polyball->UpdateSpeed(0.017f);
+    polyball->UpdatePosition(0.017f);
     if(ResourceManager::followMode)
         ResourceManager::camera.SetPosition(polyball->GenCameraPosition());
 }
@@ -203,9 +214,9 @@ void Game::Render() {
         glm::mat4 PVMatrix = projection * view;
         glm::mat4 lightSpaceMatrix = shadowmap->GetlightSpaceMatrix(scene);
 
-        SceneTexture->BeginRender();
+//        SceneTexture->BeginRender();
 
-        scene->draw(view, PVMatrix, lightSpaceMatrix, shadowmap->DepthMap, shadowmap->BluredShadow);
+//        scene->draw(view, PVMatrix, lightSpaceMatrix, shadowmap->DepthMap, shadowmap->BluredShadow);
         for(int i = 0; i < TREENUMBER; i++)
             scene->plant[i]->Draw(view, PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
 
@@ -227,34 +238,42 @@ void Game::Render() {
         ResourceManager::skybox->Draw(skymap->skymap);
         glActiveTexture(GL_TEXTURE0);
 
-        Model* Sun = ResourceManager::GetModel("polyball");
-        Shader sunshader = ResourceManager::GetShader("sun");
-        sunshader.use();
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, -8.0f * PARLIGHT_DIR);
-        model = glm::scale(model, glm::vec3(40.0f));
-        sunshader.setMat4("model", model);
-        sunshader.setMat4("PVMatrix", projection * glm::mat4(glm::mat3(ResourceManager::camera.GetViewMatrix())));
-        sunshader.setVec3("lightdir", PARLIGHT_DIR);
-
-        Sun->Draw(sunshader);
+//        Model* Sun = ResourceManager::GetModel("polyball");
+//        Shader sunshader = ResourceManager::GetShader("sun");
+//        sunshader.use();
+//        glm::mat4 model = glm::mat4(1.0f);
+//        model = glm::translate(model, -8.0f * PARLIGHT_DIR);
+//        model = glm::scale(model, glm::vec3(40.0f));
+//        sunshader.setMat4("model", model);
+//        sunshader.setMat4("PVMatrix", projection * glm::mat4(glm::mat3(ResourceManager::camera.GetViewMatrix())));
+//        sunshader.setVec3("lightdir", PARLIGHT_DIR);
+//
+//        Sun->Draw(sunshader);
 
         glDepthFunc(GL_LESS);
 
         polyball->Render(view, PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
 
-        SceneTexture->EndRender();
+//        SceneTexture->EndRender();
 
-        Bloom::RenderBloom(SceneTexture);
+//        Bloom::RenderBloom(SceneTexture);
 
 //        Texture2D blurscene = Bloom::Blurer.GaussBlur(SceneTexture->BrightTexture);
 
-        littlewindow->shader.use();
-        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
-        littlewindow->DrawSprite(SceneTexture->ColorTexture, glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.5f));
+//        littlewindow->shader.use();
+//        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
+//        littlewindow->DrawSprite(SceneTexture->ColorTexture, glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.5f));
 
 //        littlewindow->shader.use();
 //        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
 //        littlewindow->DrawSprite(blurscene, glm::vec3(-0.1f, 0.5f, -0.5f), glm::vec3(0.5f));
+        std::string text = "Location = (" + std::to_string(polyball->Position.x) + ',' +
+                                            std::to_string(polyball->Position.y) + ',' +
+                                            std::to_string(polyball->Position.z) + ')';
+        ResourceManager::Displayfont(text, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        text = "Speed = (" + std::to_string(polyball->Speed.x) + ',' +
+                             std::to_string(polyball->Speed.y) + ',' +
+                             std::to_string(polyball->Speed.z) + ')';
+        ResourceManager::Displayfont(text, glm::vec3(0.0f, 70.0f, 0.0f), glm::vec3(1.0f), glm::vec3(1.0f, 0.0f, 0.0f));
     }
 }

@@ -67,6 +67,8 @@ void Fontdisplay::Initialize(Shader s) {
     glBindVertexArray(0);
 }
 void Fontdisplay::RenderText(std::string text, glm::vec3 pos, glm::vec3 scale, glm::vec3 color) {
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glm::mat4 projection = glm::ortho(0.0f, static_cast<GLfloat>(SCREEN_WIDTH), 0.0f, static_cast<GLfloat>(SCREEN_HEIGHT));
     shader.use();
     shader.setVec3("textColor", color);
@@ -107,4 +109,5 @@ void Fontdisplay::RenderText(std::string text, glm::vec3 pos, glm::vec3 scale, g
     }
     glBindVertexArray(0);
     glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_BLEND);
 }

@@ -18,12 +18,18 @@ struct Collision{
     glm::vec3 Point;
     glm::vec3 Normal;
 };
+struct Coord{
+    glm::vec3 Front;
+    glm::vec3 Right;
+    glm::vec3 Up;
+};
 
 class Polyball{
 public:
-    GLfloat Speed;
-    glm::vec3 movdir, Position;
-    glm::vec3 Front, Up, Right;
+    glm::vec3 Speed, SpeedLimit;
+    glm::vec3 Acceleration, Resistance;
+    glm::vec3 Position;
+    Coord Mov, Cam;
     Collision collision;
 
     Model* modelptr;
@@ -33,8 +39,10 @@ public:
     ~Polyball();
     void Initialize();
     glm::vec3 GenCameraPosition();
-    void Update();
     void Render(glm::mat4 view, glm::mat4 PVMatrix, glm::mat4 lightSpaceMatrix, Texture2D BlurShadow);
+    void UpdatePosition(float deltaTime);
+    void UpdateSpeed(float deltaTime);
+    void UpdateMovVec();
 };
 
 
