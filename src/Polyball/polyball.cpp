@@ -10,7 +10,8 @@ Polyball::Polyball(Shader shader) {
     Acceleration = glm::vec3(2.0f, 0.0f, 2.0f);
     Resistance = glm::vec3(1.0f, 3.0f, 1.0f);
 
-    Position = glm::vec3(0.0f, 0.01f, 2.0f);
+    Position = glm::vec3(0.0f, 0.01f, 4.0f);
+    Radius = 0.5f * 0.3f;
     Mov.Front = glm::vec3(1.0f, 0.0f, 0.0f);
     Mov.Right = glm::vec3(0.0f, 0.0f, 1.0f);
     Mov.Up    = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -18,10 +19,7 @@ Polyball::Polyball(Shader shader) {
     Cam.Right = ResourceManager::camera.Right;
     Cam.Up    = ResourceManager::camera.Up;
 
-    if(Position.y > 0.0f)
-        collision = (Collision){false, glm::vec3(0.0f), glm::vec3(0.0f)};
-    else
-        collision = (Collision){true,  glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f)};
+    collision = (Collision){false, glm::vec3(0.0f), glm::vec3(0.0f)};
 
     BallShader = shader;
     Initialize();
@@ -64,14 +62,88 @@ void Polyball::Render(glm::mat4 view, glm::mat4 PVMatrix, glm::mat4 lightSpaceMa
 //    Tools::PrintVec3(Speed);
 }
 
-//UpdatePosition => Process Speed
-void Polyball::UpdatePosition(float deltaTime) {
+void Polyball::CollisionCheck(Scene* scene) {
     collision = (Collision){false, glm::vec3(0.0f), glm::vec3(0.0f)};
-    Position += Speed * deltaTime;
-    if(Position.y <= 0.0f){
-        Position.y = 0.0f;
-        collision = (Collision){true, glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f)};
+//    if(Position.y <= 0.0f){
+//        Position.y = 0.0f;
+//        collision = (Collision){true, glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f)};
+//    }
+    GLint cx, cy, mx, my;
+    GetChunkMeshID(scene, cx, cy, mx, my);
+    dcx = cx, dcy = cy, dmx = mx, dmy = my;
+    for(int i = -1; i <= 2; i++)
+        for(int j = -1; j <= 2; j++){
+            int meshx = mx + i, meshy = my + j;
+            int chunkx, chunky;
+            if(meshx < 0) chunkx = cx - 1, meshx += MESH_SIZE;
+            else if(meshx >= MESH_SIZE) chunkx = cx + 1, meshx -= MESH_SIZE;
+            else chunkx = cx;
+            if(meshy < 0) chunky = cy - 1, meshy += MESH_SIZE;
+            else if(meshy >= MESH_SIZE) chunky = cy + 1, meshy -= MESH_SIZE;
+            else chunky = cy;
+            Maycol[i + 1][j + 1] = scene->chunk_offset[chunkx][chunky] + scene->mesh_offset[meshx][meshy];
+            Maycol[i + 1][j + 1].y = scene->chunk[chunkx][chunky]->height[meshx][meshy];
+            if(Maycol[i + 1][j + 1].y < 0.1f) Maycol[i + 1][j + 1].y = -0.5f;
+        }
+    glm::vec3 delta_pos = glm::vec3(0.0f);
+    for(int i = 0; i < 3; i++){
+        for(int j = 0; j < 3; j++){
+            glm::vec3 a, b, c;
+            GLfloat dist;
+            a = Maycol[i][j];
+            b = Maycol[i + 1][j];
+            c = Maycol[i + 1][j + 1];
+            dist = Tools::distance(Position, a, b, c);
+            if(dist <= Radius){
+                collision.exist = true;
+                collision.Normal += glm::normalize(glm::cross(c - a, b - a));
+                delta_pos += (Radius - dist) * collision.Normal;
+            }
+            b = c;
+            c = Maycol[i][j + 1];
+            dist = Tools::distance(Position, a, b, c);
+            if(dist <= Radius){
+                collision.exist = true;
+                collision.Normal += glm::normalize(glm::cross(c - a, b - a));
+                delta_pos += (Radius - dist) * collision.Normal;
+            }
+        }
+
     }
+    Position += delta_pos;
+    if(collision.exist)
+        collision.Normal = glm::normalize(collision.Normal);
+}
+void Polyball::GetChunkMeshID(Scene* scene, GLint &cx, GLint &cz, GLint &mx, GLint &mz){
+    glm::vec3 position = Position -
+                         scene->chunk[CHUNK_RADIUS][CHUNK_RADIUS]->submesh[MESH_RADIUS][MESH_RADIUS]->get_Position() -
+                         glm::vec3(MESH_LENGTH / 2.0f, 0.0f, MESH_LENGTH / 2.0f);
+
+    if(position.x > 0)
+        cx = static_cast<GLint>(position.x / CHUNK_LENGTH + 0.5f) + CHUNK_RADIUS;
+    else
+        cx = static_cast<GLint>(position.x / CHUNK_LENGTH - 0.5f) + CHUNK_RADIUS;
+    if(position.z > 0)
+        cz = static_cast<GLint>(position.z / CHUNK_LENGTH + 0.5f) + CHUNK_RADIUS;
+    else
+        cz = static_cast<GLint>(position.z / CHUNK_LENGTH - 0.5f) + CHUNK_RADIUS;
+    position.x -= (cx - CHUNK_RADIUS) * CHUNK_LENGTH;
+    position.z -= (cz - CHUNK_RADIUS) * CHUNK_LENGTH;
+    if(position.x > 0)
+        mx = static_cast<GLint>(position.x / MESH_LENGTH + 0.5f) + MESH_RADIUS;
+    else
+        mx = static_cast<GLint>(position.x / MESH_LENGTH - 0.5f) + MESH_RADIUS;
+    if(position.z > 0)
+        mz = static_cast<GLint>(position.z / MESH_LENGTH + 0.5f) + MESH_RADIUS;
+    else
+        mz = static_cast<GLint>(position.z / MESH_LENGTH - 0.5f) + MESH_RADIUS;
+
+}
+
+//UpdatePosition => Process Speed
+void Polyball::UpdatePosition(float deltaTime, Scene* scene) {
+    Position += Speed * deltaTime;
+    CollisionCheck(scene);
 }
 
 //UpdateSpeed => Process Acceleration

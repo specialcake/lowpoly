@@ -29,18 +29,25 @@ public:
     glm::vec3 Speed, SpeedLimit;
     glm::vec3 Acceleration, Resistance;
     glm::vec3 Position;
+    GLfloat Radius;
     Coord Mov, Cam;
     Collision collision;
 
+    glm::vec3 Maycol[5][5];
+
     Model* modelptr;
     Shader BallShader;
+
+    GLint dcx,dcy,dmx,dmy;
 
     Polyball(Shader shader);
     ~Polyball();
     void Initialize();
     glm::vec3 GenCameraPosition();
     void Render(glm::mat4 view, glm::mat4 PVMatrix, glm::mat4 lightSpaceMatrix, Texture2D BlurShadow);
-    void UpdatePosition(float deltaTime);
+    void CollisionCheck(Scene* scene);
+    void GetChunkMeshID(Scene* scene, GLint &cx, GLint &cz, GLint &mx, GLint &mz);
+    void UpdatePosition(float deltaTime, Scene* scene);
     void UpdateSpeed(float deltaTime);
     void UpdateMovVec();
 };

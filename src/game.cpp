@@ -198,8 +198,10 @@ void Game::ProcessInput(GLfloat dt) {
     polyball->Cam.Right = ResourceManager::camera.Right;
     polyball->Cam.Up = ResourceManager::camera.Up;
 
+//    polyball->UpdateSpeed(dt);
+//    polyball->UpdatePosition(dt, scene);
     polyball->UpdateSpeed(0.017f);
-    polyball->UpdatePosition(0.017f);
+    polyball->UpdatePosition(0.017f, scene);
     if(ResourceManager::followMode)
         ResourceManager::camera.SetPosition(polyball->GenCameraPosition());
 }
@@ -216,9 +218,9 @@ void Game::Render() {
 
 //        SceneTexture->BeginRender();
 
-//        scene->draw(view, PVMatrix, lightSpaceMatrix, shadowmap->DepthMap, shadowmap->BluredShadow);
-        for(int i = 0; i < TREENUMBER; i++)
-            scene->plant[i]->Draw(view, PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
+        scene->draw(view, PVMatrix, lightSpaceMatrix, shadowmap->DepthMap, shadowmap->BluredShadow);
+//        for(int i = 0; i < TREENUMBER; i++)
+//            scene->plant[i]->Draw(view, PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
 
 //        Model* test = ResourceManager::GetModel("pine");
 //        Shader modelshader = ResourceManager::GetShader("model");
@@ -270,10 +272,16 @@ void Game::Render() {
         std::string text = "Location = (" + std::to_string(polyball->Position.x) + ',' +
                                             std::to_string(polyball->Position.y) + ',' +
                                             std::to_string(polyball->Position.z) + ')';
-        ResourceManager::Displayfont(text, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        ResourceManager::Displayfont(text, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.5f), glm::vec3(1.0f, 0.0f, 0.0f));
         text = "Speed = (" + std::to_string(polyball->Speed.x) + ',' +
                              std::to_string(polyball->Speed.y) + ',' +
                              std::to_string(polyball->Speed.z) + ')';
-        ResourceManager::Displayfont(text, glm::vec3(0.0f, 70.0f, 0.0f), glm::vec3(1.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        ResourceManager::Displayfont(text, glm::vec3(0.0f, 35.0f, 0.0f), glm::vec3(0.5f), glm::vec3(1.0f, 0.0f, 0.0f));
+        text = "Chunk-Mesh = (" + std::to_string(polyball->dcx) + ',' +
+                           std::to_string(polyball->dcy) + "),(" +
+                           std::to_string(polyball->dmx) + ',' +
+                           std::to_string(polyball->dmy) + ')';
+        ResourceManager::Displayfont(text, glm::vec3(0.0f, 70.0f, 0.0f), glm::vec3(0.5f), glm::vec3(1.0f, 0.0f, 0.0f));
+
     }
 }

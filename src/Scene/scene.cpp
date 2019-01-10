@@ -177,29 +177,29 @@ void Scene::draw(const glm::mat4& view, const glm::mat4& PVMatrix, const glm::ma
     glBindVertexArray(0);
 #endif //viewnormal
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    water_shader.use();
+//    glEnable(GL_BLEND);
+//    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+//    water_shader.use();
+//    glActiveTexture(GL_TEXTURE0);
+//    ShadowMap.Bind();
+//    glActiveTexture(GL_TEXTURE1);
+//    BluredShadow.Bind();
+//    water_shader.setMat4("view", view);
+//    water_shader.setMat4("PVMatrix", PVMatrix);
+//    water_shader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
+//    water_shader.setFloat("water_height", SEA_LEVEL);
+//    water_shader.setFloat("scalefactor", MESH_LENGTH);
+//    water_shader.setInt("scene_size", MESH_SIZE * CHUNK_SIZE);
+//    water_shader.setVec3("scene_offset", this->offset);
+//    water_shader.setVec3("water_color", SEA_COLOR);
+//    water_shader.setLight(ResourceManager::camera.Position);
+//    this->water->Setwater(water_shader);
+//
+//    glBindVertexArray(this->VAO);
+//    glDrawArraysInstanced(GL_TRIANGLES, 0, 6, MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE);
+//    glBindVertexArray(0);
+//    glDisable(GL_BLEND);
     glActiveTexture(GL_TEXTURE0);
-    ShadowMap.Bind();
-    glActiveTexture(GL_TEXTURE1);
-    BluredShadow.Bind();
-    water_shader.setMat4("view", view);
-    water_shader.setMat4("PVMatrix", PVMatrix);
-    water_shader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
-    water_shader.setFloat("water_height", SEA_LEVEL);
-    water_shader.setFloat("scalefactor", MESH_LENGTH);
-    water_shader.setInt("scene_size", MESH_SIZE * CHUNK_SIZE);
-    water_shader.setVec3("scene_offset", this->offset);
-    water_shader.setVec3("water_color", SEA_COLOR);
-    water_shader.setLight(ResourceManager::camera.Position);
-    this->water->Setwater(water_shader);
-
-    glBindVertexArray(this->VAO);
-    glDrawArraysInstanced(GL_TRIANGLES, 0, 6, MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE);
-    glBindVertexArray(0);
-    glActiveTexture(GL_TEXTURE0);
-    glDisable(GL_BLEND);
 }
 void Scene::drawssr(Shader shader, const glm::mat4 &PVMatrix, const glm::mat4 &viewmat,
                     const glm::mat4 &lightSpaceMatrix, const Texture2D &BluredShadow) {
