@@ -27,7 +27,7 @@ public:
     GLfloat delta_x, delta_y, delta_z;
 
     Model(){};
-    Model(const char *path);
+    Model(const char *path, bool center);
     void SetBias(GLfloat dx, GLfloat dy, GLfloat dz);
     glm::vec3 BiasVector();
     void Draw(Shader shader);

@@ -10,7 +10,7 @@
 #include <cmath>
 #include <map>
 
-Model::Model(const char *path) {
+Model::Model(const char *path, bool center) {
     maxx = maxy = maxz = -10000000.0f;
     minx = miny = minz = 10000000.0f;
     Gx = Gy = Gz = 0.0f;
@@ -25,8 +25,10 @@ Model::Model(const char *path) {
     glm::vec3 delta = glm::vec3(-Gx, -miny, -Gz);
 
     for(int i = 0; i < meshes.size(); i++){
-        for(int j = 0; j < meshes[i].vertices.size(); j++)
-            meshes[i].vertices[j].Position += delta;
+        if(center) {
+            for (int j = 0; j < meshes[i].vertices.size(); j++)
+                meshes[i].vertices[j].Position += delta;
+        }
         meshes[i].setupMesh();
     }
 

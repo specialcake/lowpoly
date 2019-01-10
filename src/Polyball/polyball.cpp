@@ -45,6 +45,7 @@ void Polyball::Render(glm::mat4 view, glm::mat4 PVMatrix, glm::mat4 lightSpaceMa
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, Position);
     model = glm::scale(model, glm::vec3(0.3f));
+    model = glm::rotate(model, (GLfloat)glm::radians(glfwGetTime()), glm::vec3(1.0f, 1.0f, 0.0f));
 
     BallShader.use();
     BallShader.setMat4("view", view);

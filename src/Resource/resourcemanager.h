@@ -42,7 +42,7 @@ public:
     static Texture2D GetTexture(std::string name);
     static Texture2D MakeTexturebyID(const GLuint& textureID);
 
-    static Model* LoadModel(const GLchar *file, std::string name);
+    static Model* LoadModel(const GLchar *file, std::string name, bool center = true);
     static Model* GetModel(std::string name);
 
     static void Displayfont(const std::string text, const glm::vec3 pos, const glm::vec3 scale, const glm::vec3 color);

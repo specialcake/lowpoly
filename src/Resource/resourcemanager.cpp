@@ -70,8 +70,8 @@ Texture2D ResourceManager::MakeTexturebyID(const GLuint &textureID) {
 Texture2D ResourceManager::GetTexture(std::string name) {
     return Textures[name];
 }
-Model* ResourceManager::LoadModel(const GLchar *file, std::string name) {
-    Models[name] = Model(file);
+Model* ResourceManager::LoadModel(const GLchar *file, std::string name, bool center) {
+    Models[name] = Model(file, center);
     return &Models[name];
 }
 Model* ResourceManager::GetModel(std::string name) {
