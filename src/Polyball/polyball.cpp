@@ -20,6 +20,7 @@ Polyball::Polyball(Shader shader) {
     Cam.Up    = ResourceManager::camera.Up;
 
     collision = (Collision){false, glm::vec3(0.0f), glm::vec3(0.0f)};
+    rotate_state = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
 
     BallShader = shader;
     Initialize();
@@ -45,13 +46,13 @@ void Polyball::Render(glm::mat4 view, glm::mat4 PVMatrix, glm::mat4 lightSpaceMa
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::translate(model, Position);
     model = glm::scale(model, glm::vec3(0.3f));
-    model = glm::rotate(model, (GLfloat)glm::radians(glfwGetTime()), glm::vec3(1.0f, 1.0f, 0.0f));
 
     BallShader.use();
     BallShader.setMat4("view", view);
     BallShader.setMat4("PVMatrix", PVMatrix);
     BallShader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
     BallShader.setMat4("model", model);
+    BallShader.setVec4("RotQuat", glm::vec4(rotate_state.w, rotate_state.x, rotate_state.y, rotate_state.z));
     BallShader.setLight(ResourceManager::camera.Position);
 
     glActiveTexture(GL_TEXTURE0);
@@ -145,6 +146,13 @@ void Polyball::GetChunkMeshID(Scene* scene, GLint &cx, GLint &cz, GLint &mx, GLi
 void Polyball::UpdatePosition(float deltaTime, Scene* scene) {
     Position += Speed * deltaTime;
     CollisionCheck(scene);
+
+    GLfloat angle = wspeed * deltaTime / 2.0f;
+    glm::quat rot = glm::quat(glm::cos(angle),
+                    glm::sin(angle) * rotate_axis.x,
+                    glm::sin(angle) * rotate_axis.y,
+                    glm::sin(angle) * rotate_axis.z);
+    rotate_state = rot * rotate_state;
 }
 
 //UpdateSpeed => Process Acceleration
@@ -198,6 +206,9 @@ void Polyball::UpdateSpeed(float deltaTime) {
     Speed += delta_v;
 
     UpdateMovVec();
+
+    wspeed = glm::length(Speed) / Radius;
+    rotate_axis = Mov.Right;
 }
 void Polyball::UpdateMovVec(){
     if(glm::abs(Speed.x) < eps && glm::abs(Speed.z) < eps){

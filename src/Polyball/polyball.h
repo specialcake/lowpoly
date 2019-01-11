@@ -7,6 +7,8 @@
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/quaternion.hpp>
 #include "../Resource/resourcemanager.h"
 #include "../Resource/camera.h"
 #include "../Scene/scene.h"
@@ -32,6 +34,10 @@ public:
     GLfloat Radius;
     Coord Mov, Cam;
     Collision collision;
+
+    GLfloat wspeed;
+    glm::vec3 rotate_axis;
+    glm::quat rotate_state;
 
     glm::vec3 Maycol[5][5];
 

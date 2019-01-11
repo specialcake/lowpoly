@@ -216,11 +216,11 @@ void Game::Render() {
         glm::mat4 PVMatrix = projection * view;
         glm::mat4 lightSpaceMatrix = shadowmap->GetlightSpaceMatrix(scene);
 
-        SceneTexture->BeginRender();
+//        SceneTexture->BeginRender();
 
         scene->draw(view, PVMatrix, lightSpaceMatrix, shadowmap->DepthMap, shadowmap->BluredShadow);
-        for(int i = 0; i < TREENUMBER; i++)
-            scene->plant[i]->Draw(view, PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
+//        for(int i = 0; i < TREENUMBER; i++)
+//            scene->plant[i]->Draw(view, PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
 
 //        Model* test = ResourceManager::GetModel("pine");
 //        Shader modelshader = ResourceManager::GetShader("model");
@@ -232,39 +232,39 @@ void Game::Render() {
 //        modelshader.setMat4("PVMatrix", PVMatrix);
 //        test->Draw(modelshader);
 
-        glDepthFunc(GL_LEQUAL);
-        ResourceManager::skybox->shader.use();
-        glActiveTexture(GL_TEXTURE6);
-        scene->CloudMap.Bind();
-        ResourceManager::skybox->shader.setMat4("PVMatrix", projection * glm::mat4(glm::mat3(ResourceManager::camera.GetViewMatrix())));
-        ResourceManager::skybox->Draw(skymap->skymap);
-        glActiveTexture(GL_TEXTURE0);
-
-        Model* Sun = ResourceManager::GetModel("polyball");
-        Shader sunshader = ResourceManager::GetShader("sun");
-        sunshader.use();
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, -8.0f * PARLIGHT_DIR);
-        model = glm::scale(model, glm::vec3(40.0f));
-        sunshader.setMat4("model", model);
-        sunshader.setMat4("PVMatrix", projection * glm::mat4(glm::mat3(ResourceManager::camera.GetViewMatrix())));
-        sunshader.setVec3("lightdir", PARLIGHT_DIR);
-
-        Sun->Draw(sunshader);
-
-        glDepthFunc(GL_LESS);
+//        glDepthFunc(GL_LEQUAL);
+//        ResourceManager::skybox->shader.use();
+//        glActiveTexture(GL_TEXTURE6);
+//        scene->CloudMap.Bind();
+//        ResourceManager::skybox->shader.setMat4("PVMatrix", projection * glm::mat4(glm::mat3(ResourceManager::camera.GetViewMatrix())));
+//        ResourceManager::skybox->Draw(skymap->skymap);
+//        glActiveTexture(GL_TEXTURE0);
+//
+//        Model* Sun = ResourceManager::GetModel("polyball");
+//        Shader sunshader = ResourceManager::GetShader("sun");
+//        sunshader.use();
+//        glm::mat4 model = glm::mat4(1.0f);
+//        model = glm::translate(model, -8.0f * PARLIGHT_DIR);
+//        model = glm::scale(model, glm::vec3(40.0f));
+//        sunshader.setMat4("model", model);
+//        sunshader.setMat4("PVMatrix", projection * glm::mat4(glm::mat3(ResourceManager::camera.GetViewMatrix())));
+//        sunshader.setVec3("lightdir", PARLIGHT_DIR);
+//
+//        Sun->Draw(sunshader);
+//
+//        glDepthFunc(GL_LESS);
 
         polyball->Render(view, PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
 
-        SceneTexture->EndRender();
-
-        Bloom::RenderBloom(SceneTexture);
-
-        Texture2D blurscene = Bloom::Blurer.GaussBlur(SceneTexture->BrightTexture);
-
-        littlewindow->shader.use();
-        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
-        littlewindow->DrawSprite(SceneTexture->ColorTexture, glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.5f));
+//        SceneTexture->EndRender();
+//
+//        Bloom::RenderBloom(SceneTexture);
+//
+//        Texture2D blurscene = Bloom::Blurer.GaussBlur(SceneTexture->BrightTexture);
+//
+//        littlewindow->shader.use();
+//        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
+//        littlewindow->DrawSprite(SceneTexture->ColorTexture, glm::vec3(0.5f, 0.5f, 0.0f), glm::vec3(0.5f));
 
 //        littlewindow->shader.use();
 //        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
