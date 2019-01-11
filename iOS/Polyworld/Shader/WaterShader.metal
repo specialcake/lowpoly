@@ -37,7 +37,7 @@ struct WaterVertexUniform {
     float water_height;
     float timer; // 8 empty
     float4x4 PVMatrix;
-    //float4x4 lightSpaceMatrix;
+    float4x4 lightSpaceMatrix;
     
     Wave wave[wave_number];
 };
@@ -76,7 +76,7 @@ vertex WaterVertexOut waterVertex(constant float2 *vertices [[buffer(0)]],
     
     out.position = uniforms.PVMatrix * float4(pos, 1.0f);
     out.fragPosition = pos;
-    //out.fragPosLightSpace = uniforms.lightSpaceMatrix * float4(out.fragPosition, 1.0);
+    out.fragPosLightSpace = uniforms.lightSpaceMatrix * float4(out.fragPosition, 1.0);
     
     // Calculate Normal
     float3 a,b,c;
@@ -140,9 +140,38 @@ vertex WaterVertexOut waterVertex(constant float2 *vertices [[buffer(0)]],
 }
 
 fragment float4 waterFragment(WaterVertexOut vert [[stage_in]],
-                              constant WaterFragmentUniform &uniforms [[buffer(0)]])
+                              constant WaterFragmentUniform &uniforms [[buffer(0)]],
+                              texture2d<float>  shadowmap [[texture(0)]],
+                              sampler           sampler2D [[sampler(0)]])
 {
-    float visibility = 1.0;
+    /*
+//    float3 projCoords = vert.fragPosLightSpace.xyz / vert.fragPosLightSpace.w;
+//    projCoords = projCoords * 0.5 + 0.5;
+//    float visibility;
+//    if(projCoords.z > 1.0)
+//        visibility = 1.0;
+//    else {
+//        float bias = 0.00051f;
+//        float currentDepth = projCoords.z;
+//        float closestDepth = shadowmap.sample(sampler2D, projCoords.xy).r;
+//        float shadow = clamp(exp(-20.0f * (currentDepth - closestDepth - bias)), 0.0, 1.0);
+//        visibility = shadow;
+//    }
+    
+    float3 projCoords = vert.fragPosLightSpace.xyz / vert.fragPosLightSpace.w;
+    projCoords = projCoords * 0.5 + 0.5;
+    float bias = 0.00051f;
+    float currentDepth = projCoords.z;
+    float closestDepth = shadowmap.sample(sampler2D, projCoords.xy).r;
+    float shadow = clamp(exp(-20.0 * (currentDepth - closestDepth - bias)), 0.0, 1.0);
+    
+    float visibility;
+    if (currentDepth > closestDepth) visibility = 0;
+    else visibility = 1;
+    
+    //float visibility = shadow;
+    */
+    float visibility = 1;
     
     float3 viewDir = normalize(uniforms.viewPos - vert.fragPosition);
     float3 lightDir = normalize(-uniforms.dirLight.direction);

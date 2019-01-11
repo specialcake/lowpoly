@@ -9,6 +9,8 @@
 import Foundation
 import simd
 
+let eps = 0.0000001
+
 // Screen
 let NEAR_PLANE: Float = 0.1
 let FAR_PLANE: Float = 150.0
@@ -46,7 +48,7 @@ let CONSTQ: Float = 0.5
 
 // Light
 let PARLIGHT_DIR = float3(0.0, -13.0, 27.0)
-let PARLIGHT_POSITION = float3(0.0, 13.0, 27.0)
+let PARLIGHT_POSITION = float3(0.0, 13.0, -27.0)
 let PARLIGHT_AMBIENT = float3(0.3)
 let PARLIGHT_DIFFUSE = float3(0.9)
 let PARLIGHT_SPECULAR = float3(0.5)

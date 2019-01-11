@@ -22,7 +22,10 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
     @IBOutlet var sceneView: ARSCNView!
     var planes = [UUID:Plane]() // 字典，存储场景中当前渲染的所有平面
     var boxes = [SCNNode]()
+    var textNode = SCNNode()
+    var scorePosition = SCNVector3()
     var texture: Int = 0
+    var timeStamp: Int64 = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,7 +67,7 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         sceneView.autoenablesDefaultLighting = true
         
         // 添加Debug信息
-        sceneView.debugOptions = [ARSCNDebugOptions.showPhysicsShapes, ARSCNDebugOptions.showFeaturePoints]
+        // sceneView.debugOptions = [ARSCNDebugOptions.showPhysicsShapes, ARSCNDebugOptions.showFeaturePoints]
         
         // 设置 ARSCNViewDelegate——此协议会提供回调来处理新创建的几何体
         sceneView.delegate = self
@@ -101,13 +104,14 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         // 触碰球
         let results = sceneView.hitTest(tapPoint)
         
-        if let node = results.first?.node, node.physicsBody?.type == .dynamic, let coord = results.first?.worldCoordinates {
+        if let node = results.first?.node, node.physicsBody?.type == .dynamic, let coord = results.first?.localCoordinates {
             let scale: Float = 0.3
             let direction = SCNVector3(
-                scale * (node.position.x - coord.x),
-                scale * (node.position.y - coord.y),
-                scale * (node.position.z - coord.z)
+                scale * (-coord.x),
+                scale * (-coord.y),
+                scale * (-coord.z)
             )
+            //node.presentation.position
             node.physicsBody?.applyForce(direction, asImpulse: true)
             return
         }
@@ -122,17 +126,6 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
     }
     
     func insertGeometry(_ hitResult: ARHitTestResult) {
-        
-        // 现在先插入简单的小方块，后面会让它变得更好玩，有更好的纹理和阴影
-//        let dimension: CGFloat = 0.1
-//        let cube = SCNBox(width: dimension, height: dimension, length: dimension, chamferRadius: 0)
-//        let node = SCNNode(geometry: cube)
-        
-//        guard let url = Bundle.main.url(forResource: "ARpolyball", withExtension: "obj") else { fatalError()
-//        }
-//        guard let node = SCNReferenceNode(url: url) else {
-//            fatalError("load baby_groot error.")
-//        }
         
         let scene = SCNScene(named: "ARpolyball.scn")!
         if let node = scene.rootNode.childNode(withName: "ball", recursively: true) {
@@ -157,16 +150,41 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
             )
             sceneView.scene.rootNode.addChildNode(node)
             boxes.append(node)
+            updateText(text: "\(boxes.count)", atPosition: scorePosition)
             
         }
+    }
+    
+    func createExplosion(geometry: SCNGeometry, position: SCNVector3, rotation: SCNVector4) {
+        
+        let explosion =
+            SCNParticleSystem(named: "Explode.scnp", inDirectory:
+                nil)!
+        explosion.emitterShape = geometry
+        explosion.birthLocation = .surface
+        
+        let rotationMatrix =
+            SCNMatrix4MakeRotation(rotation.w, rotation.x,
+                                   rotation.y, rotation.z)
+        let translationMatrix =
+            SCNMatrix4MakeTranslation(position.x, position.y,
+                                      position.z)
+        let transformMatrix =
+            SCNMatrix4Mult(rotationMatrix, translationMatrix)
+
+        sceneView.scene.addParticleSystem(explosion, transform:
+            transformMatrix)
     }
     
     @IBAction func deleteGeometry(_ sender: UIBarButtonItem) {
         if !boxes.isEmpty {
             for ball in boxes {
                 ball.removeFromParentNode()
+                createExplosion(geometry: ball.geometry!, position: ball.presentation.position, rotation: ball.presentation.rotation)
             }
         }
+        boxes = [SCNNode]()
+        updateText(text: "\(boxes.count)", atPosition: scorePosition)
     }
     
     @IBAction func changeColor(_ sender: UIBarButtonItem) {
@@ -221,12 +239,45 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
 //        return nil
 //    }
     
+    override func motionBegan(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+         timeStamp = Date().milliStamp
+    }
+    
     override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        let timeStamp2 = Date().milliStamp
+        let timeInterval = timeStamp2 - timeStamp
+        var force = 0.2 * Double(timeInterval) / 1000
+        if (timeInterval >= 1000) {
+            force *= 2
+        }
+        if (timeInterval >= 2000) {
+            force *= 2
+        }
+        if (timeInterval >= 3000) {
+            force *= 2
+        }
         if !boxes.isEmpty {
             for ball in boxes {
-                ball.physicsBody?.applyForce(SCNVector3(0, 0.1, 0), asImpulse: true)
+                ball.physicsBody?.applyForce(SCNVector3(0, force, 0), asImpulse: true)
             }
         }
+    }
+    
+    func updateText(text: String, atPosition position: SCNVector3) {
+        
+        textNode.removeFromParentNode()
+        
+        let textGeometry = SCNText(string: text, extrusionDepth: 1.0)
+        
+        textGeometry.firstMaterial?.diffuse.contents = UIColor.red
+        
+        textNode = SCNNode(geometry: textGeometry)
+        
+        textNode.position = SCNVector3(position.x, position.y + 0.01, position.z)
+        
+        textNode.scale = SCNVector3(0.01, 0.01, 0.01)
+        
+        sceneView.scene.rootNode.addChildNode(textNode)
     }
     
     /**
@@ -243,6 +294,10 @@ class ARViewController: UIViewController, ARSCNViewDelegate {
         
         // 检测到新平面时创建 SceneKit 平面以实现 3D 视觉化
         let plane = Plane(withAnchor: anchor)
+        if planes.isEmpty {
+            scorePosition = SCNVector3(plane.worldPosition.x, plane.worldPosition.y, plane.worldPosition.z - 0.5)
+            updateText(text: "\(boxes.count)", atPosition: scorePosition)
+        }
         planes[anchor.identifier] = plane
         node.addChildNode(plane)
     }

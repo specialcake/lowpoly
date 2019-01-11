@@ -11,14 +11,10 @@ import Metal
 import simd
 
 class Shadowmap {
-    var depthMap, bluredShadow: MTLTexture!
+
     var near, far, left, right, top, bottom: Float!
     
-    init() {
-        depthMap = ResourceManager.device.makeTexture(descriptor: ResourceManager.depthBufferDescriptor)!
-    }
-    
-    func UpdateFrustum(scene: Scene){
+    func updateFrustum(scene: Scene){
         let lightviewmat = lookAt(PARLIGHT_POSITION + scene.offset, PARLIGHT_POSITION + scene.offset + PARLIGHT_DIR, float3(0.0, 1.0, 0.0))
         near = 200000
         left = 200000
@@ -52,18 +48,10 @@ class Shadowmap {
         top += 0.2
     }
     
-    func GetlightSpaceMatrix(scene: Scene) -> float4x4 {
+    func getlightSpaceMatrix(scene: Scene) -> float4x4 {
         let lightProjection = float4x4(orthoProjectionLeft: left, right: right, bottom:     bottom, top: top, near: near, far: far)
         let lightviewmat = lookAt(PARLIGHT_POSITION + scene.offset, PARLIGHT_POSITION + scene.offset + PARLIGHT_DIR, float3(0.0, 1.0, 0.0))
         let lightSpaceMatrix = lightProjection * lightviewmat
         return lightSpaceMatrix
-    }
-    
-    func BeginMakeMap() {
-        
-    }
-    
-    func EndMakeMap() {
-        
     }
 }

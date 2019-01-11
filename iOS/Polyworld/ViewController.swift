@@ -23,10 +23,14 @@ class ViewController: UIViewController {
 
     var trackedTouch: UITouch?
     
+    var lightSpaceMatrix: float4x4!
+    
     var scene: Scene!
     var skymap: Skymap!
     var skybox: Skybox!
+    var shadowmap: Shadowmap!
     var sun: Sun!
+    var polyball: Polyball!
     
     // UI
     @IBOutlet weak var gameView: UIView!
@@ -48,22 +52,21 @@ class ViewController: UIViewController {
         
         ResourceManager.commandQueue = ResourceManager.device.makeCommandQueue()
         
-        // Rendering
-        timer = CADisplayLink(target: self, selector: #selector(ViewController.newFrame(displayLink:)))
-        timer.add(to: RunLoop.main, forMode: .default)
-        
         registerShaders()
         
         let textureWidth = Int(2 * self.view.bounds.size.width)
         let textureHeight = Int(2 * self.view.bounds.size.height)
         
         ResourceManager.depthBufferDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: textureWidth, height: textureHeight, mipmapped: false)
-        ResourceManager.depthBufferDescriptor.usage = .renderTarget
+        ResourceManager.depthBufferDescriptor.usage = [.shaderRead, .shaderWrite, .renderTarget]
         ResourceManager.depthTexture = ResourceManager.device.makeTexture(descriptor: ResourceManager.depthBufferDescriptor)
+        
+        ResourceManager.shadowmapBufferDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: 1000, height: 1000, mipmapped: false)
+        ResourceManager.shadowmapBufferDescriptor.usage = [.shaderRead, .shaderWrite, .renderTarget]
+        ResourceManager.shadowmapDepthTexture = ResourceManager.device.makeTexture(descriptor: ResourceManager.shadowmapBufferDescriptor)!
         
         ResourceManager.textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: textureWidth, height: textureHeight, mipmapped: false)
         ResourceManager.textureDescriptor.usage = [.shaderRead, .shaderWrite, .renderTarget]
-        
         ResourceManager.textureLoader = MTKTextureLoader(device: ResourceManager.device)
         
         ResourceManager.camera = CameraController()
@@ -82,9 +85,17 @@ class ViewController: UIViewController {
         skybox = Skybox()
         skymap = Skymap()
         skymap.draw(sunPos: float3(0.0, 0.5, -1.0))
+        shadowmap = Shadowmap()
         
-        var model = float4x4(translationBy: -8.0 * PARLIGHT_DIR) * float4x4(scaleBy: 25.0)
-        sun = Sun(device: ResourceManager.device, modelMatrix: model, forResourse: "polyball", withExtension: "obj")
+        let sunModel = float4x4(translationBy: -8.0 * PARLIGHT_DIR) * float4x4(scaleBy: 25.0)
+        sun = Sun(device: ResourceManager.device, modelMatrix: sunModel, forResourse: "polyball", withExtension: "obj")
+        
+        let polyballModel = float4x4(translationBy: float3(0.0, 0.01, 4.0))
+        polyball = Polyball(device: ResourceManager.device, modelMatrix: polyballModel, forResourse: "polyball", withExtension: "obj")
+        
+        // Rendering
+        timer = CADisplayLink(target: self, selector: #selector(ViewController.newFrame(displayLink:)))
+        timer.add(to: RunLoop.main, forMode: .default)
     }
     
     override func viewDidLayoutSubviews() {
@@ -120,7 +131,21 @@ class ViewController: UIViewController {
         scene.updateChunks()
         scene.timeInterval += timeSinceLastUpdate
         
+        shadowmap.updateFrustum(scene: scene)
+        
+        lightSpaceMatrix = shadowmap.getlightSpaceMatrix(scene: scene)
+        scene.Generate_ShadowMap(lightSpaceMatrix: lightSpaceMatrix)
+        
         handleButtonAction()
+        
+        polyball.Cam.Front = ResourceManager.camera.front
+        polyball.Cam.Right = ResourceManager.camera.right
+        polyball.Cam.Up = ResourceManager.camera.up
+        
+        polyball.UpdateSpeed(deltaTime: Float(timeSinceLastUpdate))
+        polyball.UpdatePosition(deltaTime: Float(timeSinceLastUpdate), scene: scene)
+        
+        ResourceManager.camera.position = polyball.GenCameraPosition()
         
         autoreleasepool {
             self.render()
@@ -130,10 +155,11 @@ class ViewController: UIViewController {
     func render() {
         guard let drawable = metalLayer?.nextDrawable() else { return }
         ResourceManager.commandBuffer = ResourceManager.commandQueue.makeCommandBuffer()!
-        
+
         skybox.draw(drawable: drawable, skymap: skymap, viewMatrix: ResourceManager.camera.viewMatrix, projectionMatrix: ResourceManager.projectionMatrix)
         sun.draw(drawable: drawable)
-        scene.draw(drawable: drawable, viewMatrix: ResourceManager.camera.viewMatrix, projectionMatrix: ResourceManager.projectionMatrix ,clearColor: nil)
+        scene.draw(drawable: drawable, viewMatrix: ResourceManager.camera.viewMatrix, projectionMatrix: ResourceManager.projectionMatrix, lightSpaceMatrix: lightSpaceMatrix, shadowmap: ResourceManager.shadowmapDepthTexture)
+        polyball.draw(drawable: drawable)
         
         ResourceManager.commandBuffer.present(drawable)
         ResourceManager.commandBuffer.commit()
@@ -149,6 +175,7 @@ class ViewController: UIViewController {
         ResourceManager.skymapPipelineState = try! ResourceManager.device.makeComputePipelineState(function: kernelFunction)
         
         ResourceManager.skyboxPipelineState = buildShaders(vertexFunction: "skyboxVertex", fragmentFunction: "skyboxFragment", depth: false, blend: false)
+        ResourceManager.shadowmapPipelineState = buildShaders(vertexFunction: "shadowmapVertex", fragmentFunction: "shadowmapFragment", depth: true, blend: false)
     }
     
     func buildShaders(vertexFunction: String, fragmentFunction: String, depth: Bool, blend: Bool) -> MTLRenderPipelineState {
@@ -176,16 +203,28 @@ class ViewController: UIViewController {
     func handleButtonAction() {
         
         if forwardButton.isHighlighted {
+            ResourceManager.keys[BallMovement.forward.rawValue] = true
             ResourceManager.camera.move(.forward)
+        } else {
+            ResourceManager.keys[BallMovement.forward.rawValue] = false
         }
         if backwardButton.isHighlighted {
+            ResourceManager.keys[BallMovement.backward.rawValue] = true
             ResourceManager.camera.move(.backward)
+        } else {
+            ResourceManager.keys[BallMovement.backward.rawValue] = false
         }
         if leftButton.isHighlighted {
+            ResourceManager.keys[BallMovement.left.rawValue] = true
             ResourceManager.camera.move(.left)
+        } else {
+            ResourceManager.keys[BallMovement.left.rawValue] = false
         }
         if rightButton.isHighlighted {
+            ResourceManager.keys[BallMovement.right.rawValue] = true
             ResourceManager.camera.move(.right)
+        } else {
+            ResourceManager.keys[BallMovement.right.rawValue] = false
         }
 
     }

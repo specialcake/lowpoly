@@ -1,8 +1,8 @@
 //
-//  Sun.swift
+//  Polyball.swift
 //  Polyworld
 //
-//  Created by 沈心逸 on 2019/1/6.
+//  Created by 沈心逸 on 2019/1/11.
 //  Copyright © 2019年 Sxy. All rights reserved.
 //
 
@@ -10,7 +10,41 @@ import Foundation
 import MetalKit
 import simd
 
-class Sun: NSObject {
+struct Collision{
+    var exist: Bool
+    var Point: float3
+    var Normal: float3
+}
+
+struct Coord{
+    var Front: float3
+    var Right: float3
+    var Up: float3
+}
+
+struct UniformsWithQuat {
+    let modelMatrix: float4x4
+    let modelViewProjectionMatrix: float4x4
+    let normalMatrix: float3x3
+    let cameraPosition: float3
+    let lightDirection: float3
+    let lightPosition: float3
+    let RotQuat: float4
+    init(modelMatrix: float4x4, viewMatrix: float4x4, projectionMatrix: float4x4,
+         cameraPosition: float3, lightDirection: float3, lightPosition: float3, RotQuat: float4)
+    {
+        self.modelMatrix = modelMatrix
+        self.modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix
+        self.normalMatrix = modelMatrix.normalMatrix
+        self.cameraPosition = cameraPosition
+        self.lightDirection = lightDirection
+        self.lightPosition = lightPosition
+        self.RotQuat = RotQuat
+    }
+}
+
+
+class Polyball: NSObject {
     let device: MTLDevice
     let commandQueue: MTLCommandQueue
     let renderPipeline: MTLRenderPipelineState
@@ -33,15 +67,33 @@ class Sun: NSObject {
     var lightWorldPosition = float3(0, 5, 0)
     var time: Float = 0
     
+    var speed: float3 = float3(0.0, 0.0, 0.0)
+    var speedLimit: float3 = float3(0.0, 0.0, 0.0)
+    var Acceleration: float3 = float3(2.0, 0.0, 2.0)
+    var Resistance: float3 = float3(1.0, 3.0, 1.0)
+    var Position: float3 = float3(0.0, 0.01, 4.0)
+    var Radius: Float = 0.5 * 0.3
+    var Mov: Coord = Coord(Front: float3(1.0, 0.0, 0.0), Right: float3(0.0, 0.0, 1.0), Up: float3(0.0, 1.0, 0.0))
+    var Cam: Coord = Coord(Front: ResourceManager.camera.front, Right: ResourceManager.camera.right, Up: ResourceManager.camera.up)
+    var collision: Collision = Collision(exist: false, Point: float3(), Normal: float3())
+    
+    var wspeed: Float!
+    var rotate_axis: float3!
+    var rotate_state: simd_quatf = simd_quatf(real: 1.0, imag: float3())
+    
+    var Maycol = [[float3]](repeating: [float3](repeating: float3(0,0,0), count: 5), count: 5)
+    
+    var dcx,dcy,dmx,dmy: Int!
+    
     init(device: MTLDevice, modelMatrix: float4x4, forResourse name: String, withExtension ext: String) {
         self.device = device
         self.modelMatrix = modelMatrix
         commandQueue = device.makeCommandQueue()!
-        vertexDescriptor = Sun.buildVertexDescriptor(device: device)
-        renderPipeline = Sun.buildPipeline(device: device, vertexDescriptor: vertexDescriptor)
-        depthStencilState = Sun.buildDepthStencilState(device: device)
+        vertexDescriptor = Polyball.buildVertexDescriptor(device: device)
+        renderPipeline = Polyball.buildPipeline(device: device, vertexDescriptor: vertexDescriptor)
+        depthStencilState = Polyball.buildDepthStencilState(device: device)
         textureLoader = MTKTextureLoader(device: device)
-        (defaultTexture, defaultNormalMap) = Sun.buildDefaultTextures(device: device)
+        (defaultTexture, defaultNormalMap) = Polyball.buildDefaultTextures(device: device)
         //irradianceCubeMap = Renderer.buildEnvironmentTexture("garage_pmrem.ktx", device: device)
         super.init()
         
@@ -78,8 +130,8 @@ class Sun: NSObject {
             fatalError("Could not load default library from main bundle")
         }
         
-        let vertexFunction = library.makeFunction(name: "sunVertex")
-        let fragmentFunction = library.makeFunction(name: "sunFragment")
+        let vertexFunction = library.makeFunction(name: "polyballVertex")
+        let fragmentFunction = library.makeFunction(name: "polyballFragment")
         
         let pipelineDescriptor = MTLRenderPipelineDescriptor()
         pipelineDescriptor.vertexFunction = vertexFunction
@@ -163,6 +215,7 @@ class Sun: NSObject {
     
     func updateScene(drawable: CAMetalDrawable) {
         //time += 1 / Float(view.preferredFramesPerSecond)
+        modelMatrix = float4x4(translationBy: Position) * float4x4(rotate_state)
         projectionMatrix = ResourceManager.projectionMatrix
         viewMatrix = ResourceManager.camera.viewMatrix
         cameraWorldPosition = ResourceManager.camera.position
@@ -189,7 +242,7 @@ class Sun: NSObject {
         renderPassDescriptor.colorAttachments[0].storeAction = .store
         
         renderPassDescriptor.depthAttachment.texture = ResourceManager.depthTexture
-        renderPassDescriptor.depthAttachment.loadAction = .clear
+        renderPassDescriptor.depthAttachment.loadAction = .load
         renderPassDescriptor.depthAttachment.storeAction = .store
         
         let commandEncoder = ResourceManager.commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
@@ -206,14 +259,15 @@ class Sun: NSObject {
     func draw(_ node: Node, in commandEncoder: MTLRenderCommandEncoder) {
         let mesh = node.mesh
         
-        var uniforms = Uniforms(modelMatrix: modelMatrix,
+        var uniforms = UniformsWithQuat(modelMatrix: modelMatrix,
                                 viewMatrix: viewMatrix,
                                 projectionMatrix: projectionMatrix,
                                 cameraPosition: cameraWorldPosition,
                                 lightDirection: lightWorldDirection,
-                                lightPosition: lightWorldPosition)
-        commandEncoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniforms>.size, index: VertexBufferIndex.uniforms.rawValue)
-        commandEncoder.setFragmentBytes(&uniforms, length: MemoryLayout<Uniforms>.size, index: FragmentBufferIndex.uniforms.rawValue)
+                                lightPosition: lightWorldPosition,
+                                RotQuat: float4(rotate_state.real, rotate_state.imag.x, rotate_state.imag.y, rotate_state.imag.z))
+        commandEncoder.setVertexBytes(&uniforms, length: MemoryLayout<UniformsWithQuat>.size, index: VertexBufferIndex.uniforms.rawValue)
+        commandEncoder.setFragmentBytes(&uniforms, length: MemoryLayout<UniformsWithQuat>.size, index: FragmentBufferIndex.uniforms.rawValue)
         
         for (bufferIndex, vertexBuffer) in mesh.vertexBuffers.enumerated() {
             commandEncoder.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: bufferIndex)
@@ -231,4 +285,200 @@ class Sun: NSObject {
                                                  indexBufferOffset: indexBuffer.offset)
         }
     }
+    
+    func GenCameraPosition() -> float3 {
+        let distance: Float = 3.0
+        let cosvalue: Float = cos(.pi / 12.0)
+        let sinvalue: Float = sin(.pi / 12.0)
+        var ret = Position
+        ret += -distance * cosvalue * Cam.Front
+        ret += distance * sinvalue * Cam.Up
+        return ret
+    }
+    
+    func CollisionCheck(scene: Scene) {
+        collision = Collision(exist: false, Point: float3(), Normal: float3())
+        var cx: Int = 0, cy: Int = 0, mx: Int = 0, my: Int = 0
+        GetChunkMeshID(scene: scene, cx: &cx, cz: &cy, mx: &mx, mz: &my)
+        dcx = cx
+        dcy = cy
+        dmx = mx
+        dmy = my
+        for i in -1 ... 2 {
+            for j in -1 ... 2 {
+                var meshx = mx + i
+                var meshy = my + j
+                var chunkx, chunky: Int
+                if (meshx < 0) {
+                    chunkx = cx - 1
+                    meshx += MESH_SIZE
+                } else if (meshx >= MESH_SIZE) {
+                    chunkx = cx + 1
+                    meshx -= MESH_SIZE
+                } else {
+                    chunkx = cx
+                }
+                
+                if (meshy < 0) {
+                    chunky = cy - 1
+                    meshy += MESH_SIZE
+                }
+                else if (meshy >= MESH_SIZE) {
+                    chunky = cy + 1
+                    meshy -= MESH_SIZE
+                }
+                else {
+                    chunky = cy
+                }
+                
+                Maycol[i + 1][j + 1] = scene.chunk_offset[chunkx][chunky] + scene.mesh_offset[meshx][meshy]
+                Maycol[i + 1][j + 1].y = scene.chunk[chunkx][chunky].height[meshx][meshy]
+                if (Maycol[i + 1][j + 1].y < 0.1) {
+                    Maycol[i + 1][j + 1].y = -0.5
+                }
+            }
+        }
+
+        var delta_pos = float3(0.0)
+        for i in 0 ..< 3 {
+            for j in 0 ..< 3 {
+                var a, b, c: float3
+                var dist: Float
+                a = Maycol[i][j]
+                b = Maycol[i + 1][j]
+                c = Maycol[i + 1][j + 1]
+                dist = distance(Position, a, b, c)
+                if (dist <= Radius) {
+                    collision.exist = true
+                    collision.Normal += normalize(cross(c - a, b - a))
+                    delta_pos += (Radius - dist) * collision.Normal
+                }
+                b = c
+                c = Maycol[i][j + 1]
+                dist = distance(Position, a, b, c)
+                if (dist <= Radius) {
+                    collision.exist = true
+                    collision.Normal += normalize(cross(c - a, b - a))
+                    delta_pos += (Radius - dist) * collision.Normal
+                }
+            }
+        }
+        Position += delta_pos
+        if (collision.exist) {
+            collision.Normal = normalize(collision.Normal)
+        }
+    }
+    
+    func GetChunkMeshID(scene: Scene, cx: inout Int, cz: inout Int, mx: inout Int, mz: inout Int) {
+        var position = Position - scene.chunk[CHUNK_RADIUS][CHUNK_RADIUS].submesh[MESH_RADIUS][MESH_RADIUS].get_Position() - float3(MESH_LENGTH / 2.0, 0.0, MESH_LENGTH / 2.0)
+        
+        if (position.x > 0) {
+            cx = Int(position.x / CHUNK_LENGTH + 0.5) + CHUNK_RADIUS
+        } else {
+            cx = Int(position.x / CHUNK_LENGTH - 0.5) + CHUNK_RADIUS
+        }
+        if (position.z > 0) {
+            cz = Int(position.z / CHUNK_LENGTH + 0.5) + CHUNK_RADIUS
+        } else {
+            cz = Int(position.z / CHUNK_LENGTH - 0.5) + CHUNK_RADIUS
+        }
+        position.x -= Float(cx - CHUNK_RADIUS) * CHUNK_LENGTH
+        position.z -= Float(cz - CHUNK_RADIUS) * CHUNK_LENGTH
+        if (position.x > 0) {
+            mx = Int(position.x / MESH_LENGTH + 0.5) + MESH_RADIUS
+        } else {
+            mx = Int(position.x / MESH_LENGTH - 0.5) + MESH_RADIUS
+        }
+        if (position.z > 0) {
+            mz = Int(position.z / MESH_LENGTH + 0.5) + MESH_RADIUS
+        } else {
+            mz = Int(position.z / MESH_LENGTH - 0.5) + MESH_RADIUS
+        }
+    }
+    
+    func UpdatePosition(deltaTime: Float, scene: Scene) {
+        Position += speed * deltaTime
+        CollisionCheck(scene: scene)
+        
+        let angle = wspeed * deltaTime / 2.0
+        let rot = simd_quatf(real: cos(angle),
+                             imag: float3(sin(angle) * rotate_axis.x,
+                                          sin(angle) * rotate_axis.y,
+                                          sin(angle) * rotate_axis.z)
+                            )
+        rotate_state = rot * rotate_state
+    }
+    
+    func UpdateSpeed(deltaTime: Float) {
+        if (collision.exist) {
+            let velocity = -dot(collision.Normal, speed)
+            speed += velocity * collision.Normal
+            if (velocity > 2.0) {
+                speed += 0.1 * velocity * collision.Normal
+            }
+        }
+        UpdateMovVec()
+        
+        var delta_v = float3(0.0)
+        var noKeyboard = true
+        if (collision.exist){
+            if (ResourceManager.keys[BallMovement.forward.rawValue]) {
+                let cosvalue = dot(Cam.Front, Mov.Up)
+                delta_v += (Cam.Front - cosvalue * Mov.Up) * Acceleration.x * deltaTime
+                noKeyboard = false
+            }
+            if (ResourceManager.keys[BallMovement.backward.rawValue]) {
+                let cosvalue = dot(Cam.Front, Mov.Up)
+                delta_v -= (Cam.Front - cosvalue * Mov.Up) * Acceleration.x * deltaTime
+                noKeyboard = false
+            }
+            if (ResourceManager.keys[BallMovement.right.rawValue]) {
+                let cosvalue = dot(Cam.Right, Mov.Up)
+                delta_v += (Cam.Right - cosvalue * Mov.Up) * Acceleration.z * deltaTime
+                noKeyboard = false
+            }
+            if (ResourceManager.keys[BallMovement.left.rawValue]) {
+                let cosvalue = dot(Cam.Right, Mov.Up)
+                delta_v -= (Cam.Right - cosvalue * Mov.Up) * Acceleration.z * deltaTime
+                noKeyboard = false
+            }
+            if (ResourceManager.keys[BallMovement.jump.rawValue]) {
+                delta_v += float3(0.0, 3.0, 0.0)
+            }
+            //Sliding Friction
+            let movXZ = speed
+            let movSpeed = length(movXZ)
+            if (Double(movSpeed) > eps) {
+                if (Resistance.x * deltaTime > movSpeed && noKeyboard) {
+                    delta_v -= normalize(movXZ) * movSpeed
+                } else {
+                delta_v -= normalize(movXZ) * Resistance.x * deltaTime
+                }
+            }
+        }
+        //Gravity
+        delta_v.y -= Resistance.y * deltaTime
+        speed += delta_v
+        
+        UpdateMovVec()
+        
+        wspeed = length(speed) / Radius
+        rotate_axis = -Mov.Right
+    }
+    
+    func UpdateMovVec() {
+        let speed = self.speed
+        
+        if(Double(abs(speed.x)) < eps && Double(abs(speed.x)) < eps) {
+            Mov.Front = float3(1.0, 0.0, 0.0);
+            Mov.Right = float3(0.0, 0.0, 1.0);
+            Mov.Up    = float3(0.0, 1.0, 0.0);
+        }
+        else {
+            Mov.Front = normalize(speed);
+            Mov.Right = normalize(cross(Mov.Front, float3(0.0, 1.0, 0.0)));
+            Mov.Up    = normalize(cross(Mov.Right, Mov.Front));
+        }
+    }
+    
 }

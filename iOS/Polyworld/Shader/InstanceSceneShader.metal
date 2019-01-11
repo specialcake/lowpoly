@@ -38,7 +38,7 @@ struct InstanceSceneVertexUniform {
     packed_float3 land_color;
     packed_float3 rock_color; // 15 16 empty
     float4x4 PVMatrix;
-    //float4x4 lightSpaceMatrix;
+    float4x4 lightSpaceMatrix;
 };
 
 struct InstanceSceneFragmentUniform {
@@ -74,7 +74,7 @@ vertex InstanceSceneVertexOut instanceSceneVertex(constant InstanceSceneVertexIn
     
     out.position = uniforms.PVMatrix * float4(pos + uniforms.scene_offset, 1.0f);
     out.fragPosition = pos + uniforms.scene_offset;
-    //out.fragPosLightSpace = uniforms.lightSpaceMatrix * float4(out.fragPosition, 1.0);
+    out.fragPosLightSpace = uniforms.lightSpaceMatrix * float4(out.fragPosition, 1.0);
     if(out.fragPosition.y > 1.0f) out.color = uniforms.rock_color;
     else if(out.fragPosition.y > 0.3f) out.color = uniforms.land_color;
     else out.color = uniforms.lower_color;
@@ -104,9 +104,38 @@ vertex InstanceSceneVertexOut instanceSceneVertex(constant InstanceSceneVertexIn
 }
 
 fragment float4 instanceSceneFragment(InstanceSceneVertexOut vert [[stage_in]],
-                              constant InstanceSceneFragmentUniform &uniforms [[buffer(0)]])
+                              constant InstanceSceneFragmentUniform &uniforms [[buffer(0)]],
+                              texture2d<float>  shadowmap [[texture(0)]],
+                              sampler           sampler2D [[sampler(0)]])
 {
-    float visibility = 1.0;
+    /*
+//    float3 projCoords = vert.fragPosLightSpace.xyz / vert.fragPosLightSpace.w;
+//    projCoords = projCoords * 0.5 + 0.5;
+//    float visibility;
+//    if(projCoords.z > 1.0)
+//        visibility = 1.0;
+//    else {
+//        float bias = 0.00051f;
+//        float currentDepth = projCoords.z;
+//        float closestDepth = shadowmap.sample(sampler2D, projCoords.xy).r;
+//        float shadow = clamp(exp(-20.0 * (currentDepth - closestDepth - bias)), 0.0, 1.0);
+//        visibility = shadow;
+//    }
+    
+    float3 projCoords = vert.fragPosLightSpace.xyz / vert.fragPosLightSpace.w;
+    projCoords = projCoords * 0.5 + 0.5;
+    float bias = 0.00051f;
+    float currentDepth = projCoords.z;
+    float closestDepth = shadowmap.sample(sampler2D, projCoords.xy).r;
+    float shadow = clamp(exp(-20.0 * (currentDepth - closestDepth - bias)), 0.0, 1.0);
+    
+    float visibility;
+    if (currentDepth > closestDepth) visibility = 0;
+    else visibility = 1;
+    */
+    
+    //float visibility = shadow;
+    float visibility = 1;
     
     // float3 viewDir = normalize(uniforms.viewPos - vert.fragPosition);
     float3 lightDir = normalize(-uniforms.dirLight.direction);

@@ -9,6 +9,14 @@
 import Foundation
 import MetalKit
 
+enum BallMovement: Int {
+    case forward = 0
+    case backward = 1
+    case left = 2
+    case right = 3
+    case jump = 4
+}
+
 class ResourceManager {
     
     static var device: MTLDevice!
@@ -20,6 +28,7 @@ class ResourceManager {
     static var instanceScenePipelineState: MTLRenderPipelineState!
     static var waterPipelineState: MTLRenderPipelineState!
     static var skyboxPipelineState: MTLRenderPipelineState!
+    static var shadowmapPipelineState: MTLRenderPipelineState!
     
     // computePipelineState
     static var skymapPipelineState: MTLComputePipelineState!
@@ -29,10 +38,16 @@ class ResourceManager {
     static var depthBufferDescriptor: MTLTextureDescriptor!
     static var depthTexture: MTLTexture!
     
-    static var textureDescriptor: MTLTextureDescriptor!
+    // shadow
+    static var shadowmapBufferDescriptor: MTLTextureDescriptor!
+    static var shadowmapDepthTexture: MTLTexture!
+    static var shadowmapBluredTexture: MTLTexture!
     
+    // colorAttachment
+    static var textureDescriptor: MTLTextureDescriptor!
     static var textureLoader: MTKTextureLoader! = nil
     
     static var camera: CameraController!
     static var projectionMatrix: float4x4!
+    static var keys: [Bool] = [Bool](repeating: false, count: 5)
 }

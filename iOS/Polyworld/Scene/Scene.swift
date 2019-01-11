@@ -41,10 +41,15 @@ public
     var water: Water
     var timeInterval: CFTimeInterval
     
+    var colorAttachment: MTLTexture!
+    var samplerState: MTLSamplerState!
+    
     init(initpos: float3) {
         self.offset = initpos
         self.water = Water()
         self.timeInterval = 0
+        self.colorAttachment = ResourceManager.device.makeTexture(descriptor: ResourceManager.textureDescriptor)!
+        self.samplerState = defaultSampler(device: ResourceManager.device)
         
         for _ in 0 ..< 3 {
             let c = Chunk(x: 0, z: 0)
@@ -116,7 +121,7 @@ public
         
     }
     
-    func draw(drawable: CAMetalDrawable, viewMatrix: float4x4, projectionMatrix: float4x4, clearColor: MTLClearColor?) {
+    func draw(drawable: CAMetalDrawable, viewMatrix: float4x4, projectionMatrix: float4x4, lightSpaceMatrix: float4x4, shadowmap: MTLTexture) {
         
         let white = MTLClearColor(red: 1, green: 1, blue: 1, alpha: 1)
         let renderPassDescriptor = MTLRenderPassDescriptor()
@@ -131,7 +136,7 @@ public
         
         let renderEncoder = ResourceManager.commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
         
-        var sizeOfUniformsBuffer = MemoryLayout<UInt32>.size + MemoryLayout<Float>.size * 31
+        var sizeOfUniformsBuffer = MemoryLayout<UInt32>.size + MemoryLayout<Float>.size * 47
         vertexUniformBuffer = ResourceManager.device.makeBuffer(length: sizeOfUniformsBuffer, options: [])!
         var bufferPointer = vertexUniformBuffer.contents()
         
@@ -144,7 +149,7 @@ public
         var land_color: float3 = LAND_COLOR
         var rock_color: float3 = ROCK_COLOR
         var PVMatrix: float4x4 = projectionMatrix * viewMatrix
-        //var lightSpaceMatrix: float4x4
+        var lightSpaceMatrix: float4x4 = lightSpaceMatrix
         memcpy(bufferPointer + offset, &scene_size, MemoryLayout<UInt32>.size)
         offset += MemoryLayout<UInt32>.size
         memcpy(bufferPointer + offset, &scalefactor, MemoryLayout<Float>.size)
@@ -159,6 +164,7 @@ public
         offset += MemoryLayout<Float>.size * 5
         memcpy(bufferPointer + offset, &PVMatrix, MemoryLayout<Float>.size * float4x4.numberOfElements)
         offset += MemoryLayout<Float>.size * float4x4.numberOfElements
+        memcpy(bufferPointer + offset, &lightSpaceMatrix, MemoryLayout<Float>.size * float4x4.numberOfElements)
         
         sizeOfUniformsBuffer = MemoryLayout<Float>.size * 5 + ParallelLight.size()
         fragmentUniformBuffer = ResourceManager.device.makeBuffer(length: sizeOfUniformsBuffer, options: [])!
@@ -183,6 +189,8 @@ public
         renderEncoder.setVertexBuffer(instanceHeightBuffer, offset: 0, index: 1)
         renderEncoder.setVertexBuffer(vertexUniformBuffer, offset: 0, index: 2)
         renderEncoder.setFragmentBuffer(fragmentUniformBuffer, offset: 0, index: 0)
+        renderEncoder.setFragmentTexture(shadowmap, index: 0)
+        renderEncoder.setFragmentSamplerState(samplerState, index: 0)
         
         // 面剔除
         renderEncoder.setFrontFacing(.counterClockwise)
@@ -197,8 +205,9 @@ public
         
         renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6, instanceCount: MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE)
         
+        /*
         // Water
-        sizeOfUniformsBuffer = MemoryLayout<Float>.size * 48
+        sizeOfUniformsBuffer = MemoryLayout<Float>.size * 64
         vertexUniformBuffer = ResourceManager.device.makeBuffer(length: sizeOfUniformsBuffer, options: [])!
         bufferPointer = vertexUniformBuffer.contents()
         
@@ -217,6 +226,8 @@ public
         memcpy(bufferPointer + offset, &timer, MemoryLayout<Float>.size)
         offset += MemoryLayout<Float>.size * 2
         memcpy(bufferPointer + offset, &PVMatrix, MemoryLayout<Float>.size * float4x4.numberOfElements)
+        offset += MemoryLayout<Float>.size * float4x4.numberOfElements
+        memcpy(bufferPointer + offset, &lightSpaceMatrix, MemoryLayout<Float>.size * float4x4.numberOfElements)
         offset += MemoryLayout<Float>.size * float4x4.numberOfElements
         memcpy(bufferPointer + offset, water.raw(), MemoryLayout<Float>.size * 24)
         
@@ -237,10 +248,13 @@ public
         renderEncoder.setVertexBuffer(vertexBuffer, offset: 0, index: 0)
         renderEncoder.setVertexBuffer(vertexUniformBuffer, offset: 0, index: 1)
         renderEncoder.setFragmentBuffer(fragmentUniformBuffer, offset: 0, index: 0)
+        renderEncoder.setFragmentTexture(shadowmap, index: 0)
+        renderEncoder.setFragmentSamplerState(samplerState, index: 0)
         
         renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6, instanceCount: MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE)
-        
+        */
         renderEncoder.endEncoding()
+ 
     }
     
     func generate_scene() {
@@ -458,7 +472,73 @@ public
         instanceHeightBuffer = ResourceManager.device.makeBuffer(bytes: data, length: MemoryLayout<Float>.size * limit, options:[])
     }
     
-//    Texture2D Generate_NormalMap(int th)
-//    Texture2D Generate_pNormalMap()
-//    void Generate_ShadowMap(const glm::mat4& lightSpaceMatrix, const glm::mat4& view)
+    func Generate_ShadowMap(lightSpaceMatrix: float4x4) {
+        
+        let white = MTLClearColor(red: 1, green: 1, blue: 1, alpha: 1)
+        let renderPassDescriptor = MTLRenderPassDescriptor()
+        
+        renderPassDescriptor.colorAttachments[0].texture = colorAttachment
+        renderPassDescriptor.colorAttachments[0].loadAction = .clear
+        renderPassDescriptor.colorAttachments[0].clearColor = white
+        renderPassDescriptor.colorAttachments[0].storeAction = .store
+        
+        renderPassDescriptor.depthAttachment.texture = ResourceManager.shadowmapDepthTexture
+        renderPassDescriptor.depthAttachment.loadAction = .clear
+        renderPassDescriptor.depthAttachment.storeAction = .store
+        
+        let shadowmapCommandBuffer = ResourceManager.commandQueue.makeCommandBuffer()!
+        let renderEncoder = shadowmapCommandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
+        
+        let sizeOfUniformsBuffer = MemoryLayout<Float>.size * 24
+        let shadowmapVertexUniformBuffer = ResourceManager.device.makeBuffer(length: sizeOfUniformsBuffer, options: [])!
+        let bufferPointer = shadowmapVertexUniformBuffer.contents()
+        
+        var offset = 0
+        var scene_size: UInt32 = UInt32(MESH_SIZE * CHUNK_SIZE)
+        var scalefactor: Float = MESH_LENGTH
+        var scene_offset: float3 = self.offset
+        
+        var lightSpaceMatrix: float4x4 = lightSpaceMatrix
+    
+        memcpy(bufferPointer + offset, &scene_size, MemoryLayout<UInt32>.size)
+        offset += MemoryLayout<UInt32>.size
+        memcpy(bufferPointer + offset, &scalefactor, MemoryLayout<Float>.size)
+        offset += MemoryLayout<Float>.size
+        memcpy(bufferPointer + offset, &scene_offset, MemoryLayout<Float>.size * 3)
+        offset += MemoryLayout<Float>.size * 6
+        memcpy(bufferPointer + offset, &lightSpaceMatrix, MemoryLayout<Float>.size * float4x4.numberOfElements)
+        offset += MemoryLayout<Float>.size * float4x4.numberOfElements
+        
+        renderEncoder.setRenderPipelineState(ResourceManager.shadowmapPipelineState)
+        renderEncoder.setVertexBuffer(instanceVertexBuffer, offset: 0, index: 0)
+        renderEncoder.setVertexBuffer(instanceHeightBuffer, offset: 0, index: 1)
+        renderEncoder.setVertexBuffer(shadowmapVertexUniformBuffer, offset: 0, index: 2)
+        
+        // 深度测试
+        let depthStencilDescriptor = MTLDepthStencilDescriptor()
+        depthStencilDescriptor.depthCompareFunction = .less
+        depthStencilDescriptor.isDepthWriteEnabled = true
+        let depthStencilState = ResourceManager.device.makeDepthStencilState(descriptor: depthStencilDescriptor)
+        renderEncoder.setDepthStencilState(depthStencilState)
+        
+        renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6, instanceCount: MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE)
+        renderEncoder.endEncoding()
+        
+        shadowmapCommandBuffer.commit()
+    }
+    
+    func defaultSampler(device: MTLDevice) -> MTLSamplerState {
+        let sampler = MTLSamplerDescriptor()
+        sampler.minFilter             = MTLSamplerMinMagFilter.nearest
+        sampler.magFilter             = MTLSamplerMinMagFilter.nearest
+        sampler.mipFilter             = MTLSamplerMipFilter.nearest
+        sampler.maxAnisotropy         = 1
+        sampler.sAddressMode          = MTLSamplerAddressMode.clampToEdge
+        sampler.tAddressMode          = MTLSamplerAddressMode.clampToEdge
+        sampler.rAddressMode          = MTLSamplerAddressMode.clampToEdge
+        sampler.normalizedCoordinates = true
+        sampler.lodMinClamp           = 0
+        sampler.lodMaxClamp           = FLT_MAX
+        return device.makeSamplerState(descriptor: sampler)!
+    }
 }
