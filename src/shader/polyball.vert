@@ -4,7 +4,6 @@ layout (location = 1) in vec3 aNormal;
 
 out VS_OUT{
     vec3 FragPos;
-    vec3 Normal;
     vec4 FragPosLightSpace;
 }vs_out;
 
@@ -22,7 +21,6 @@ void main() {
 
     gl_Position = PVMatrix * vec4(vs_out.FragPos, 1.0f);
 
-    vs_out.Normal = mat3(transpose(inverse(model))) * aNormal;
     vs_out.FragPosLightSpace = lightSpaceMatrix * vec4(vs_out.FragPos, 1.0f);
 }
 

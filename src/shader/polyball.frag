@@ -2,7 +2,7 @@
 layout (location = 0) out vec4 FragColor;
 layout (location = 1) out vec4 BrightColor;
 
-in VS_OUT{
+in GS_OUT{
     vec3 FragPos;
     vec3 Normal;
     vec4 FragPosLightSpace;

@@ -208,7 +208,7 @@ void Polyball::UpdateSpeed(float deltaTime) {
     UpdateMovVec();
 
     wspeed = glm::length(Speed) / Radius;
-    rotate_axis = Mov.Right;
+    rotate_axis = -Mov.Right;
 }
 void Polyball::UpdateMovVec(){
     if(glm::abs(Speed.x) < eps && glm::abs(Speed.z) < eps){

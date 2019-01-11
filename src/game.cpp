@@ -41,7 +41,7 @@ void Game::Init() {
     ResourceManager::LoadShader("../src/shader/skybox.vert", "../src/shader/skybox.frag", NULL, "skybox");
     ResourceManager::LoadShader("../src/shader/skymap.vert", "../src/shader/skymap.frag", NULL, "skymap");
     ResourceManager::LoadShader("../src/shader/bloom.vert", "../src/shader/bloom.frag", NULL, "bloom");
-    ResourceManager::LoadShader("../src/shader/polyball.vert", "../src/shader/polyball.frag", NULL, "polyball");
+    ResourceManager::LoadShader("../src/shader/polyball.vert", "../src/shader/polyball.frag", "../src/shader/polyball.geom", "polyball");
     ResourceManager::LoadShader("../src/shader/fontdisplay.vert", "../src/shader/fontdisplay.frag", NULL, "fontdisplay");
 
     ResourceManager::GetShader("sprite").use();
