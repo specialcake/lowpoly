@@ -171,6 +171,11 @@ void Polyball::CollisionCheck(Scene* scene) {
 
     }
     delta_pos += CollisionObject(scene);
+    if(Position.y < 0.1){
+        collision.exist = true;
+        collision.Normal += glm::vec3(0.0f, 1.0f, 0.0f);
+        delta_pos += (0.1f - Position.y) * glm::vec3(0.0f, 1.0f, 0.0f);
+    }
     Position += delta_pos;
     if(collision.exist)
         collision.Normal = glm::normalize(collision.Normal);
@@ -266,7 +271,8 @@ void Polyball::UpdateSpeed(float deltaTime) {
 
     UpdateMovVec();
 
-    wspeed = glm::length(Speed) / Radius;
+    if(glm::length(glm::vec2(Speed.x, Speed.z)) < 0.001) wspeed = 0.0f;
+    else wspeed = glm::length(Speed) / Radius;
     rotate_axis = -Mov.Right;
 }
 void Polyball::UpdateMovVec(){
