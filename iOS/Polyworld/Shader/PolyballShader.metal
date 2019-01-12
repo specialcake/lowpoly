@@ -49,7 +49,6 @@ struct Uniforms {
     float3 cameraPos;
     float3 directionalLightInvDirection;
     float3 lightPosition;
-    float4 RotQuat;
 };
 
 struct LightingParameters {
@@ -106,7 +105,7 @@ vertex VertexOut polyballVertex(Vertex in [[stage_in]],
     return out;
 }
 
-fragment half4 polyballFragment(VertexOut in                     [[stage_in]],
+fragment half4 polyballFragment(VertexOut in  [[stage_in]],
                            constant Uniforms &uniforms      [[buffer(fragmentBufferIndexUniforms)]],
                            texture2d<float> baseColorMap    [[texture(textureIndexBaseColor)]],
                            texture2d<float> metallicMap     [[texture(textureIndexMetallic)]],

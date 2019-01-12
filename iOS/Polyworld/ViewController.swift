@@ -11,6 +11,7 @@ import Metal
 import MetalKit
 import QuartzCore
 import simd
+import CoreMotion
 
 class ViewController: UIViewController {
     
@@ -31,6 +32,12 @@ class ViewController: UIViewController {
     var shadowmap: Shadowmap!
     var sun: Sun!
     var polyball: Polyball!
+    
+    //运动管理器
+    let motionManager = CMMotionManager()
+    
+    //刷新时间间隔
+    let timeInterval: TimeInterval = 0.01
     
     // UI
     @IBOutlet weak var gameView: UIView!
@@ -96,6 +103,9 @@ class ViewController: UIViewController {
         // Rendering
         timer = CADisplayLink(target: self, selector: #selector(ViewController.newFrame(displayLink:)))
         timer.add(to: RunLoop.main, forMode: .default)
+        
+        //开始陀螺仪更新
+        startGyroUpdates()
     }
     
     override func viewDidLayoutSubviews() {
@@ -262,6 +272,30 @@ class ViewController: UIViewController {
                 self.trackedTouch = nil
             }
         }
+    }
+    
+    // 开始获取陀螺仪数据
+    func startGyroUpdates() {
+        //判断设备支持情况
+        guard motionManager.isGyroAvailable else { return }
+        
+        //设置刷新时间间隔
+        self.motionManager.gyroUpdateInterval = self.timeInterval
+        
+        //开始实时获取数据
+        let queue = OperationQueue.current
+        self.motionManager.startGyroUpdates(to: queue!, withHandler: { (gyroData, error) in
+            guard error == nil else {
+                print(error!)
+                return
+            }
+            // 有更新
+            if self.motionManager.isGyroActive {
+                if let rotationRate = gyroData?.rotationRate {
+                    ResourceManager.camera.rotate(rotationRate: rotationRate)
+                }
+            }
+        })
     }
 }
 

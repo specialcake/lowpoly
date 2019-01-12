@@ -1,6 +1,7 @@
 
 import QuartzCore
 import simd
+import CoreMotion
 
 enum Camera_Movement {
     case forward, backward, left, right
@@ -41,6 +42,17 @@ class CameraController {
         
         updateupdateCameraVectors()
     }
+    
+    func rotate(rotationRate: CMRotationRate) {
+        let deltaX = rotationRate.x
+        let deltaY = rotationRate.y
+        yaw += Float(deltaX) * sensitivity
+        pitch += Float(deltaY) * sensitivity
+        pitch = min(max(minPitch, pitch), maxPitch)
+        
+        updateupdateCameraVectors()
+    }
+    
     
     func updateupdateCameraVectors() {
         var newFront: float3 = float3()

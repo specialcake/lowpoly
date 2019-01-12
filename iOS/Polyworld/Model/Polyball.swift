@@ -22,28 +22,6 @@ struct Coord{
     var Up: float3
 }
 
-struct UniformsWithQuat {
-    let modelMatrix: float4x4
-    let modelViewProjectionMatrix: float4x4
-    let normalMatrix: float3x3
-    let cameraPosition: float3
-    let lightDirection: float3
-    let lightPosition: float3
-    let RotQuat: float4
-    init(modelMatrix: float4x4, viewMatrix: float4x4, projectionMatrix: float4x4,
-         cameraPosition: float3, lightDirection: float3, lightPosition: float3, RotQuat: float4)
-    {
-        self.modelMatrix = modelMatrix
-        self.modelViewProjectionMatrix = projectionMatrix * viewMatrix * modelMatrix
-        self.normalMatrix = modelMatrix.normalMatrix
-        self.cameraPosition = cameraPosition
-        self.lightDirection = lightDirection
-        self.lightPosition = lightPosition
-        self.RotQuat = RotQuat
-    }
-}
-
-
 class Polyball: NSObject {
     let device: MTLDevice
     let commandQueue: MTLCommandQueue
@@ -259,15 +237,14 @@ class Polyball: NSObject {
     func draw(_ node: Node, in commandEncoder: MTLRenderCommandEncoder) {
         let mesh = node.mesh
         
-        var uniforms = UniformsWithQuat(modelMatrix: modelMatrix,
+        var uniforms = Uniforms(modelMatrix: modelMatrix,
                                 viewMatrix: viewMatrix,
                                 projectionMatrix: projectionMatrix,
                                 cameraPosition: cameraWorldPosition,
                                 lightDirection: lightWorldDirection,
-                                lightPosition: lightWorldPosition,
-                                RotQuat: float4(rotate_state.real, rotate_state.imag.x, rotate_state.imag.y, rotate_state.imag.z))
-        commandEncoder.setVertexBytes(&uniforms, length: MemoryLayout<UniformsWithQuat>.size, index: VertexBufferIndex.uniforms.rawValue)
-        commandEncoder.setFragmentBytes(&uniforms, length: MemoryLayout<UniformsWithQuat>.size, index: FragmentBufferIndex.uniforms.rawValue)
+                                lightPosition: lightWorldPosition)
+        commandEncoder.setVertexBytes(&uniforms, length: MemoryLayout<Uniforms>.size, index: VertexBufferIndex.uniforms.rawValue)
+        commandEncoder.setFragmentBytes(&uniforms, length: MemoryLayout<Uniforms>.size, index: FragmentBufferIndex.uniforms.rawValue)
         
         for (bufferIndex, vertexBuffer) in mesh.vertexBuffers.enumerated() {
             commandEncoder.setVertexBuffer(vertexBuffer.buffer, offset: vertexBuffer.offset, index: bufferIndex)
