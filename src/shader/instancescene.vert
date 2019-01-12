@@ -34,6 +34,7 @@ void main() {
     pos.y = texture(HeightMap, vec2((idy + aVertex.y + 0.5f) / (scene_size + 1.0f), (idx + aVertex.x + 0.5f) / (scene_size + 1.0f))).r;
     float height = pos.y = pos.y * 10.0f;
     if(height < 0.10f) pos.y = height = - 0.50f;
+//    pos.y = height = 0.0f;
     gl_Position = PVMatrix * vec4(pos + scene_offset, 1.0f);
 
     //normal calc

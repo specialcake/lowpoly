@@ -18,6 +18,7 @@ struct Treeinfo{
     GLfloat height, angle;
     glm::vec3 location, axis;
     Trunk trunk;
+    BoundBox box;
 };
 
 class Plants {

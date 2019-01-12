@@ -69,6 +69,14 @@ Trunk Model::GetTrunk(std::string name) {
     ret.Radius /= trunk->vertices.size();
     return ret;
 }
+BoundBox Model::GetBoundBox(){
+    BoundBox ret = (BoundBox){glm::vec3(0.0f), 0.0f, 0.0f, 0.0f};
+    ret.Front = maxz - minz;
+    ret.Left  = maxx - minx;
+    ret.Down  = maxy - miny;
+    ret.Point = glm::vec3(maxx - Gx, maxy - Gy, maxz - Gz);
+    return ret;
+}
 void Model::loadModel(std::string path) {
     Assimp::Importer import;
     const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);

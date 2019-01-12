@@ -9,8 +9,7 @@ Polyball::Polyball(Shader shader) {
     SpeedLimit = glm::vec3(0.0f);
     Acceleration = glm::vec3(2.0f, 0.0f, 2.0f);
     Resistance = glm::vec3(1.0f, 3.0f, 1.0f);
-
-    Position = glm::vec3(0.0f, 0.01f, 4.0f);
+    Position = glm::vec3(0.0f, 2.0f, 5.0f);
     Radius = 0.5f * 0.3f;
     Mov.Front = glm::vec3(1.0f, 0.0f, 0.0f);
     Mov.Right = glm::vec3(0.0f, 0.0f, 1.0f);
@@ -65,7 +64,7 @@ void Polyball::Render(glm::mat4 view, glm::mat4 PVMatrix, glm::mat4 lightSpaceMa
 }
 glm::vec3 Polyball::CollisionObject(Scene *scene) {
     glm::vec3 delta_pos = glm::vec3(0.0f);
-    for(int typenum = 0; typenum < 2; typenum++){
+    for(int typenum = 0; typenum < 3; typenum++){
         for(int i = 0; i < scene->Treeplace[typenum].size(); i++){
             if(typenum <= 1){
                 Trunk tk = scene->Treeplace[typenum][i].trunk;
@@ -80,12 +79,42 @@ glm::vec3 Polyball::CollisionObject(Scene *scene) {
                 else mindist = glm::length(Position - Q);
                 if(mindist < Radius + tk.Radius){
                     collision.exist = true;
-                    collision.Normal += glm::normalize(glm::vec3(Position.x - tk.bottom.x, 0.0f, Position.z - tk.bottom.z));
-                    delta_pos += (Radius + tk.Radius - mindist) * collision.Normal;
+                    glm::vec3 normal = glm::normalize(glm::vec3(Position.x - tk.bottom.x, 0.0f, Position.z - tk.bottom.z));
+                    collision.Normal += normal;
+                    delta_pos += (Radius + tk.Radius - mindist) * normal;
                 }
             }
             else{
-                
+                BoundBox box = scene->Treeplace[typenum][i].box;
+                glm::vec3 cp = box.Point;// - glm::vec3(box.Left, box.Down, box.Front) / 2.0f;
+                if(Tools::distance(Position, cp) >= 1.1) continue;
+                GLfloat test = Tools::distance(Position, cp);
+
+                glm::vec3 relpos = Position - cp;
+                GLfloat disx = glm::abs(relpos.x) - box.Left / 2.0f;
+                GLfloat disy = glm::abs(relpos.y) - box.Down / 2.0f;
+                GLfloat disz = glm::abs(relpos.z) - box.Front / 2.0f;
+                GLfloat dist = glm::sqrt(glm::pow(glm::max(0.0f, disx), 2) +
+                                         glm::pow(glm::max(0.0f, disy), 2) +
+                                         glm::pow(glm::max(0.0f, disz), 2));
+                if(dist < Radius){
+                    collision.exist = true;
+                    glm::vec3 normal;
+                    if(disx >= disy && disx >= disz){
+                        if(relpos.x > 0) normal = glm::vec3(1.0f, 0.0f, 0.0f);
+                        else normal = glm::vec3(-1.0f, 0.0f, 0.0f);
+                    }
+                    else if(disy >= disx && disy >= disz){
+                        if(relpos.y > 0) normal = glm::vec3(0.0f, 1.0f, 0.0f);
+                        else normal = glm::vec3(0.0f, -1.0f, 0.0f);
+                    }
+                    else{
+                        if(relpos.z > 0) normal = glm::vec3(0.0f, 0.0f, 1.0f);
+                        else normal = glm::vec3(0.0f, 0.0f, -1.0f);
+                    }
+                    collision.Normal += normal;
+                    delta_pos += normal * (Radius - dist);
+                }
             }
         }
     }
@@ -125,16 +154,18 @@ void Polyball::CollisionCheck(Scene* scene) {
             dist = Tools::distance(Position, a, b, c);
             if(dist <= Radius){
                 collision.exist = true;
-                collision.Normal += glm::normalize(glm::cross(c - a, b - a));
-                delta_pos += (Radius - dist) * collision.Normal;
+                glm::vec3 normal = glm::normalize(glm::cross(c - a, b - a));
+                collision.Normal += normal;
+                delta_pos += (Radius - dist) * normal;
             }
             b = c;
             c = Maycol[i][j + 1];
             dist = Tools::distance(Position, a, b, c);
             if(dist <= Radius){
                 collision.exist = true;
-                collision.Normal += glm::normalize(glm::cross(c - a, b - a));
-                delta_pos += (Radius - dist) * collision.Normal;
+                glm::vec3 normal = glm::normalize(glm::cross(c - a, b - a));
+                collision.Normal += normal;
+                delta_pos += (Radius - dist) * normal;
             }
         }
 

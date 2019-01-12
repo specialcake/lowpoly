@@ -1,6 +1,7 @@
 #include "game.h"
 #include "Resource/resourcemanager.h"
 #include "utils/spriterender.h"
+#include "utils/cuberender.h"
 #include "Scene/scene.h"
 #include "Postprocess/shadowmap.h"
 #include "Postprocess/gaussblur.h"
@@ -11,6 +12,7 @@
 
 Scene* scene;
 SpriteRenderer* littlewindow;
+CubeRender* littlecube;
 Shadowmap* shadowmap;
 Skymap* skymap;
 PostProcessor* SceneTexture;
@@ -28,6 +30,7 @@ Game::~Game() {}
 void Game::Init() {
     ResourceManager::LoadShader("../src/shader/scene.vert", "../src/shader/scene.frag", NULL, "scene");
     ResourceManager::LoadShader("../src/shader/sprite.vert", "../src/shader/sprite.frag", NULL, "sprite");
+    ResourceManager::LoadShader("../src/shader/cuberender.vert", "../src/shader/cuberender.frag", NULL, "cuberender");
     ResourceManager::LoadShader("../src/shader/instancescene.vert", "../src/shader/instancescene.frag", "../src/shader/instancescene.geom", "instancescene");
     ResourceManager::LoadShader("../src/shader/ssrscene.vert", "../src/shader/ssrscene.frag", "../src/shader/ssrscene.geom", "ssrscene");
     ResourceManager::LoadShader("../src/shader/SSR.vert", "../src/shader/SSR.frag", NULL, "SSR");
@@ -97,13 +100,15 @@ void Game::Init() {
     ResourceManager::LoadModel("../resource/model/tree/pine.obj", "pine");
     ResourceManager::LoadModel("../resource/model/tree/normaltree.obj", "normaltree");
     ResourceManager::LoadModel("../resource/model/polyball/polyball.obj", "polyball", false);
-    ResourceManager::LoadModel("../resource/model/rock/bigrock.obj", "bigrock");
-    ResourceManager::LoadModel("../resource/model/rock/smallrock.obj", "smallrock");
+//    ResourceManager::LoadModel("../resource/model/rock/bigrock.obj", "bigrock");
+    ResourceManager::LoadModel("../resource/model/rock/stone2.obj", "smallrock", false);
     ResourceManager::GetModel("pine")->SetBias(0.0f, -0.9f, 0.0f);
+//    ResourceManager::GetModel("smallrock")->SetBias(0.0f, -0.1f, 0.0f);
 
     ResourceManager::fontdisplay.Initialize(ResourceManager::GetShader("fontdisplay"));
 
     littlewindow = new SpriteRenderer(ResourceManager::GetShader("sprite"));
+    littlecube = new CubeRender(ResourceManager::GetShader("cuberender"));
 
     scene = new Scene(glm::vec3(0.0f), ResourceManager::GetShader("scene"));
     scene->map_instance_shader = ResourceManager::GetShader("instancescene");
@@ -153,8 +158,10 @@ void Game::Update(GLfloat dt) {
         scene->HeightMap = scene->Generate_HeightMap();
         scene->CloudMap = scene->Generate_CloudMap();
         scene->Generate_Treeplace();
-        for(int i = 0; i < TREENUMBER; i++)
+        for(int i = 0; i < TREENUMBER; i++) {
+            if(i == 2) printf("Rock model[][][][][]\n");
             scene->plant[i]->SetParam(scene->Treeplace[i]);
+        }
 
 //        scene->UpdateTreeplace();
 
@@ -218,16 +225,6 @@ void Game::Render() {
         scene->draw(view, PVMatrix, lightSpaceMatrix, shadowmap->DepthMap, shadowmap->BluredShadow);
         for(int i = 0; i < 3; i++)
             scene->plant[i]->Draw(view, PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
-
-        Model* test = ResourceManager::GetModel("pine");
-        Shader modelshader = ResourceManager::GetShader("model");
-        modelshader.use();
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, test->BiasVector());
-        model = glm::scale(model, glm::vec3(0.3));
-        modelshader.setMat4("model", model);
-        modelshader.setMat4("PVMatrix", PVMatrix);
-        test->Draw(modelshader);
 
 //        glDepthFunc(GL_LEQUAL);
 //        ResourceManager::skybox->shader.use();

@@ -1,5 +1,10 @@
-#version 120
+#version 330 core
 
-void main() {
-	gl_Position = vec4(vec3(0.0), 1.0);
+layout (location = 0) in vec3 vertex;
+
+uniform mat4 PVMatrix;
+uniform mat4 model;
+
+void main(){
+    gl_Position = PVMatrix * model * vec4(vertex, 1.0f);
 }

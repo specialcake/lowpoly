@@ -25,11 +25,15 @@ void Plants::SetParam(const std::vector<Treeinfo>& places) {
     if(places[0].type == 1) scale = glm::vec3(0.05f);
     else scale = glm::vec3(0.3f);
 
+    printf("====model pos====\n");
     for(int i = 0; i < amount; i++){
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, modelptr->BiasVector() +
                                       places[i].location +
                                       glm::vec3(0.0f, places[i].height, 0.0f));
+        Tools::PrintVec3(modelptr->BiasVector() +
+                         places[i].location +
+                         glm::vec3(0.0f, places[i].height, 0.0f));
         model = glm::scale(model, scale);
         model = glm::rotate(model, places[i].angle, places[i].axis);
         matrixs[i] = model;

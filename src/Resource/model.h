@@ -20,6 +20,10 @@ struct Trunk{
     glm::vec3 bottom;
     GLfloat height, Radius;
 };
+struct BoundBox{
+    glm::vec3 Point;
+    GLfloat Down, Left, Front;
+};
 
 unsigned int TextureFromFile(const char *path, const std::string &directory);
 
@@ -38,6 +42,7 @@ public:
     void SetBias(GLfloat dx, GLfloat dy, GLfloat dz);
     glm::vec3 BiasVector();
     Trunk GetTrunk(std::string name);
+    BoundBox GetBoundBox();
     void Draw(Shader shader);
 private:
     void loadModel(std::string path);
