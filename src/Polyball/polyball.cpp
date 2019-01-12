@@ -63,7 +63,34 @@ void Polyball::Render(glm::mat4 view, glm::mat4 PVMatrix, glm::mat4 lightSpaceMa
 //    Tools::PrintVec3(Position);
 //    Tools::PrintVec3(Speed);
 }
+glm::vec3 Polyball::CollisionObject(Scene *scene) {
+    glm::vec3 delta_pos = glm::vec3(0.0f);
+    for(int typenum = 0; typenum < 1; typenum++){
+        for(int i = 0; i < scene->Treeplace[typenum].size(); i++){
+            if(typenum <= 1){
+                Trunk tk = scene->Treeplace[typenum][i].trunk;
+                GLfloat seglen = tk.height;
+                glm::vec3 seg = glm::vec3(0.0f, 1.0f, 0.0);
+                glm::vec3 vect = Position - tk.bottom;
+                GLfloat len = glm::dot(seg, vect);
+                glm::vec3 Q = len * seg + tk.bottom;
+                GLfloat mindist;
+                if(len < 0) mindist = glm::length(vect);
+                else if(len > seglen) mindist = glm::length(Position - (tk.bottom + glm::vec3(0.0f, tk.height, 0.0f)));
+                else mindist = glm::length(Position - Q);
+                if(mindist < Radius + tk.Radius){
+                    collision.exist = true;
+                    collision.Normal += glm::normalize(glm::vec3(Position.x - tk.bottom.x, 0.0f, Position.z - tk.bottom.z));
+                    delta_pos += (Radius + tk.Radius - mindist) * collision.Normal;
+                }
+            }
+            else{
 
+            }
+        }
+    }
+    return delta_pos;
+}
 void Polyball::CollisionCheck(Scene* scene) {
     collision = (Collision){false, glm::vec3(0.0f), glm::vec3(0.0f)};
 //    if(Position.y <= 0.0f){
@@ -112,6 +139,7 @@ void Polyball::CollisionCheck(Scene* scene) {
         }
 
     }
+    delta_pos += CollisionObject(scene);
     Position += delta_pos;
     if(collision.exist)
         collision.Normal = glm::normalize(collision.Normal);

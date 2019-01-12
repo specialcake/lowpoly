@@ -51,6 +51,7 @@ public:
     void Initialize();
     glm::vec3 GenCameraPosition();
     void Render(glm::mat4 view, glm::mat4 PVMatrix, glm::mat4 lightSpaceMatrix, Texture2D BlurShadow);
+    glm::vec3 CollisionObject(Scene* scene);
     void CollisionCheck(Scene* scene);
     void GetChunkMeshID(Scene* scene, GLint &cx, GLint &cz, GLint &mx, GLint &mz);
     void UpdatePosition(float deltaTime, Scene* scene);

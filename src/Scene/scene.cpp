@@ -426,6 +426,7 @@ void Scene::Generate_Treeplace() {
 //    GLuint length = MESH_SIZE * CHUNK_SIZE;
     for(int i = 0; i < TREENUMBER; i++)
         Treeplace[i].clear();
+    static Trunk tmptrunk0 = this->plant[0]->modelptr->GetTrunk("Trunk_0");
     for(int i = 1; i < CHUNK_SIZE - 1; i++)
         for(int j = 1; j < CHUNK_SIZE - 1; j++)
             for(int k = 1; k < MESH_SIZE - 1; k++)
@@ -447,6 +448,24 @@ void Scene::Generate_Treeplace() {
                                                             int(tmptree.height * 100) % 10 / 10.0,
                                                             int(tmptree.height * 1000) % 10 / 10.0));
                     tmptree.angle = int(tmptree.height * 10000.0) % 100 / 50.0 * PI;
+                    switch(tmptree.type){
+                        case(0):{
+                            tmptree.trunk = tmptrunk0;
+                            tmptree.trunk.bottom += plant[0]->modelptr->BiasVector() +
+                                                    tmptree.location +
+                                                    glm::vec3(0.0f, tmptree.height, 0.0f);
+                            tmptree.trunk.height *= 0.3f;
+                            tmptree.trunk.Radius *= 0.3f;
+                            break;
+                        }
+                        case(1):{
+                            break;
+                        }
+                        case(2):{
+                            break;
+                        }
+                        default: break;
+                    }
                     Treeplace[TreeType].push_back(tmptree);
                 }
 }

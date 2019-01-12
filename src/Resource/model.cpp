@@ -59,6 +59,7 @@ Trunk Model::GetTrunk(std::string name) {
         maxy = glm::max(miny, trunk->vertices[i].Position.y);
     }
     center /= trunk->vertices.size();
+    ret.bottom = center; ret.bottom.y = miny;
     ret.height = maxy - miny;
     for(int i = 0; i < trunk->vertices.size(); i++){
         glm::vec3 delta = trunk->vertices[i].Position - center;
