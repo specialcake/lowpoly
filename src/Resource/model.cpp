@@ -48,7 +48,26 @@ void Model::SetBias(GLfloat dx, GLfloat dy, GLfloat dz) {
 glm::vec3 Model::BiasVector() {
     return glm::vec3(delta_x, delta_y, delta_z);
 }
-
+Trunk Model::GetTrunk(std::string name) {
+    Mesh* trunk = group[name];
+    Trunk ret = (Trunk){glm::vec3(0.0f), 0.0f, 0.0f};
+    glm::vec3 center = glm::vec3(0.0f);
+    GLfloat miny = 20000.0f, maxy = -20000.0f;
+    for(int i = 0; i < trunk->vertices.size(); i++){
+        center += trunk->vertices[i].Position;
+        miny = glm::min(miny, trunk->vertices[i].Position.y);
+        maxy = glm::max(miny, trunk->vertices[i].Position.y);
+    }
+    center /= trunk->vertices.size();
+    ret.height = maxy - miny;
+    for(int i = 0; i < trunk->vertices.size(); i++){
+        glm::vec3 delta = trunk->vertices[i].Position - center;
+        GLfloat dist = glm::length(glm::vec2(delta.x, delta.z));
+        ret.Radius += dist;
+    }
+    ret.Radius /= trunk->vertices.size();
+    return ret;
+}
 void Model::loadModel(std::string path) {
     Assimp::Importer import;
     const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);

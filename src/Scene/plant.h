@@ -17,6 +17,7 @@ struct Treeinfo{
     int chunk_number, type;
     GLfloat height, angle;
     glm::vec3 location, axis;
+    Trunk trunk;
 };
 
 class Plants {

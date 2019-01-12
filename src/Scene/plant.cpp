@@ -27,8 +27,9 @@ void Plants::SetParam(const std::vector<Treeinfo>& places) {
 
     for(int i = 0; i < amount; i++){
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, modelptr->BiasVector());
-        model = glm::translate(model, places[i].location + glm::vec3(0.0f, places[i].height, 0.0f));
+        model = glm::translate(model, modelptr->BiasVector() +
+                                      places[i].location +
+                                      glm::vec3(0.0f, places[i].height, 0.0f));
         model = glm::scale(model, scale);
         model = glm::rotate(model, places[i].angle, places[i].axis);
         matrixs[i] = model;
