@@ -50,7 +50,7 @@ class Polyball: NSObject {
     var Acceleration: float3 = float3(2.0, 0.0, 2.0)
     var Resistance: float3 = float3(1.0, 3.0, 1.0)
     var Position: float3 = float3(0.0, 0.01, 4.0)
-    var Radius: Float = 0.5 * 0.3
+    var Radius: Float = 0.5
     var Mov: Coord = Coord(Front: float3(1.0, 0.0, 0.0), Right: float3(0.0, 0.0, 1.0), Up: float3(0.0, 1.0, 0.0))
     var Cam: Coord = Coord(Front: ResourceManager.camera.front, Right: ResourceManager.camera.right, Up: ResourceManager.camera.up)
     var collision: Collision = Collision(exist: false, Point: float3(), Normal: float3())
@@ -197,8 +197,8 @@ class Polyball: NSObject {
         projectionMatrix = ResourceManager.projectionMatrix
         viewMatrix = ResourceManager.camera.viewMatrix
         cameraWorldPosition = ResourceManager.camera.position
-        lightWorldPosition = PARLIGHT_POSITION
-        lightWorldDirection = normalize(PARLIGHT_DIR)
+        lightWorldPosition = -float3(PARLIGHT_DIR.x, PARLIGHT_DIR.y * 2, PARLIGHT_DIR.z)
+        lightWorldDirection = normalize(float3(PARLIGHT_DIR.x, PARLIGHT_DIR.y * 2, PARLIGHT_DIR.z))
     }
     
     func bindTextures(_ material: Material, _ commandEncoder: MTLRenderCommandEncoder) {
@@ -310,9 +310,9 @@ class Polyball: NSObject {
                 
                 Maycol[i + 1][j + 1] = scene.chunk_offset[chunkx][chunky] + scene.mesh_offset[meshx][meshy]
                 Maycol[i + 1][j + 1].y = scene.chunk[chunkx][chunky].height[meshx][meshy]
-                if (Maycol[i + 1][j + 1].y < 0.1) {
-                    Maycol[i + 1][j + 1].y = -0.5
-                }
+//                if (Maycol[i + 1][j + 1].y < 0.1) {
+//                    Maycol[i + 1][j + 1].y = -0.5
+//                }
             }
         }
 

@@ -43,7 +43,7 @@ enum Direction {
 
 // Water
 let NUMOFWATER = 4
-let SEA_LEVEL: Float = 0.30
+let SEA_LEVEL: Float = 0.50
 let CONSTQ: Float = 0.5
 
 // Light

@@ -193,7 +193,8 @@ public
         renderEncoder.setFragmentSamplerState(samplerState, index: 0)
         
         // 面剔除
-        renderEncoder.setFrontFacing(.counterClockwise)
+        renderEncoder.setFrontFacing(.clockwise)
+        // renderEncoder.setFrontFacing(.counterClockwise)
         renderEncoder.setCullMode(.back)
         
         // 深度测试
@@ -205,7 +206,8 @@ public
         
         renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6, instanceCount: MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE)
         
-        /*
+        // 关闭面剔除
+        renderEncoder.setCullMode(.none)
         // Water
         sizeOfUniformsBuffer = MemoryLayout<Float>.size * 64
         vertexUniformBuffer = ResourceManager.device.makeBuffer(length: sizeOfUniformsBuffer, options: [])!
@@ -252,7 +254,7 @@ public
         renderEncoder.setFragmentSamplerState(samplerState, index: 0)
         
         renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6, instanceCount: MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE)
-        */
+
         renderEncoder.endEncoding()
  
     }
@@ -442,9 +444,7 @@ public
     }
     
     func Generate_HeightBuffer() {
-        var p: Int = 0
-        var limit = CHUNK_SIZE * CHUNK_SIZE * MESH_SIZE * MESH_SIZE + CHUNK_SIZE * MESH_SIZE * 2 + 1
-        var len = CHUNK_SIZE * MESH_SIZE + 1
+        let limit = CHUNK_SIZE * CHUNK_SIZE * MESH_SIZE * MESH_SIZE + CHUNK_SIZE * MESH_SIZE * 2 + 1
         var data = [Float]()
         for i in 0 ..< CHUNK_SIZE {
             for j in 0 ..< MESH_SIZE {
