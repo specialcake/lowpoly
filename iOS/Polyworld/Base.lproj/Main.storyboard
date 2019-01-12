@@ -46,6 +46,11 @@
                                 <state key="normal" image="right_normal.png"/>
                                 <state key="highlighted" image="right_highlight.png"/>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4Oi-z9-eUW">
+                                <rect key="frame" x="310" y="287" width="70" height="68"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Jump"/>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -61,6 +66,7 @@
                         <outlet property="backwardButton" destination="8Fj-z6-2c0" id="IlI-Sq-Kqo"/>
                         <outlet property="forwardButton" destination="fXe-eg-Jon" id="quR-HL-9ei"/>
                         <outlet property="gameView" destination="f7Q-If-6RM" id="MTP-qK-kX9"/>
+                        <outlet property="jumpButton" destination="4Oi-z9-eUW" id="AAb-eH-FO1"/>
                         <outlet property="leftButton" destination="FTc-pg-Evq" id="iXa-X6-5xy"/>
                         <outlet property="rightButton" destination="c2z-O4-hxX" id="HhU-MV-WcY"/>
                         <segue destination="Why-uw-92x" kind="show" identifier="ARmode" id="65F-wM-cMq"/>
@@ -68,7 +74,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="880" y="822"/>
+            <point key="canvasLocation" x="879.31034482758628" y="821.60000000000002"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="ABk-Yz-k3R">

@@ -45,6 +45,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var backwardButton: UIButton!
     @IBOutlet weak var leftButton: UIButton!
     @IBOutlet weak var rightButton: UIButton!
+    @IBOutlet weak var jumpButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -236,7 +237,11 @@ class ViewController: UIViewController {
         } else {
             ResourceManager.keys[BallMovement.right.rawValue] = false
         }
-
+        if jumpButton.isHighlighted {
+            ResourceManager.keys[BallMovement.jump.rawValue] = true
+        } else {
+            ResourceManager.keys[BallMovement.jump.rawValue] = false
+        }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
