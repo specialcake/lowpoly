@@ -65,7 +65,7 @@ void Polyball::Render(glm::mat4 view, glm::mat4 PVMatrix, glm::mat4 lightSpaceMa
 }
 glm::vec3 Polyball::CollisionObject(Scene *scene) {
     glm::vec3 delta_pos = glm::vec3(0.0f);
-    for(int typenum = 0; typenum < 1; typenum++){
+    for(int typenum = 0; typenum < 2; typenum++){
         for(int i = 0; i < scene->Treeplace[typenum].size(); i++){
             if(typenum <= 1){
                 Trunk tk = scene->Treeplace[typenum][i].trunk;
@@ -85,7 +85,7 @@ glm::vec3 Polyball::CollisionObject(Scene *scene) {
                 }
             }
             else{
-
+                
             }
         }
     }
