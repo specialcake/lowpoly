@@ -14,6 +14,12 @@
 #include "mesh.h"
 #include <string>
 #include <vector>
+#include <map>
+
+struct Trunk{
+    glm::vec3 bottom;
+    GLfloat height, Radius;
+};
 
 unsigned int TextureFromFile(const char *path, const std::string &directory);
 
@@ -21,6 +27,7 @@ class Model{
 public:
     std::vector<Texture> textures_loaded;
     std::vector<Mesh> meshes;
+    std::map<std::string, Mesh*> group;
     std::string directory;
     GLfloat minx, maxx, miny, maxy, minz, maxz;
     GLfloat cx, cy, cz, Gx, Gy, Gz, total_count;
@@ -30,6 +37,7 @@ public:
     Model(const char *path, bool center);
     void SetBias(GLfloat dx, GLfloat dy, GLfloat dz);
     glm::vec3 BiasVector();
+    Trunk GetTrunk(std::string name);
     void Draw(Shader shader);
 private:
     void loadModel(std::string path);

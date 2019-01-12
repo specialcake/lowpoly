@@ -30,6 +30,7 @@ public:
     std::vector<unsigned int> indices;
     std::vector<Texture> textures;
     glm::vec4 color;
+    Mesh(){}
     Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures, glm::vec4 colors);
     void Draw(Shader shader);
     void setupMesh();
