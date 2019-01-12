@@ -22,7 +22,7 @@ class CameraController {
     var pitch: Float = 0
     
     var sensitivity: Float = 0.2
-    var velocity: Float = 0.01
+    var velocity: Float = 0.08
     let minPitch: Float = -90
     let maxPitch: Float = 90
 

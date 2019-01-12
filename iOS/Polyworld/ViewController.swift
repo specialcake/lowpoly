@@ -38,6 +38,7 @@ class ViewController: UIViewController {
     
     //刷新时间间隔
     let timeInterval: TimeInterval = 0.01
+    var isFollowed: Bool = true
     
     // UI
     @IBOutlet weak var gameView: UIView!
@@ -46,6 +47,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var leftButton: UIButton!
     @IBOutlet weak var rightButton: UIButton!
     @IBOutlet weak var jumpButton: UIButton!
+    @IBOutlet weak var followButton: UIButton!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -156,7 +159,9 @@ class ViewController: UIViewController {
         polyball.UpdateSpeed(deltaTime: Float(timeSinceLastUpdate))
         polyball.UpdatePosition(deltaTime: Float(timeSinceLastUpdate), scene: scene)
         
-        ResourceManager.camera.position = polyball.GenCameraPosition()
+        if isFollowed {
+            ResourceManager.camera.position = polyball.GenCameraPosition()
+        }
         
         autoreleasepool {
             self.render()
@@ -214,34 +219,78 @@ class ViewController: UIViewController {
     func handleButtonAction() {
         
         if forwardButton.isHighlighted {
-            ResourceManager.keys[BallMovement.forward.rawValue] = true
-            ResourceManager.camera.move(.forward)
+            if isFollowed {
+                ResourceManager.keys[BallMovement.forward.rawValue] = true
+            }
+            else {
+                ResourceManager.camera.move(.forward)
+            }
         } else {
             ResourceManager.keys[BallMovement.forward.rawValue] = false
         }
         if backwardButton.isHighlighted {
-            ResourceManager.keys[BallMovement.backward.rawValue] = true
-            ResourceManager.camera.move(.backward)
+            if isFollowed {
+                ResourceManager.keys[BallMovement.backward.rawValue] = true
+            }
+            else {
+                ResourceManager.camera.move(.backward)
+            }
         } else {
             ResourceManager.keys[BallMovement.backward.rawValue] = false
         }
         if leftButton.isHighlighted {
-            ResourceManager.keys[BallMovement.left.rawValue] = true
-            ResourceManager.camera.move(.left)
+            if isFollowed {
+                ResourceManager.keys[BallMovement.left.rawValue] = true
+            }
+            else {
+                ResourceManager.camera.move(.left)
+            }
         } else {
             ResourceManager.keys[BallMovement.left.rawValue] = false
         }
         if rightButton.isHighlighted {
-            ResourceManager.keys[BallMovement.right.rawValue] = true
-            ResourceManager.camera.move(.right)
+            if isFollowed {
+                ResourceManager.keys[BallMovement.right.rawValue] = true
+            }
+            else {
+                ResourceManager.camera.move(.right)
+            }
         } else {
             ResourceManager.keys[BallMovement.right.rawValue] = false
         }
-        if jumpButton.isHighlighted {
+        if jumpButton.isHighlighted && isFollowed {
             ResourceManager.keys[BallMovement.jump.rawValue] = true
         } else {
             ResourceManager.keys[BallMovement.jump.rawValue] = false
         }
+    }
+    
+    @IBAction func followButtonTapped(_ sender: UIButton) {
+        isFollowed = !isFollowed
+        if isFollowed {
+            followButton.setImage(UIImage(named: "跟随.png"), for: .normal)
+            followButton.setImage(UIImage(named: "跟随_按下.png"), for: .highlighted)
+        } else {
+            followButton.setImage(UIImage(named: "不跟随.png"), for: .normal)
+            followButton.setImage(UIImage(named: "不跟随_按下.png"), for: .highlighted)
+        }
+    }
+    
+    @IBAction func screenshotButtonTapped(_ sender: Any) {
+        guard let window = UIApplication.shared.keyWindow else { return }
+        
+        // 用下面这行而不是UIGraphicsBeginImageContext()，因为前者支持Retina
+        UIGraphicsBeginImageContextWithOptions(window.bounds.size, false, 0.0)
+        
+        window.layer.render(in: UIGraphicsGetCurrentContext()!)
+        
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        
+        UIGraphicsEndImageContext()
+        
+        let activityController = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+        activityController.popoverPresentationController?.sourceView = self.view
+        present(activityController, animated: true, completion: nil)
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
