@@ -166,7 +166,7 @@ void Game::Update(GLfloat dt) {
     static GLfloat accumulate_time = 0.0f;
     accumulate_time += dt;
 
-    scene->UpdateChunks();
+    scene->UpdateChunks(polyball->Position);
 
 //    scene->generate_cloud(accumulate_time);
 //    scene->CloudMap = scene->Generate_CloudMap();
@@ -252,8 +252,8 @@ void Game::Render() {
 //        startplatform->Render(PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
 
         scene->draw(view, PVMatrix, lightSpaceMatrix, shadowmap->DepthMap, shadowmap->BluredShadow);
-//        for(int i = 0; i < 3; i++)
-//            scene->plant[i]->Draw(view, PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
+        for(int i = 0; i < 3; i++)
+            scene->plant[i]->Draw(view, PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
 
         glDepthFunc(GL_LEQUAL);
         ResourceManager::skybox->shader.use();
@@ -279,7 +279,7 @@ void Game::Render() {
 
         polyball->Render(view, PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
 
-        littlecube->DrawCube(PVMatrix, glm::vec3(0.0f, 0.2f, 3.0f), glm::vec3(0.01f));
+        littlecube->DrawCube(PVMatrix, glm::vec3(0.0f, 0.2f, 3.0f), glm::vec3(0.05f));
 
 //        SceneTexture->EndRender();
 //

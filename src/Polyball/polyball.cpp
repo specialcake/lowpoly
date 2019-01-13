@@ -139,7 +139,7 @@ void Polyball::CollisionCheck(Scene* scene) {
             if(meshy < 0) chunky = cy - 1, meshy += MESH_SIZE;
             else if(meshy >= MESH_SIZE) chunky = cy + 1, meshy -= MESH_SIZE;
             else chunky = cy;
-            Maycol[i + 1][j + 1] = scene->chunk_offset[chunkx][chunky] + scene->mesh_offset[meshx][meshy];
+            Maycol[i + 1][j + 1] = scene->offset + scene->chunk_offset[chunkx][chunky] + scene->mesh_offset[meshx][meshy];
             Maycol[i + 1][j + 1].y = scene->chunk[chunkx][chunky]->height[meshx][meshy];
             if(Maycol[i + 1][j + 1].y < 0.1f) Maycol[i + 1][j + 1].y = -0.5f;
         }
@@ -171,6 +171,7 @@ void Polyball::CollisionCheck(Scene* scene) {
 
     }
     delta_pos += CollisionObject(scene);
+    delta_pos += CollisionFinish();
     if(Position.y < 0.1){
         collision.exist = true;
         collision.Normal += glm::vec3(0.0f, 1.0f, 0.0f);
@@ -179,6 +180,32 @@ void Polyball::CollisionCheck(Scene* scene) {
     Position += delta_pos;
     if(collision.exist)
         collision.Normal = glm::normalize(collision.Normal);
+}
+glm::vec3 Polyball::CollisionFinish() {
+    glm::vec3 delta_pos = glm::vec3(0.0f);
+    static glm::vec3 finish_center = glm::vec3(0.0f, 0.2f, 3.0f);
+    static glm::vec3 len = glm::vec3(0.5f, 0.2f, 0.0f);
+    static glm::vec3 a = finish_center + glm::vec3( len.x,  len.y, len.z);
+    static glm::vec3 b = finish_center + glm::vec3( len.x, -len.y, len.z);
+    static glm::vec3 c = finish_center + glm::vec3(-len.x,  len.y, len.z);
+    static glm::vec3 d = finish_center + glm::vec3(-len.x, -len.y, len.z);
+    GLfloat dist1 = Tools::distance(Position, a, b, c);
+    GLfloat dist2 = Tools::distance(Position, b, c, d);
+    if(dist1 <= Radius){
+        collision.exist = true;
+        glm::vec3 normal = glm::normalize(glm::cross(c - a, b - a));
+        if(Position.z < finish_center.z) normal = -normal;
+        collision.Normal += normal;
+        delta_pos += (Radius - dist1) * normal;
+    }
+    if(dist2 <= Radius){
+        collision.exist = true;
+        glm::vec3 normal = glm::normalize(glm::cross(b - d, c - d));
+        if(Position.z < finish_center.z) normal = -normal;
+        collision.Normal += normal;
+        delta_pos += (Radius - dist1) * normal;
+    }
+    return delta_pos;
 }
 void Polyball::GetChunkMeshID(Scene* scene, GLint &cx, GLint &cz, GLint &mx, GLint &mz){
     glm::vec3 position = Position -
@@ -203,7 +230,7 @@ void Polyball::GetChunkMeshID(Scene* scene, GLint &cx, GLint &cz, GLint &mx, GLi
         mz = static_cast<GLint>(position.z / MESH_LENGTH + 0.5f) + MESH_RADIUS;
     else
         mz = static_cast<GLint>(position.z / MESH_LENGTH - 0.5f) + MESH_RADIUS;
-
+    std::cout << cx << ' ' << cz << ' ' << mx << ' ' << mz << std::endl;
 }
 
 //UpdatePosition => Process Speed

@@ -244,11 +244,11 @@ void Scene::Generate_ShadowMap(const glm::mat4& lightSpaceMatrix, const glm::mat
     glBindVertexArray(0);
 }
 
-void Scene::UpdateChunks() {
+void Scene::UpdateChunks(glm::vec3 Position) {
     this->debugflag = false;
     Direction dir = ORIGIN_POS;
     GLint Chunkx, Chunkz, Meshx, Meshz;
-    GetLocationbyCamera(Chunkx, Chunkz, Meshx, Meshz);
+    GetLocationbyCamera(Position, Chunkx, Chunkz, Meshx, Meshz);
 //    printf("(%d, %d) -> (%d, %d)\n", Chunkx, Chunkz, Meshx, Meshz);
     if(Chunkx == cur_Chunk->pos_x && Chunkz == cur_Chunk->pos_z){
         cur_Submesh = cur_Chunk->submesh[Meshx][Meshz];
@@ -344,11 +344,11 @@ void Scene::UpdateNeighbor(GLint x, GLint y) {
     else chunk[x][y]->zPos = nullptr;
 }
 
-void Scene::GetLocationbyCamera(GLint &cx, GLint &cz, GLint &mx, GLint &mz) {
+void Scene::GetLocationbyCamera(glm::vec3 Position, GLint &cx, GLint &cz, GLint &mx, GLint &mz) {
     glm::vec3 position = ResourceManager::camera.Position -
                          chunk[CHUNK_RADIUS][CHUNK_RADIUS]->submesh[MESH_RADIUS][MESH_RADIUS]->get_Position() -
                          glm::vec3(MESH_LENGTH / 2.0f, 0.0f, MESH_LENGTH / 2.0f);
-    position = glm::vec3(0.0f) -
+    position = Position -
                chunk[CHUNK_RADIUS][CHUNK_RADIUS]->submesh[MESH_RADIUS][MESH_RADIUS]->get_Position() -
                glm::vec3(MESH_LENGTH / 2.0f, 0.0f, MESH_LENGTH / 2.0f);
 //    printf("camera position = ");

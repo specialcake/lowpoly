@@ -52,9 +52,9 @@ public:
     void generate_scene();
     void generate_cloud(GLfloat dt);
 
-    void UpdateChunks();
+    void UpdateChunks(glm::vec3 Position);
     void UpdateNeighbor(GLint x, GLint y);
-    void GetLocationbyCamera(GLint& cx, GLint& cz, GLint& ms, GLint& mz);
+    void GetLocationbyCamera(glm::vec3 Position, GLint& cx, GLint& cz, GLint& ms, GLint& mz);
     void UpdateTreeplace();
 
     Texture2D Generate_HeightMap();
