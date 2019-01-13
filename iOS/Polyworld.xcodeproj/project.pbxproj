@@ -11,6 +11,7 @@
 		901A7A7D21E7540100E8FD18 /* Explode.scnp in Resources */ = {isa = PBXBuildFile; fileRef = 901A7A7C21E7540100E8FD18 /* Explode.scnp */; };
 		901A7A8321E754CE00E8FD18 /* CircleParticle.png in Resources */ = {isa = PBXBuildFile; fileRef = 901A7A8221E754CE00E8FD18 /* CircleParticle.png */; };
 		901F2BA921EB542500D5E44C /* GaussblurShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 901F2BA821EB542500D5E44C /* GaussblurShader.metal */; };
+		901F2F7B21EBA4D600D5E44C /* PolyballShadowShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 901F2F7A21EBA4D600D5E44C /* PolyballShadowShader.metal */; };
 		905BA9E521E72ACF00E64755 /* ARpolyball.scn in Resources */ = {isa = PBXBuildFile; fileRef = 905BA9E421E729B200E64755 /* ARpolyball.scn */; };
 		905BA9E721E732E800E64755 /* moon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 905BA9E621E732E800E64755 /* moon.jpg */; };
 		905BA9E921E7357D00E64755 /* mars.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 905BA9E821E7357D00E64755 /* mars.jpg */; };
@@ -118,6 +119,7 @@
 		901A7A7C21E7540100E8FD18 /* Explode.scnp */ = {isa = PBXFileReference; lastKnownFileType = file.scp; path = Explode.scnp; sourceTree = "<group>"; };
 		901A7A8221E754CE00E8FD18 /* CircleParticle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CircleParticle.png; sourceTree = "<group>"; };
 		901F2BA821EB542500D5E44C /* GaussblurShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = GaussblurShader.metal; sourceTree = "<group>"; };
+		901F2F7A21EBA4D600D5E44C /* PolyballShadowShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = PolyballShadowShader.metal; sourceTree = "<group>"; };
 		905BA9E421E729B200E64755 /* ARpolyball.scn */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = ARpolyball.scn; sourceTree = "<group>"; };
 		905BA9E621E732E800E64755 /* moon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = moon.jpg; sourceTree = "<group>"; };
 		905BA9E821E7357D00E64755 /* mars.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = mars.jpg; sourceTree = "<group>"; };
@@ -245,6 +247,7 @@
 				9075861221E88C9B00375589 /* ShadowmapShader.metal */,
 				901F2BA821EB542500D5E44C /* GaussblurShader.metal */,
 				907589BF21E8ED9A00375589 /* PolyballShader.metal */,
+				901F2F7A21EBA4D600D5E44C /* PolyballShadowShader.metal */,
 			);
 			path = Shader;
 			sourceTree = "<group>";
@@ -677,6 +680,7 @@
 				9068D66D21DD438200BAFA46 /* Skymap.swift in Sources */,
 				90B4C1AD21CA786E008ECBB3 /* SceneShader.metal in Sources */,
 				9060E66E21DBD7A3004BFF6F /* Water.swift in Sources */,
+				901F2F7B21EBA4D600D5E44C /* PolyballShadowShader.metal in Sources */,
 				90B4BE3021CA57F0008ECBB3 /* CameraController.swift in Sources */,
 				90B4BE1C21CA572A008ECBB3 /* AppDelegate.swift in Sources */,
 				9060E66C21DBD5D5004BFF6F /* WaterShader.metal in Sources */,

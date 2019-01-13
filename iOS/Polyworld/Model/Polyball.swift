@@ -26,6 +26,7 @@ class Polyball: NSObject {
     let device: MTLDevice
     let commandQueue: MTLCommandQueue
     let renderPipeline: MTLRenderPipelineState
+    let shadowPipeline: MTLRenderPipelineState
     let depthStencilState: MTLDepthStencilState
     let vertexDescriptor: MDLVertexDescriptor
     
@@ -67,7 +68,8 @@ class Polyball: NSObject {
         self.device = device
         commandQueue = device.makeCommandQueue()!
         vertexDescriptor = Polyball.buildVertexDescriptor(device: device)
-        renderPipeline = Polyball.buildPipeline(device: device, vertexDescriptor: vertexDescriptor)
+        renderPipeline = Polyball.buildPipeline(device: device, vertexDescriptor: vertexDescriptor, vertexFunction: "polyballVertex", fragmentFunction: "polyballFragment")
+        shadowPipeline = Polyball.buildPipeline(device: device, vertexDescriptor: vertexDescriptor, vertexFunction: "polyballShadowVertex", fragmentFunction: "polyballShadowFragment")
         depthStencilState = Polyball.buildDepthStencilState(device: device)
         textureLoader = MTKTextureLoader(device: device)
         (defaultTexture, defaultNormalMap) = Polyball.buildDefaultTextures(device: device)
@@ -102,13 +104,13 @@ class Polyball: NSObject {
         return vertexDescriptor
     }
     
-    static func buildPipeline(device: MTLDevice, vertexDescriptor: MDLVertexDescriptor) -> MTLRenderPipelineState {
+    static func buildPipeline(device: MTLDevice, vertexDescriptor: MDLVertexDescriptor, vertexFunction: String, fragmentFunction: String) -> MTLRenderPipelineState {
         guard let library = device.makeDefaultLibrary() else {
             fatalError("Could not load default library from main bundle")
         }
         
-        let vertexFunction = library.makeFunction(name: "polyballVertex")
-        let fragmentFunction = library.makeFunction(name: "polyballFragment")
+        let vertexFunction = library.makeFunction(name: vertexFunction)
+        let fragmentFunction = library.makeFunction(name: fragmentFunction)
         
         let pipelineDescriptor = MTLRenderPipelineDescriptor()
         pipelineDescriptor.vertexFunction = vertexFunction
@@ -190,7 +192,7 @@ class Polyball: NSObject {
         }
     }
     
-    func updateScene(drawable: CAMetalDrawable) {
+    func updateScene() {
         //time += 1 / Float(view.preferredFramesPerSecond)
         modelMatrix = float4x4(translationBy: Position) * float4x4(rotate_state) * float4x4(scaleBy: 0.5)
         projectionMatrix = ResourceManager.projectionMatrix
@@ -209,7 +211,7 @@ class Polyball: NSObject {
     }
     
     func draw(drawable: CAMetalDrawable) {
-        updateScene(drawable: drawable)
+        updateScene()
         
         let white = MTLClearColor(red: 1, green: 1, blue: 1, alpha: 1)
         let renderPassDescriptor = MTLRenderPassDescriptor()
@@ -230,6 +232,32 @@ class Polyball: NSObject {
             draw(node, in: commandEncoder)
         }
         
+        commandEncoder.endEncoding()
+    }
+    
+    func drawShadowmap(colorAttachment: MTLTexture, shadowmapCommandBuffer: MTLCommandBuffer, offset: float3) {
+        modelMatrix = float4x4(translationBy: Position) * float4x4(rotate_state) * float4x4(scaleBy: 0.9)
+        projectionMatrix = ResourceManager.lightSpaceMatrix
+        viewMatrix = matrix_identity_float4x4
+
+        let white = MTLClearColor(red: 1, green: 1, blue: 1, alpha: 1)
+        let renderPassDescriptor = MTLRenderPassDescriptor()
+        
+        renderPassDescriptor.colorAttachments[0].texture = colorAttachment
+        renderPassDescriptor.colorAttachments[0].loadAction = .clear
+        renderPassDescriptor.colorAttachments[0].clearColor = white
+        renderPassDescriptor.colorAttachments[0].storeAction = .store
+        
+        renderPassDescriptor.depthAttachment.texture = ResourceManager.shadowmapDepthTexture
+        renderPassDescriptor.depthAttachment.loadAction = .load
+        renderPassDescriptor.depthAttachment.storeAction = .store
+        
+        let commandEncoder = shadowmapCommandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
+        commandEncoder.setRenderPipelineState(shadowPipeline)
+        commandEncoder.setDepthStencilState(depthStencilState)
+        for node in nodes {
+            draw(node, in: commandEncoder)
+        }
         commandEncoder.endEncoding()
     }
     

@@ -45,6 +45,7 @@ class ResourceManager {
     
     // colorAttachment
     static var textureDescriptor: MTLTextureDescriptor!
+    static var textureDescriptor2: MTLTextureDescriptor!
     static var textureLoader: MTKTextureLoader! = nil
     
     static var camera: CameraController!
@@ -52,4 +53,5 @@ class ResourceManager {
     static var keys: [Bool] = [Bool](repeating: false, count: 5)
     static var polyball: Polyball!
     static var dir: Direction!
+    static var lightSpaceMatrix: float4x4!
 }

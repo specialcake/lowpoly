@@ -49,7 +49,7 @@ public
         self.offset = initpos
         self.water = Water()
         self.timeInterval = 0
-        self.colorAttachment = ResourceManager.device.makeTexture(descriptor: ResourceManager.textureDescriptor)!
+        self.colorAttachment = ResourceManager.device.makeTexture(descriptor: ResourceManager.textureDescriptor2)!
         self.samplerState = defaultSampler(device: ResourceManager.device)
         
         for _ in 0 ..< 3 {
@@ -537,6 +537,8 @@ public
         
         renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6, instanceCount: MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE)
         renderEncoder.endEncoding()
+        
+        ResourceManager.polyball.drawShadowmap(colorAttachment: colorAttachment, shadowmapCommandBuffer: shadowmapCommandBuffer, offset: self.offset)
         
         shadowmapCommandBuffer.commit()
     }

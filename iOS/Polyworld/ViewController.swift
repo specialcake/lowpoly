@@ -24,8 +24,6 @@ class ViewController: UIViewController {
 
     var trackedTouch: UITouch?
     
-    var lightSpaceMatrix: float4x4!
-    
     var scene: Scene!
     var skymap: Skymap!
     var skybox: Skybox!
@@ -72,13 +70,16 @@ class ViewController: UIViewController {
         ResourceManager.depthBufferDescriptor.usage = [.shaderRead, .shaderWrite, .renderTarget]
         ResourceManager.depthTexture = ResourceManager.device.makeTexture(descriptor: ResourceManager.depthBufferDescriptor)
         
-        ResourceManager.shadowmapDepthBufferDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: textureWidth / 2, height: textureHeight / 2, mipmapped: false)
+        ResourceManager.shadowmapDepthBufferDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: Int(Double(textureWidth) * 1.5), height: Int(Double(textureHeight) * 1.5), mipmapped: false)
         ResourceManager.shadowmapDepthBufferDescriptor.usage = [.shaderRead, .shaderWrite, .renderTarget]
         ResourceManager.shadowmapDepthTexture = ResourceManager.device.makeTexture(descriptor: ResourceManager.shadowmapDepthBufferDescriptor)
         
-        ResourceManager.shadowmapBlureddTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: textureWidth / 2, height: textureHeight / 2, mipmapped: false)
+        ResourceManager.shadowmapBlureddTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: Int(Double(textureWidth) * 1.5), height: Int(Double(textureHeight) * 1.5), mipmapped: false)
         ResourceManager.shadowmapBlureddTextureDescriptor.usage = [.shaderRead, .shaderWrite, .renderTarget]
         ResourceManager.shadowmapBluredTexture = ResourceManager.device.makeTexture(descriptor: ResourceManager.shadowmapBlureddTextureDescriptor)
+        
+        ResourceManager.textureDescriptor2 = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: Int(Double(textureWidth) * 1.5), height: Int(Double(textureHeight) * 1.5), mipmapped: false)
+        ResourceManager.textureDescriptor2.usage = [.shaderRead, .shaderWrite, .renderTarget]
         
         ResourceManager.textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: textureWidth, height: textureHeight, mipmapped: false)
         ResourceManager.textureDescriptor.usage = [.shaderRead, .shaderWrite, .renderTarget]
@@ -154,8 +155,8 @@ class ViewController: UIViewController {
             first = false
         }
         
-        lightSpaceMatrix = shadowmap.getlightSpaceMatrix(scene: scene)
-        scene.Generate_ShadowMap(lightSpaceMatrix: lightSpaceMatrix)
+        ResourceManager.lightSpaceMatrix = shadowmap.getlightSpaceMatrix(scene: scene)
+        scene.Generate_ShadowMap(lightSpaceMatrix: ResourceManager.lightSpaceMatrix)
         scene.Gaussblur()
         
         handleButtonAction()
@@ -182,7 +183,7 @@ class ViewController: UIViewController {
 
         skybox.draw(drawable: drawable, skymap: skymap, viewMatrix: ResourceManager.camera.viewMatrix, projectionMatrix: ResourceManager.projectionMatrix)
         sun.draw(drawable: drawable)
-        scene.draw(drawable: drawable, viewMatrix: ResourceManager.camera.viewMatrix, projectionMatrix: ResourceManager.projectionMatrix, lightSpaceMatrix: lightSpaceMatrix, shadowmap: ResourceManager.shadowmapBluredTexture)
+        scene.draw(drawable: drawable, viewMatrix: ResourceManager.camera.viewMatrix, projectionMatrix: ResourceManager.projectionMatrix, lightSpaceMatrix: ResourceManager.lightSpaceMatrix, shadowmap: ResourceManager.shadowmapBluredTexture)
         ResourceManager.polyball.draw(drawable: drawable)
         
         ResourceManager.commandBuffer.present(drawable)
