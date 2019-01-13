@@ -24,8 +24,7 @@ vec3 CalcParallelLight(ParallelLight light, vec3 normal, vec3 viewDir, float vis
 float ShadowCalculation(vec4 fragPosLightSpace);
 
 void main() {
-    float visibility = ShadowCalculation(fs_in.FragPosLightSpace);
-    visibility = min(1.0f, visibility * 2.0f);
+    float visibility = 1.0f;
 
     vec3 viewDir = normalize(viewPos - fs_in.FragPos);
     vec3 factory = CalcParallelLight(dirLight, fs_in.Normal, viewDir, visibility);
@@ -34,7 +33,7 @@ void main() {
 
 	FragColor = vec4(aFragColor, 1.0);
 
-	BrightColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	BrightColor = vec4(texture_diffuse1_color.rgb * 2.0f, 1.0f);
 }
 
 float ShadowCalculation(vec4 fragPosLightSpace){

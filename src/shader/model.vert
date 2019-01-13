@@ -8,12 +8,14 @@ out VS_OUT{
     vec4 FragPosLightSpace;
 }vs_out;
 
+uniform vec3 offset;
 uniform mat4 model;
 uniform mat4 PVMatrix;
 uniform mat4 lightSpaceMatrix;
 
 void main() {
     vs_out.FragPos = vec3(model * vec4(aPos, 1.0f));
+    vs_out.FragPos += offset;
 
     gl_Position = PVMatrix * vec4(vs_out.FragPos, 1.0f);
 

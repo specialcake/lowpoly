@@ -279,7 +279,7 @@ void Game::Render() {
 
         polyball->Render(view, PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
 
-//        littlecube->DrawCube(PVMatrix, glm::vec3(0.1202f, 0.3625f, -0.1202 + 2.0f), glm::vec3(0.01f));
+        littlecube->DrawCube(PVMatrix, glm::vec3(0.0f, 0.2f, 3.0f), glm::vec3(0.01f));
 
 //        SceneTexture->EndRender();
 //

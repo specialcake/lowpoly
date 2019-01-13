@@ -18,9 +18,10 @@ public:
     int PartNumber;
     Model* modelptr;
     Shader shader;
-    std::string groupName[7];
+    glm::vec3 offset;
+    glm::vec3 center[110];
 
-    FinishLine(Model* model, Shader shader);
+    FinishLine(Model* model, Shader shader, glm::vec3 location = glm::vec3(0.0f, 0.0f, 3.0f));
     ~FinishLine();
     void Render(glm::mat4 PVMatrix, glm::mat4 lightSpaceMatrix, Texture2D BluredShadow);
 };

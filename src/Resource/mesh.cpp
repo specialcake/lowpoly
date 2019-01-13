@@ -40,7 +40,14 @@ void Mesh::setupMesh() {
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
-
+glm::vec3 Mesh::GetCenter() {
+    int amount = vertices.size();
+    glm::vec3 ret = glm::vec3(0.0f);
+    for(int i = 0; i < amount; i++)
+        ret += vertices[i].Position;
+    ret /= amount;
+    return ret;
+}
 void Mesh::Draw(Shader shader) {
     unsigned int diffuseNumber = 1;
     unsigned int specularNumber = 1;
