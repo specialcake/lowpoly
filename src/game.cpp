@@ -10,6 +10,7 @@
 #include "Postprocess/Bloom.h"
 #include "Polyball/polyball.h"
 #include "Polyball/startplatform.h"
+#include "Polyball/finishline.h"
 
 Scene* scene;
 SpriteRenderer* littlewindow;
@@ -19,6 +20,7 @@ Skymap* skymap;
 PostProcessor* SceneTexture;
 Polyball* polyball;
 StartPlatform* startplatform;
+FinishLine* finishline;
 //SSR* SSReflect;
 //Terrian* plane;
 
@@ -34,8 +36,8 @@ void Game::Init() {
     ResourceManager::LoadShader("../src/shader/sprite.vert", "../src/shader/sprite.frag", NULL, "sprite");
     ResourceManager::LoadShader("../src/shader/cuberender.vert", "../src/shader/cuberender.frag", NULL, "cuberender");
     ResourceManager::LoadShader("../src/shader/instancescene.vert", "../src/shader/instancescene.frag", "../src/shader/instancescene.geom", "instancescene");
-    ResourceManager::LoadShader("../src/shader/ssrscene.vert", "../src/shader/ssrscene.frag", "../src/shader/ssrscene.geom", "ssrscene");
-    ResourceManager::LoadShader("../src/shader/SSR.vert", "../src/shader/SSR.frag", NULL, "SSR");
+//    ResourceManager::LoadShader("../src/shader/ssrscene.vert", "../src/shader/ssrscene.frag", "../src/shader/ssrscene.geom", "ssrscene");
+//    ResourceManager::LoadShader("../src/shader/SSR.vert", "../src/shader/SSR.frag", NULL, "SSR");
     ResourceManager::LoadShader("../src/shader/instancemodel.vert", "../src/shader/instancemodel.frag", NULL, "instancemodel");
     ResourceManager::LoadShader("../src/shader/water.vert", "../src/shader/water.frag", "../src/shader/water.geom", "water");
     ResourceManager::LoadShader("../src/shader/shadowmap.vert", "../src/shader/shadowmap.frag", "../src/shader/shadowmap.geom", "shadowmap");
@@ -56,6 +58,9 @@ void Game::Init() {
     ResourceManager::GetShader("gaussblur").use();
     ResourceManager::GetShader("gaussblur").setInt("image", 0);
 
+    ResourceManager::GetShader("model").use();
+    ResourceManager::GetShader("model").setInt("BlurShadow", 0);
+
     ResourceManager::GetShader("bloom").use();
     ResourceManager::GetShader("bloom").setInt("scene", 0);
     ResourceManager::GetShader("bloom").setInt("bloomBlur", 1);
@@ -68,15 +73,15 @@ void Game::Init() {
     ResourceManager::GetShader("instancescene").setInt("DepthMap", 4);
     ResourceManager::GetShader("instancescene").setInt("BlurShadow", 5);
 
-    ResourceManager::GetShader("ssrscene").use();
-    ResourceManager::GetShader("ssrscene").setInt("HeightMap", 0);
-    ResourceManager::GetShader("ssrscene").setInt("BlurShadow", 1);
+//    ResourceManager::GetShader("ssrscene").use();
+//    ResourceManager::GetShader("ssrscene").setInt("HeightMap", 0);
+//    ResourceManager::GetShader("ssrscene").setInt("BlurShadow", 1);
 
-    ResourceManager::GetShader("SSR").use();
-    ResourceManager::GetShader("SSR").setInt("DepthMap", 0);
-    ResourceManager::GetShader("SSR").setInt("NormalMap", 1);
-    ResourceManager::GetShader("SSR").setInt("ColorMap", 2);
-    ResourceManager::GetShader("SSR").setInt("Reflectable", 3);
+//    ResourceManager::GetShader("SSR").use();
+//    ResourceManager::GetShader("SSR").setInt("DepthMap", 0);
+//    ResourceManager::GetShader("SSR").setInt("NormalMap", 1);
+//    ResourceManager::GetShader("SSR").setInt("ColorMap", 2);
+//    ResourceManager::GetShader("SSR").setInt("Reflectable", 3);
 
     ResourceManager::GetShader("instancemodel").use();
     ResourceManager::GetShader("instancemodel").setInt("BlurShadow", 0);
@@ -109,6 +114,7 @@ void Game::Init() {
 //    ResourceManager::LoadModel("../resource/model/rock/bigrock.obj", "bigrock");
     ResourceManager::LoadModel("../resource/model/rock/stone2.obj", "smallrock", false);
     ResourceManager::LoadModel("../resource/model/startplatform.obj", "startplatform");
+    ResourceManager::LoadModel("../resource/model/finishline.obj", "finishline");
     ResourceManager::GetModel("pine")->SetBias(0.0f, -0.9f, 0.0f);
 //    ResourceManager::GetModel("smallrock")->SetBias(0.0f, -0.1f, 0.0f);
 
@@ -145,6 +151,8 @@ void Game::Init() {
     polyball = new Polyball(ResourceManager::GetShader("polyball"));
     startplatform = new StartPlatform(ResourceManager::GetModel("startplatform"),
                                       ResourceManager::GetShader("startplatform"));
+    finishline = new FinishLine(ResourceManager::GetModel("finishline"),
+                                ResourceManager::GetShader("model"));
 
 //    SSReflect = new SSR(ResourceManager::GetShader("ssrscene"),
 //                        ResourceManager::GetShader("ssrscene"),
@@ -228,22 +236,24 @@ void Game::Render() {
         glm::mat4 PVMatrix = projection * view;
         glm::mat4 lightSpaceMatrix = shadowmap->GetlightSpaceMatrix(scene);
 
-//        Model* test = ResourceManager::GetModel("startplatform");
+//        Model* test = ResourceManager::GetModel("finishline");
 //        Shader modelshader = ResourceManager::GetShader("model");
 //        modelshader.use();
 //        glm::mat4 model = glm::mat4(1.0f);
-//        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 2.0f));
-////        model = glm::scale(model, glm::vec3(1.0));
+////        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 2.0f));
+//        model = glm::scale(model, glm::vec3(0.3));
 //        modelshader.setMat4("model", model);
 //        modelshader.setMat4("PVMatrix", PVMatrix);
 //        test->Draw(modelshader);
-        startplatform->Render(PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
+        finishline->Render(PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
 
 //        SceneTexture->BeginRender();
 
+//        startplatform->Render(PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
+
         scene->draw(view, PVMatrix, lightSpaceMatrix, shadowmap->DepthMap, shadowmap->BluredShadow);
-        for(int i = 0; i < 3; i++)
-            scene->plant[i]->Draw(view, PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
+//        for(int i = 0; i < 3; i++)
+//            scene->plant[i]->Draw(view, PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
 
         glDepthFunc(GL_LEQUAL);
         ResourceManager::skybox->shader.use();

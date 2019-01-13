@@ -32,10 +32,11 @@ Model::Model(const char *path, bool center) {
         meshes[i].setupMesh();
     }
 
-//    printf("Gx: %f, Gy: %f, Gz: %f\n", Gx, Gy, Gz);
-//    printf("cx: %f, cy: %f, cz: %f\n", cx, cy, cz);
-//    printf("min x: %f, y: %f, z: %f\n", minx ,miny, minz);
-//    printf("max x: %f, y: %f, z: %f\n", maxx, maxy, maxz);
+    std::cout << path << std::endl;
+    printf("Gx: %f, Gy: %f, Gz: %f\n", Gx, Gy, Gz);
+    printf("cx: %f, cy: %f, cz: %f\n", cx, cy, cz);
+    printf("min x: %f, y: %f, z: %f\n", minx ,miny, minz);
+    printf("max x: %f, y: %f, z: %f\n", maxx, maxy, maxz);
 }
 void Model::Draw(Shader shader) {
     for(unsigned int i = 0; i < meshes.size(); i++){

@@ -25,9 +25,7 @@ public:
 
     StartPlatform(Model* model, Shader shader);
     ~StartPlatform();
-    glm::vec3 GetCenter(Mesh* meshptr);
     void Render(glm::mat4 PVMatrix, glm::mat4 lightSpaceMatrix, Texture2D BluredShadow);
-
 };
 
 
