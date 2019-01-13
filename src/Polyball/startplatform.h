@@ -20,8 +20,8 @@ public:
     Shader shader;
     std::string groupName[7];
     glm::vec3 axis[7];
-    GLfloat limit[7], w[7];
-    bool stop[7];
+    GLfloat limit[7], w[7], heightmax[7], stopTime[7];
+    bool stop[7], vanish[7], drop[7];
     glm::vec3 offset, center;
 
     StartPlatform(Model* model, Shader shader, glm::vec3 location = glm::vec3(0.0f, 0.0f, 2.0f));

@@ -25,7 +25,13 @@ StartPlatform::StartPlatform(Model* model, Shader shader, glm::vec3 location) {
     w[3] = 2.0f;
     w[4] = 3.0f;
     w[5] = 4.0f;
+    heightmax[2] = 0.3;
+    heightmax[3] = 0.22;
+    heightmax[4] = 0.14;
+    heightmax[5] = 0.1;
     stop[2] = stop[3] = stop[4] = stop[5] = false;
+    vanish[2] = vanish[3] = vanish[4] = vanish[5] = false;
+    drop[2] = drop[3] = drop[4] = drop[5] = false;
     limit[2] = glm::radians(100.0f);
     limit[3] = glm::radians(67.0f);
     limit[4] = glm::radians(26.0f);
@@ -37,7 +43,6 @@ StartPlatform::~StartPlatform() {
 }
 
 void StartPlatform::Render(glm::mat4 PVMatrix, glm::mat4 lightSpaceMatrix, Texture2D BluredShadow) {
-    GLfloat t = glfwGetTime();
     shader.use();
     shader.setMat4("PVMatrix", PVMatrix);
     shader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
@@ -53,13 +58,28 @@ void StartPlatform::Render(glm::mat4 PVMatrix, glm::mat4 lightSpaceMatrix, Textu
         shader.setVec4("RotQuat", glm::vec4(1.0f, 0.0f, 0.0f, 0.0f));
         modelptr->meshes[i].Draw(shader);
     }
-    shader.setMat4("model", glm::mat4(1.0f));
+    GLfloat cT = (GLfloat)glfwGetTime();
     for(int i = 2; i < PartNumber; i++){
+        glm::mat4 model = glm::mat4(1.0f);
 //        shader.setVec4("RotQuat", glm::vec4(1.0f, 0.0f, 0.0f, 0.0f));
-        GLfloat angle = glm::radians(w[i] * 40.0f * t);
+        GLfloat angle = glm::radians(w[i] * 40.0f * cT);
         if(ResourceManager::State == GAME_STARTING) {
             if(stop[2] && stop[3] && stop[4] && stop[5]){
+                static GLfloat sT = (GLfloat)glfwGetTime();
                 angle = limit[i];
+                if(drop[i] == true){
+                    glm::vec3 delta = glm::vec3(0.0f, heightmax[i] - 2.5f * (cT - stopTime[i]) * heightmax[i], 0.0f);
+                    model = glm::translate(model, delta);
+                    if(delta.y < -0.2f) vanish[i] = true;
+                }
+                else{
+                    glm::vec3 delta = glm::vec3(0.0f, 2.5f * (cT - sT) * heightmax[i], 0.0f);
+                    model = glm::translate(model, delta);
+                    if(delta.y >= heightmax[i]){
+                        drop[i] = true;
+                        stopTime[i] = cT;
+                    }
+                }
             }
             else{
                 if(stop[i] == false){
@@ -75,7 +95,10 @@ void StartPlatform::Render(glm::mat4 PVMatrix, glm::mat4 lightSpaceMatrix, Textu
                         glm::sin(angle) * axis[i].x,
                         glm::sin(angle) * axis[i].y,
                         glm::sin(angle) * axis[i].z);
+        shader.setMat4("model", model);
         shader.setVec4("RotQuat", glm::vec4(rot.w, rot.x, rot.y, rot.z));
         modelptr->meshes[i].Draw(shader);
     }
+    if(vanish[2] && vanish[3] && vanish[4] && vanish[5])
+        ResourceManager::active_signal = true;
 }

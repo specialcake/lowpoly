@@ -15,6 +15,7 @@ Skybox* ResourceManager::skybox;
 Camera ResourceManager::camera;
 Fontdisplay ResourceManager::fontdisplay;
 GameState ResourceManager::State;
+bool ResourceManager::active_signal;
 glm::vec3 ResourceManager::FinishNormal, ResourceManager::FinishPos;
 glm::vec3 ResourceManager::FinishLocation, ResourceManager::StartLocation;
 GLfloat ResourceManager::lastX, ResourceManager::lastY;

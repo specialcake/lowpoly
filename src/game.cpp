@@ -225,12 +225,12 @@ void Game::ProcessInput(GLfloat dt) {
         ResourceManager::followMode ^= 1;
     if(ResourceManager::Keys[GLFW_KEY_SPACE])
         start_signal = 1;
-    if(start_signal && accumulate_time < 2.0f){
+    if(start_signal && (accumulate_time < 2.0f || !ResourceManager::active_signal)){
         ResourceManager::State = GAME_STARTING;
         accumulate_time += dt;
-        if(accumulate_time >= 2.0f)
-            ResourceManager::State = GAME_ACTIVE;
     }
+    if(ResourceManager::State != GAME_ACTIVE && ResourceManager::State != GAME_FINISH && accumulate_time >= 2.0f && ResourceManager::active_signal)
+        ResourceManager::State = GAME_ACTIVE;
     polyball->Cam.Front = ResourceManager::camera.Front;
     polyball->Cam.Right = ResourceManager::camera.Right;
     polyball->Cam.Up = ResourceManager::camera.Up;
@@ -262,15 +262,15 @@ void Game::Render() {
 //        modelshader.setMat4("PVMatrix", PVMatrix);
 //        test->Draw(modelshader);
 
-//    SceneTexture->BeginRender();
+    SceneTexture->BeginRender();
 
     finishline->Render(PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
     if(ResourceManager::State == GAME_INITIAL || ResourceManager::State == GAME_STARTING)
         startplatform->Render(PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
 
     scene->draw(view, PVMatrix, lightSpaceMatrix, shadowmap->DepthMap, shadowmap->BluredShadow);
-//    for(int i = 0; i < 3; i++)
-//        scene->plant[i]->Draw(view, PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
+    for(int i = 0; i < 3; i++)
+        scene->plant[i]->Draw(view, PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
 
     glDepthFunc(GL_LEQUAL);
     ResourceManager::skybox->shader.use();
@@ -296,11 +296,11 @@ void Game::Render() {
 
     polyball->Render(view, PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
 
-//    littlecube->DrawCube(PVMatrix, glm::vec3(0.0f, 0.2f, 3.0f), glm::vec3(0.05f));
-//
-//    SceneTexture->EndRender();
-//
-//    Bloom::RenderBloom(SceneTexture);
+    littlecube->DrawCube(PVMatrix, glm::vec3(0.0f, 0.2f, 3.0f), glm::vec3(0.05f));
+
+    SceneTexture->EndRender();
+
+    Bloom::RenderBloom(SceneTexture);
 //
 //    Texture2D blurscene = Bloom::Blurer.GaussBlur(SceneTexture->BrightTexture);
 //
@@ -311,17 +311,17 @@ void Game::Render() {
 //        littlewindow->shader.use();
 //        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
 //        littlewindow->DrawSprite(blurscene, glm::vec3(-0.1f, 0.5f, -0.5f), glm::vec3(0.5f));
-    std::string text = "Location = (" + std::to_string(polyball->Position.x) + ',' +
-                                        std::to_string(polyball->Position.y) + ',' +
-                                        std::to_string(polyball->Position.z) + ')';
-    ResourceManager::Displayfont(text, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.5f), glm::vec3(1.0f, 0.0f, 0.0f));
-    text = "Speed = (" + std::to_string(polyball->Speed.x) + ',' +
-                         std::to_string(polyball->Speed.y) + ',' +
-                         std::to_string(polyball->Speed.z) + ')';
-    ResourceManager::Displayfont(text, glm::vec3(0.0f, 35.0f, 0.0f), glm::vec3(0.5f), glm::vec3(1.0f, 0.0f, 0.0f));
-    text = "Chunk-Mesh = (" + std::to_string(polyball->dcx) + ',' +
-                       std::to_string(polyball->dcy) + "),(" +
-                       std::to_string(polyball->dmx) + ',' +
-                       std::to_string(polyball->dmy) + ')';
-    ResourceManager::Displayfont(text, glm::vec3(0.0f, 70.0f, 0.0f), glm::vec3(0.5f), glm::vec3(1.0f, 0.0f, 0.0f));
+//    std::string text = "Location = (" + std::to_string(polyball->Position.x) + ',' +
+//                                        std::to_string(polyball->Position.y) + ',' +
+//                                        std::to_string(polyball->Position.z) + ')';
+//    ResourceManager::Displayfont(text, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.5f), glm::vec3(1.0f, 0.0f, 0.0f));
+//    text = "Speed = (" + std::to_string(polyball->Speed.x) + ',' +
+//                         std::to_string(polyball->Speed.y) + ',' +
+//                         std::to_string(polyball->Speed.z) + ')';
+//    ResourceManager::Displayfont(text, glm::vec3(0.0f, 35.0f, 0.0f), glm::vec3(0.5f), glm::vec3(1.0f, 0.0f, 0.0f));
+//    text = "Chunk-Mesh = (" + std::to_string(polyball->dcx) + ',' +
+//                       std::to_string(polyball->dcy) + "),(" +
+//                       std::to_string(polyball->dmx) + ',' +
+//                       std::to_string(polyball->dmy) + ')';
+//    ResourceManager::Displayfont(text, glm::vec3(0.0f, 70.0f, 0.0f), glm::vec3(0.5f), glm::vec3(1.0f, 0.0f, 0.0f));
 }

@@ -22,7 +22,7 @@ void main() {
     rotPos = Rotater(RotQuat, vec4(0.0f, rotPos));
     rotPos += center;
 
-    vs_out.FragPos = rotPos + offset;
+    vs_out.FragPos = vec3(model * vec4(rotPos + offset, 1.0f));
 
     gl_Position = PVMatrix * vec4(vs_out.FragPos, 1.0f);
 

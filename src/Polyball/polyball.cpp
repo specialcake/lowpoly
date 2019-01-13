@@ -200,7 +200,7 @@ bool Polyball::CollisionFinish() {
         GLfloat h = V / S * 3.0;
         glm::vec3 Normal = glm::normalize(glm::cross(c - a, b - a));
         ResourceManager::FinishPos = Position - Normal * h;
-        Tools::PrintVec3(ResourceManager::FinishPos);
+//        Tools::PrintVec3(ResourceManager::FinishPos);
         return true;
     }
     if(dist2 <= Radius){
@@ -213,7 +213,7 @@ bool Polyball::CollisionFinish() {
         GLfloat h = V / S * 3.0;
         glm::vec3 Normal = glm::normalize(glm::cross(c - b, d - b));
         ResourceManager::FinishPos = Position - Normal * h;
-        Tools::PrintVec3(ResourceManager::FinishPos);
+//        Tools::PrintVec3(ResourceManager::FinishPos);
         return true;
     }
     return false;

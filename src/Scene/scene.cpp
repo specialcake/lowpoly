@@ -255,7 +255,7 @@ void Scene::UpdateChunks(glm::vec3 Position) {
         ResourceManager::dir = ORIGIN_POS;
         return ;
     }
-    this->debugflag = true;
+    this->debugflag = false;
     static auto toUpdate = new Chunk*[CHUNK_SIZE];
     static GLint head, tail;
     head = tail = 0;
@@ -348,9 +348,9 @@ void Scene::GetLocationbyCamera(glm::vec3 Position, GLint &cx, GLint &cz, GLint 
     glm::vec3 position = Position -
                          chunk[CHUNK_RADIUS][CHUNK_RADIUS]->submesh[MESH_RADIUS][MESH_RADIUS]->get_Position() -
                          glm::vec3(MESH_LENGTH / 2.0f, 0.0f, MESH_LENGTH / 2.0f);
-    position = glm::vec3(0.0f) -
-               chunk[CHUNK_RADIUS][CHUNK_RADIUS]->submesh[MESH_RADIUS][MESH_RADIUS]->get_Position() -
-               glm::vec3(MESH_LENGTH / 2.0f, 0.0f, MESH_LENGTH / 2.0f);
+//    position = glm::vec3(0.0f) -
+//               chunk[CHUNK_RADIUS][CHUNK_RADIUS]->submesh[MESH_RADIUS][MESH_RADIUS]->get_Position() -
+//               glm::vec3(MESH_LENGTH / 2.0f, 0.0f, MESH_LENGTH / 2.0f);
 //    printf("camera position = ");
 //    Tools::PrintVec3(ResourceManager::camera.Position);
 //    printf("center position = ");

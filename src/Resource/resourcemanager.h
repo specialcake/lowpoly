@@ -39,6 +39,7 @@ public:
     static Fontdisplay fontdisplay;
 
     static GameState State;
+    static bool active_signal;
     static glm::vec3 FinishNormal, FinishPos;
     static glm::vec3 FinishLocation, StartLocation;
 
