@@ -47,51 +47,6 @@ public
         }
     }
     
-    func generate_water() {
-        
-    }
-    
-    func generate_mountain() {
-        
-    }
-    
-    func generate_tree() {
-        
-    }
-    
-    func generate_normal() {
-        
-    }
-    
-    func calc_normal(x: Int, z: Int) -> float3 {
-        return float3()
-    }
-    
-    func draw() {
-        
-    }
-    
-    func draw_map() {
-        
-    }
-    
-    func draw_water() {
-        
-    }
-    
-    func draw_mountain() {
-        
-    }
-    
-    func draw_tree() {
-        
-    }
-    
-    func updateInfo() {
-        generate_water()
-        generate_normal()
-    }
-    
     func recycle(x: Int, z: Int) {
         xPos = nil
         xNeg = nil

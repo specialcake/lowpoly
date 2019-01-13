@@ -18,6 +18,7 @@ public
     var cur_Chunk: Chunk!
     var cur_Submesh: Submesh!
     var tmp_Chunk = [Chunk]()
+    var data = [Float]()
     
     var offset: float3!
     var chunk_offset = [[float3]](repeating: [float3](repeating: float3(0,0,0), count: CHUNK_SIZE), count: CHUNK_SIZE)
@@ -298,9 +299,10 @@ public
         var Meshx: Int = 0
         var Meshz: Int = 0
         GetLocationbyCamera(&Chunkx, &Chunkz, &Meshx, &Meshz)
-        
+        // print("(\(Chunkx), \(Chunkz)) -> (\(Meshx), \(Meshz))")
         if (Chunkx == cur_Chunk.pos_x && Chunkz == cur_Chunk.pos_z) {
             cur_Submesh = cur_Chunk.submesh[Meshx][Meshz]
+            ResourceManager.dir = dir
             return
         }
         debugFlag = true
@@ -380,15 +382,10 @@ public
             updateNeighbor(i, CHUNK_SIZE - 2)
         }
         
-        for row in toUpdate {
-            for c in row {
-                c.updateInfo()
-            }
-        }
-        
         cur_Chunk = chunk[CHUNK_RADIUS][CHUNK_RADIUS]
         cur_Submesh = cur_Chunk.submesh[MESH_RADIUS][MESH_RADIUS]
-        //    UpdateChunk(dir)
+        
+        ResourceManager.dir = dir
     }
     
     func updateNeighbor(_ x: Int, _ y: Int) {
@@ -419,10 +416,14 @@ public
     }
     
     func GetLocationbyCamera(_ cx: inout Int , _ cz: inout Int, _ mx: inout Int, _ mz: inout Int) {
-        var position = ResourceManager.camera.position -
-        chunk[CHUNK_RADIUS][CHUNK_RADIUS].submesh[MESH_RADIUS][MESH_RADIUS].get_Position() -
-        float3(MESH_LENGTH / 2.0, 0.0, MESH_LENGTH / 2.0)
-        position = float3(0.0) - chunk[CHUNK_RADIUS][CHUNK_RADIUS].submesh[MESH_RADIUS][MESH_RADIUS].get_Position() - float3(MESH_LENGTH / 2.0, 0.0, MESH_LENGTH / 2.0)
+        
+        var position = ResourceManager.polyball.Position - chunk[CHUNK_RADIUS][CHUNK_RADIUS].submesh[MESH_RADIUS][MESH_RADIUS].get_Position() - float3(MESH_LENGTH / 2.0, 0.0, MESH_LENGTH / 2.0)
+        
+        
+        //var position = ResourceManager.camera.position - chunk[CHUNK_RADIUS][CHUNK_RADIUS].submesh[MESH_RADIUS][MESH_RADIUS].get_Position() - float3(MESH_LENGTH / 2.0, 0.0, MESH_LENGTH / 2.0)
+        
+//        position = float3(0.0) - chunk[CHUNK_RADIUS][CHUNK_RADIUS].submesh[MESH_RADIUS][MESH_RADIUS].get_Position() - float3(MESH_LENGTH / 2.0, 0.0, MESH_LENGTH / 2.0)
+        
         //    printf("camera position = ")
         //    Tools::PrintVec3(ResourceManager::camera.Position)
         //    printf("center position = ")
@@ -458,7 +459,7 @@ public
     
     func Generate_HeightBuffer() {
         let limit = CHUNK_SIZE * CHUNK_SIZE * MESH_SIZE * MESH_SIZE + CHUNK_SIZE * MESH_SIZE * 2 + 1
-        var data = [Float]()
+        data.removeAll()
         for i in 0 ..< CHUNK_SIZE {
             for j in 0 ..< MESH_SIZE {
                 for k in 0 ..< CHUNK_SIZE {
@@ -543,7 +544,7 @@ public
     func Gaussblur() {
         var tempTexture = ResourceManager.shadowmapDepthTexture
         var horizontal: Bool = true
-        for _ in 1...10 {
+        for _ in 1...6 {
             let white = MTLClearColor(red: 1, green: 1, blue: 1, alpha: 1)
             let renderPassDescriptor = MTLRenderPassDescriptor()
             

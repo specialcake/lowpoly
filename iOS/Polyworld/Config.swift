@@ -16,7 +16,7 @@ let NEAR_PLANE: Float = 0.1
 let FAR_PLANE: Float = 150.0
 
 // Scene
-let SCENE_LENGTH: Float = 53.0
+let SCENE_LENGTH: Float = 53.0 / 3 * 5
 
 let CHUNK_SIZE = 3 // Scene含有的Chunk个数
 let CHUNK_RADIUS = 1

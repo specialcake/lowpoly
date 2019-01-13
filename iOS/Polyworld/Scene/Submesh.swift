@@ -34,15 +34,14 @@ public
         zNeg = nil
     }
     
-    func draw_map() {
-        
-    }
-    
-    func draw_water() {
-        
-    }
-    
     func get_Position() -> float3 {
+//        let top_scene = parent.parent!
+//        var ret = top_scene.offset!
+//        let cpos_x = Float(parent!.pos_x)
+//        let cpos_z = Float(parent!.pos_z)
+//        ret += float3((cpos_x - Float(CHUNK_RADIUS)) * CHUNK_LENGTH, 0, (cpos_z - Float(CHUNK_RADIUS)) * CHUNK_LENGTH)
+//        ret += float3((Float(pos_x) - Float(MESH_RADIUS) - 0.5) * CHUNK_LENGTH, 0, (Float(pos_z) - Float(MESH_RADIUS) - 0.5) * CHUNK_LENGTH)
+//        return ret
         let top_scene = parent.parent!
         var ret = top_scene.offset!
         ret += top_scene.chunk_offset[parent.pos_x][parent.pos_z]

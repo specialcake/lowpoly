@@ -38,7 +38,9 @@ class ResourceManager {
     
     static var depthBufferDescriptor: MTLTextureDescriptor!
     static var depthTexture: MTLTexture!
+    static var shadowmapDepthBufferDescriptor: MTLTextureDescriptor!
     static var shadowmapDepthTexture: MTLTexture!
+    static var shadowmapBlureddTextureDescriptor: MTLTextureDescriptor!
     static var shadowmapBluredTexture: MTLTexture!
     
     // colorAttachment
@@ -48,4 +50,6 @@ class ResourceManager {
     static var camera: CameraController!
     static var projectionMatrix: float4x4!
     static var keys: [Bool] = [Bool](repeating: false, count: 5)
+    static var polyball: Polyball!
+    static var dir: Direction!
 }

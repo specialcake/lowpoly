@@ -308,7 +308,7 @@ class Polyball: NSObject {
                     chunky = cy
                 }
                 
-                Maycol[i + 1][j + 1] = scene.chunk_offset[chunkx][chunky] + scene.mesh_offset[meshx][meshy]
+                Maycol[i + 1][j + 1] = scene.offset + scene.chunk_offset[chunkx][chunky] + scene.mesh_offset[meshx][meshy]
                 Maycol[i + 1][j + 1].y = scene.chunk[chunkx][chunky].height[meshx][meshy]
 //                if (Maycol[i + 1][j + 1].y < 0.1) {
 //                    Maycol[i + 1][j + 1].y = -0.5

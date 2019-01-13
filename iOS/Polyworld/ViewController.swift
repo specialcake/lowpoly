@@ -31,7 +31,7 @@ class ViewController: UIViewController {
     var skybox: Skybox!
     var shadowmap: Shadowmap!
     var sun: Sun!
-    var polyball: Polyball!
+    var first: Bool = true
     
     //运动管理器
     let motionManager = CMMotionManager()
@@ -71,12 +71,18 @@ class ViewController: UIViewController {
         ResourceManager.depthBufferDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: textureWidth, height: textureHeight, mipmapped: false)
         ResourceManager.depthBufferDescriptor.usage = [.shaderRead, .shaderWrite, .renderTarget]
         ResourceManager.depthTexture = ResourceManager.device.makeTexture(descriptor: ResourceManager.depthBufferDescriptor)
-        ResourceManager.shadowmapDepthTexture = ResourceManager.device.makeTexture(descriptor: ResourceManager.depthBufferDescriptor)
+        
+        ResourceManager.shadowmapDepthBufferDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: textureWidth / 2, height: textureHeight / 2, mipmapped: false)
+        ResourceManager.shadowmapDepthBufferDescriptor.usage = [.shaderRead, .shaderWrite, .renderTarget]
+        ResourceManager.shadowmapDepthTexture = ResourceManager.device.makeTexture(descriptor: ResourceManager.shadowmapDepthBufferDescriptor)
+        
+        ResourceManager.shadowmapBlureddTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: textureWidth / 2, height: textureHeight / 2, mipmapped: false)
+        ResourceManager.shadowmapBlureddTextureDescriptor.usage = [.shaderRead, .shaderWrite, .renderTarget]
+        ResourceManager.shadowmapBluredTexture = ResourceManager.device.makeTexture(descriptor: ResourceManager.shadowmapBlureddTextureDescriptor)
         
         ResourceManager.textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: textureWidth, height: textureHeight, mipmapped: false)
         ResourceManager.textureDescriptor.usage = [.shaderRead, .shaderWrite, .renderTarget]
         ResourceManager.textureLoader = MTKTextureLoader(device: ResourceManager.device)
-        ResourceManager.shadowmapBluredTexture = ResourceManager.device.makeTexture(descriptor: ResourceManager.textureDescriptor)
         
         ResourceManager.camera = CameraController()
         
@@ -100,7 +106,7 @@ class ViewController: UIViewController {
         sun = Sun(device: ResourceManager.device, modelMatrix: sunModel, forResourse: "polyball", withExtension: "obj")
         
         let polyballModel = float4x4(translationBy: float3(0.0, 0.4, 4.0))
-        polyball = Polyball(device: ResourceManager.device, modelMatrix: polyballModel, forResourse: "polyball", withExtension: "obj")
+        ResourceManager.polyball = Polyball(device: ResourceManager.device, modelMatrix: polyballModel, forResourse: "polyball", withExtension: "obj")
         
         // Rendering
         timer = CADisplayLink(target: self, selector: #selector(ViewController.newFrame(displayLink:)))
@@ -143,23 +149,28 @@ class ViewController: UIViewController {
         scene.updateChunks()
         scene.timeInterval += timeSinceLastUpdate
         
-        shadowmap.updateFrustum(scene: scene)
-        
-        lightSpaceMatrix = shadowmap.getlightSpaceMatrix(scene: scene)
-        scene.Generate_ShadowMap(lightSpaceMatrix: lightSpaceMatrix)
-        scene.Gaussblur()
+        if (ResourceManager.dir != .ORIGIN_POS || first) {
+            scene.Generate_HeightBuffer()
+            shadowmap.updateFrustum(scene: scene)
+            
+            lightSpaceMatrix = shadowmap.getlightSpaceMatrix(scene: scene)
+            scene.Generate_ShadowMap(lightSpaceMatrix: lightSpaceMatrix)
+            scene.Gaussblur()
+            
+            first = false
+        }
         
         handleButtonAction()
         
-        polyball.Cam.Front = ResourceManager.camera.front
-        polyball.Cam.Right = ResourceManager.camera.right
-        polyball.Cam.Up = ResourceManager.camera.up
+        ResourceManager.polyball.Cam.Front = ResourceManager.camera.front
+        ResourceManager.polyball.Cam.Right = ResourceManager.camera.right
+        ResourceManager.polyball.Cam.Up = ResourceManager.camera.up
         
-        polyball.UpdateSpeed(deltaTime: Float(timeSinceLastUpdate))
-        polyball.UpdatePosition(deltaTime: Float(timeSinceLastUpdate), scene: scene)
+        ResourceManager.polyball.UpdateSpeed(deltaTime: Float(timeSinceLastUpdate))
+        ResourceManager.polyball.UpdatePosition(deltaTime: Float(timeSinceLastUpdate), scene: scene)
         
         if isFollowed {
-            ResourceManager.camera.position = polyball.GenCameraPosition()
+            ResourceManager.camera.position = ResourceManager.polyball.GenCameraPosition()
         }
         
         autoreleasepool {
@@ -174,7 +185,7 @@ class ViewController: UIViewController {
         skybox.draw(drawable: drawable, skymap: skymap, viewMatrix: ResourceManager.camera.viewMatrix, projectionMatrix: ResourceManager.projectionMatrix)
         sun.draw(drawable: drawable)
         scene.draw(drawable: drawable, viewMatrix: ResourceManager.camera.viewMatrix, projectionMatrix: ResourceManager.projectionMatrix, lightSpaceMatrix: lightSpaceMatrix, shadowmap: ResourceManager.shadowmapBluredTexture)
-        polyball.draw(drawable: drawable)
+        ResourceManager.polyball.draw(drawable: drawable)
         
         ResourceManager.commandBuffer.present(drawable)
         ResourceManager.commandBuffer.commit()
