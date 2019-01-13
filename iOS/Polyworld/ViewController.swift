@@ -72,7 +72,7 @@ class ViewController: UIViewController {
         ResourceManager.depthBufferDescriptor.usage = [.shaderRead, .shaderWrite, .renderTarget]
         ResourceManager.depthTexture = ResourceManager.device.makeTexture(descriptor: ResourceManager.depthBufferDescriptor)
         
-        ResourceManager.shadowmapBufferDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: 1000, height: 1000, mipmapped: false)
+        ResourceManager.shadowmapBufferDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: textureWidth, height: textureHeight, mipmapped: false)
         ResourceManager.shadowmapBufferDescriptor.usage = [.shaderRead, .shaderWrite, .renderTarget]
         ResourceManager.shadowmapDepthTexture = ResourceManager.device.makeTexture(descriptor: ResourceManager.shadowmapBufferDescriptor)!
         
@@ -175,7 +175,7 @@ class ViewController: UIViewController {
         skybox.draw(drawable: drawable, skymap: skymap, viewMatrix: ResourceManager.camera.viewMatrix, projectionMatrix: ResourceManager.projectionMatrix)
         sun.draw(drawable: drawable)
         scene.draw(drawable: drawable, viewMatrix: ResourceManager.camera.viewMatrix, projectionMatrix: ResourceManager.projectionMatrix, lightSpaceMatrix: lightSpaceMatrix, shadowmap: ResourceManager.shadowmapDepthTexture)
-        polyball.draw(drawable: drawable)
+        //polyball.draw(drawable: drawable)
         
         ResourceManager.commandBuffer.present(drawable)
         ResourceManager.commandBuffer.commit()

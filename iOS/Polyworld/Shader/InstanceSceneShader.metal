@@ -155,34 +155,18 @@ fragment float4 instanceSceneFragment(InstanceSceneVertexOut vert [[stage_in]],
                               texture2d<float>  shadowmap [[texture(0)]],
                               sampler           sampler2D [[sampler(0)]])
 {
-    /*
-//    float3 projCoords = vert.fragPosLightSpace.xyz / vert.fragPosLightSpace.w;
-//    projCoords = projCoords * 0.5 + 0.5;
-//    float visibility;
-//    if(projCoords.z > 1.0)
-//        visibility = 1.0;
-//    else {
-//        float bias = 0.00051f;
-//        float currentDepth = projCoords.z;
-//        float closestDepth = shadowmap.sample(sampler2D, projCoords.xy).r;
-//        float shadow = clamp(exp(-20.0 * (currentDepth - closestDepth - bias)), 0.0, 1.0);
-//        visibility = shadow;
-//    }
-    
     float3 projCoords = vert.fragPosLightSpace.xyz / vert.fragPosLightSpace.w;
     projCoords = projCoords * 0.5 + 0.5;
-    float bias = 0.00051f;
-    float currentDepth = projCoords.z;
-    float closestDepth = shadowmap.sample(sampler2D, projCoords.xy).r;
-    float shadow = clamp(exp(-20.0 * (currentDepth - closestDepth - bias)), 0.0, 1.0);
-    
     float visibility;
-    if (currentDepth > closestDepth) visibility = 0;
-    else visibility = 1;
-    */
-    
-    //float visibility = shadow;
-    float visibility = 1;
+    if(projCoords.z > 1.0)
+        visibility = 1.0;
+    else {
+        float bias = 0.00051f;
+        float currentDepth = projCoords.z;
+        float closestDepth = shadowmap.sample(sampler2D, float2(projCoords.x,1 - projCoords.y)).r;
+        float shadow = clamp(exp(-20.0 * (currentDepth - closestDepth - bias)), 0.0, 1.0);
+        visibility = shadow;
+    }
     
     // float3 viewDir = normalize(uniforms.viewPos - vert.fragPosition);
     float3 lightDir = normalize(-uniforms.dirLight.direction);
