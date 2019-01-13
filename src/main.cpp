@@ -11,7 +11,7 @@ Game Application(SCREEN_WIDTH, SCREEN_HEIGHT);
 int main(int argc, char *argv[]) {
     ResourceManager::window_initialize();
 
-    Application.State = GAME_ACTIVE;
+    ResourceManager::State = GAME_INITIAL;
     Application.Init();
     while (!glfwWindowShouldClose(ResourceManager::window)) {
         auto currentFrame = static_cast<GLfloat>(glfwGetTime());

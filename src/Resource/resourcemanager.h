@@ -15,6 +15,12 @@
 #include <sstream>
 #include <fstream>
 
+enum GameState {
+    GAME_ACTIVE,
+    GAME_INITIAL,
+    GAME_FINISH
+};
+
 class ResourceManager {
 public:
     static GLFWwindow* window;
@@ -30,6 +36,8 @@ public:
     static Skybox* skybox;
     static Camera camera;
     static Fontdisplay fontdisplay;
+
+    static GameState State;
 
 //    ResourceManager();
 

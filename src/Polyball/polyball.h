@@ -53,7 +53,7 @@ public:
     void Render(glm::mat4 view, glm::mat4 PVMatrix, glm::mat4 lightSpaceMatrix, Texture2D BlurShadow);
     glm::vec3 CollisionObject(Scene* scene);
     void CollisionCheck(Scene* scene);
-    glm::vec3 CollisionFinish();
+    bool CollisionFinish();
     void GetChunkMeshID(Scene* scene, GLint &cx, GLint &cz, GLint &mx, GLint &mz);
     void UpdatePosition(float deltaTime, Scene* scene);
     void UpdateSpeed(float deltaTime);

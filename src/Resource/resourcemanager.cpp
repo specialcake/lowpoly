@@ -14,6 +14,7 @@ std::map<std::string, Model> ResourceManager::Models;
 Skybox* ResourceManager::skybox;
 Camera ResourceManager::camera;
 Fontdisplay ResourceManager::fontdisplay;
+GameState ResourceManager::State;
 GLfloat ResourceManager::lastX, ResourceManager::lastY;
 GLboolean ResourceManager::followMode = GL_TRUE;
 GLboolean ResourceManager::firstMouse = GL_TRUE;

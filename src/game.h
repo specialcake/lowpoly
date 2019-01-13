@@ -5,16 +5,10 @@
 #include <GLFW/glfw3.h>
 #include <vector>
 #include <tuple>
-
-enum GameState {
-    GAME_ACTIVE,
-    GAME_MENU,
-    GAME_WIN
-};
+#include "Resource/resourcemanager.h"
 
 class Game {
 public:
-    GameState State;
     GLuint Width, Height;
     // Constructor/Destructor
     Game(GLuint width, GLuint height);

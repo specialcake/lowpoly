@@ -171,7 +171,7 @@ void Polyball::CollisionCheck(Scene* scene) {
 
     }
     delta_pos += CollisionObject(scene);
-    delta_pos += CollisionFinish();
+
     if(Position.y < 0.1){
         collision.exist = true;
         collision.Normal += glm::vec3(0.0f, 1.0f, 0.0f);
@@ -181,8 +181,7 @@ void Polyball::CollisionCheck(Scene* scene) {
     if(collision.exist)
         collision.Normal = glm::normalize(collision.Normal);
 }
-glm::vec3 Polyball::CollisionFinish() {
-    glm::vec3 delta_pos = glm::vec3(0.0f);
+bool Polyball::CollisionFinish() {
     static glm::vec3 finish_center = glm::vec3(0.0f, 0.2f, 3.0f);
     static glm::vec3 len = glm::vec3(0.5f, 0.2f, 0.0f);
     static glm::vec3 a = finish_center + glm::vec3( len.x,  len.y, len.z);
@@ -192,20 +191,16 @@ glm::vec3 Polyball::CollisionFinish() {
     GLfloat dist1 = Tools::distance(Position, a, b, c);
     GLfloat dist2 = Tools::distance(Position, b, c, d);
     if(dist1 <= Radius){
-        collision.exist = true;
         glm::vec3 normal = glm::normalize(glm::cross(c - a, b - a));
         if(Position.z < finish_center.z) normal = -normal;
-        collision.Normal += normal;
-        delta_pos += (Radius - dist1) * normal;
+        return true;
     }
     if(dist2 <= Radius){
-        collision.exist = true;
         glm::vec3 normal = glm::normalize(glm::cross(b - d, c - d));
         if(Position.z < finish_center.z) normal = -normal;
-        collision.Normal += normal;
-        delta_pos += (Radius - dist1) * normal;
+        return true;
     }
-    return delta_pos;
+    return false;
 }
 void Polyball::GetChunkMeshID(Scene* scene, GLint &cx, GLint &cz, GLint &mx, GLint &mz){
     glm::vec3 position = Position -
@@ -230,13 +225,15 @@ void Polyball::GetChunkMeshID(Scene* scene, GLint &cx, GLint &cz, GLint &mx, GLi
         mz = static_cast<GLint>(position.z / MESH_LENGTH + 0.5f) + MESH_RADIUS;
     else
         mz = static_cast<GLint>(position.z / MESH_LENGTH - 0.5f) + MESH_RADIUS;
-    std::cout << cx << ' ' << cz << ' ' << mx << ' ' << mz << std::endl;
 }
 
 //UpdatePosition => Process Speed
 void Polyball::UpdatePosition(float deltaTime, Scene* scene) {
+    if(ResourceManager::State == GAME_INITIAL) return ;
     Position += Speed * deltaTime;
-    CollisionCheck(scene);
+    if(ResourceManager::State != GAME_FINISH) {
+        CollisionCheck(scene);
+    }
 
     GLfloat angle = wspeed * deltaTime / 2.0f;
     glm::quat rot = glm::quat(glm::cos(angle),
@@ -244,10 +241,20 @@ void Polyball::UpdatePosition(float deltaTime, Scene* scene) {
                     glm::sin(angle) * rotate_axis.y,
                     glm::sin(angle) * rotate_axis.z);
     rotate_state = rot * rotate_state;
+
+    if(CollisionFinish()){
+        ResourceManager::State = GAME_FINISH;
+    }
 }
 
 //UpdateSpeed => Process Acceleration
 void Polyball::UpdateSpeed(float deltaTime) {
+    if(ResourceManager::State == GAME_INITIAL) return ;
+    if(ResourceManager::State == GAME_FINISH){
+        Speed = glm::normalize(Speed) * 0.01f;
+        wspeed = glm::length(Speed) / Radius;
+        return ;
+    }
     if(collision.exist){
         GLfloat velocity = -glm::dot(collision.Normal, Speed);
         Speed += velocity * collision.Normal;

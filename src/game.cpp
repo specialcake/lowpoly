@@ -1,5 +1,4 @@
 #include "game.h"
-#include "Resource/resourcemanager.h"
 #include "utils/spriterender.h"
 #include "utils/cuberender.h"
 #include "Scene/scene.h"
@@ -24,7 +23,7 @@ FinishLine* finishline;
 //SSR* SSReflect;
 //Terrian* plane;
 
-Game::Game(GLuint width, GLuint height) : State(GAME_ACTIVE), Width(width), Height(height) {
+Game::Game(GLuint width, GLuint height) : Width(width), Height(height) {
     ResourceManager::lastX = width / 2.0f;
     ResourceManager::lastY = height / 2.0f;
 }
@@ -200,6 +199,8 @@ void Game::Update(GLfloat dt) {
 }
 
 void Game::ProcessInput(GLfloat dt) {
+    static GLint start_signal = 0;
+    static GLfloat accumulate_time = 0.0f;
     if (ResourceManager::Keys[GLFW_KEY_UP])
         ResourceManager::camera.ProcessKeyboard(FORWARD, dt);
     if (ResourceManager::Keys[GLFW_KEY_DOWN])
@@ -214,6 +215,13 @@ void Game::ProcessInput(GLfloat dt) {
         ResourceManager::camera.ProcessKeyboard(ROLL_RIGHT, dt);
     if (ResourceManager::Keys[GLFW_KEY_F])
         ResourceManager::followMode ^= 1;
+    if(ResourceManager::Keys[GLFW_KEY_SPACE])
+        start_signal = 1;
+    if(start_signal && accumulate_time < 1.0f){
+        accumulate_time += dt;
+        if(accumulate_time >= 1.0f)
+            ResourceManager::State = GAME_ACTIVE;
+    }
     polyball->Cam.Front = ResourceManager::camera.Front;
     polyball->Cam.Right = ResourceManager::camera.Right;
     polyball->Cam.Up = ResourceManager::camera.Up;
@@ -227,14 +235,13 @@ void Game::ProcessInput(GLfloat dt) {
 }
 
 void Game::Render() {
-    if(this->State == GAME_ACTIVE) {
-        glm::mat4 projection = glm::perspective(glm::radians(ResourceManager::camera.Zoom), (float)Width / (float)Height, NEAR_PLANE, FAR_PLANE);
+    glm::mat4 projection = glm::perspective(glm::radians(ResourceManager::camera.Zoom), (float)Width / (float)Height, NEAR_PLANE, FAR_PLANE);
 #ifdef lightview
-        projection = glm::ortho(-40.0f, 40.0f, -12.0f, 14.0f, 0.1f, 150.0f);
+    projection = glm::ortho(-40.0f, 40.0f, -12.0f, 14.0f, 0.1f, 150.0f);
 #endif //lightview
-        glm::mat4 view = ResourceManager::camera.GetViewMatrix();
-        glm::mat4 PVMatrix = projection * view;
-        glm::mat4 lightSpaceMatrix = shadowmap->GetlightSpaceMatrix(scene);
+    glm::mat4 view = ResourceManager::camera.GetViewMatrix();
+    glm::mat4 PVMatrix = projection * view;
+    glm::mat4 lightSpaceMatrix = shadowmap->GetlightSpaceMatrix(scene);
 
 //        Model* test = ResourceManager::GetModel("finishline");
 //        Shader modelshader = ResourceManager::GetShader("model");
@@ -245,41 +252,41 @@ void Game::Render() {
 //        modelshader.setMat4("model", model);
 //        modelshader.setMat4("PVMatrix", PVMatrix);
 //        test->Draw(modelshader);
-        finishline->Render(PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
+    finishline->Render(PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
 
 //        SceneTexture->BeginRender();
 
 //        startplatform->Render(PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
 
-        scene->draw(view, PVMatrix, lightSpaceMatrix, shadowmap->DepthMap, shadowmap->BluredShadow);
-        for(int i = 0; i < 3; i++)
-            scene->plant[i]->Draw(view, PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
+    scene->draw(view, PVMatrix, lightSpaceMatrix, shadowmap->DepthMap, shadowmap->BluredShadow);
+    for(int i = 0; i < 3; i++)
+        scene->plant[i]->Draw(view, PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
 
-        glDepthFunc(GL_LEQUAL);
-        ResourceManager::skybox->shader.use();
-        glActiveTexture(GL_TEXTURE6);
-        scene->CloudMap.Bind();
-        ResourceManager::skybox->shader.setMat4("PVMatrix", projection * glm::mat4(glm::mat3(ResourceManager::camera.GetViewMatrix())));
-        ResourceManager::skybox->Draw(skymap->skymap);
-        glActiveTexture(GL_TEXTURE0);
+    glDepthFunc(GL_LEQUAL);
+    ResourceManager::skybox->shader.use();
+    glActiveTexture(GL_TEXTURE6);
+    scene->CloudMap.Bind();
+    ResourceManager::skybox->shader.setMat4("PVMatrix", projection * glm::mat4(glm::mat3(ResourceManager::camera.GetViewMatrix())));
+    ResourceManager::skybox->Draw(skymap->skymap);
+    glActiveTexture(GL_TEXTURE0);
 
-        Model* Sun = ResourceManager::GetModel("polyball");
-        Shader sunshader = ResourceManager::GetShader("sun");
-        sunshader.use();
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, -8.0f * PARLIGHT_DIR);
-        model = glm::scale(model, glm::vec3(40.0f));
-        sunshader.setMat4("model", model);
-        sunshader.setMat4("PVMatrix", projection * glm::mat4(glm::mat3(ResourceManager::camera.GetViewMatrix())));
-        sunshader.setVec3("lightdir", PARLIGHT_DIR);
+    Model* Sun = ResourceManager::GetModel("polyball");
+    Shader sunshader = ResourceManager::GetShader("sun");
+    sunshader.use();
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, -8.0f * PARLIGHT_DIR);
+    model = glm::scale(model, glm::vec3(40.0f));
+    sunshader.setMat4("model", model);
+    sunshader.setMat4("PVMatrix", projection * glm::mat4(glm::mat3(ResourceManager::camera.GetViewMatrix())));
+    sunshader.setVec3("lightdir", PARLIGHT_DIR);
 
-        Sun->Draw(sunshader);
+    Sun->Draw(sunshader);
 
-        glDepthFunc(GL_LESS);
+    glDepthFunc(GL_LESS);
 
-        polyball->Render(view, PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
+    polyball->Render(view, PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
 
-        littlecube->DrawCube(PVMatrix, glm::vec3(0.0f, 0.2f, 3.0f), glm::vec3(0.05f));
+    littlecube->DrawCube(PVMatrix, glm::vec3(0.0f, 0.2f, 3.0f), glm::vec3(0.05f));
 
 //        SceneTexture->EndRender();
 //
@@ -294,19 +301,17 @@ void Game::Render() {
 //        littlewindow->shader.use();
 //        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
 //        littlewindow->DrawSprite(blurscene, glm::vec3(-0.1f, 0.5f, -0.5f), glm::vec3(0.5f));
-        std::string text = "Location = (" + std::to_string(polyball->Position.x) + ',' +
-                                            std::to_string(polyball->Position.y) + ',' +
-                                            std::to_string(polyball->Position.z) + ')';
-        ResourceManager::Displayfont(text, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.5f), glm::vec3(1.0f, 0.0f, 0.0f));
-        text = "Speed = (" + std::to_string(polyball->Speed.x) + ',' +
-                             std::to_string(polyball->Speed.y) + ',' +
-                             std::to_string(polyball->Speed.z) + ')';
-        ResourceManager::Displayfont(text, glm::vec3(0.0f, 35.0f, 0.0f), glm::vec3(0.5f), glm::vec3(1.0f, 0.0f, 0.0f));
-        text = "Chunk-Mesh = (" + std::to_string(polyball->dcx) + ',' +
-                           std::to_string(polyball->dcy) + "),(" +
-                           std::to_string(polyball->dmx) + ',' +
-                           std::to_string(polyball->dmy) + ')';
-        ResourceManager::Displayfont(text, glm::vec3(0.0f, 70.0f, 0.0f), glm::vec3(0.5f), glm::vec3(1.0f, 0.0f, 0.0f));
-
-    }
+    std::string text = "Location = (" + std::to_string(polyball->Position.x) + ',' +
+                                        std::to_string(polyball->Position.y) + ',' +
+                                        std::to_string(polyball->Position.z) + ')';
+    ResourceManager::Displayfont(text, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.5f), glm::vec3(1.0f, 0.0f, 0.0f));
+    text = "Speed = (" + std::to_string(polyball->Speed.x) + ',' +
+                         std::to_string(polyball->Speed.y) + ',' +
+                         std::to_string(polyball->Speed.z) + ')';
+    ResourceManager::Displayfont(text, glm::vec3(0.0f, 35.0f, 0.0f), glm::vec3(0.5f), glm::vec3(1.0f, 0.0f, 0.0f));
+    text = "Chunk-Mesh = (" + std::to_string(polyball->dcx) + ',' +
+                       std::to_string(polyball->dcy) + "),(" +
+                       std::to_string(polyball->dmx) + ',' +
+                       std::to_string(polyball->dmy) + ')';
+    ResourceManager::Displayfont(text, glm::vec3(0.0f, 70.0f, 0.0f), glm::vec3(0.5f), glm::vec3(1.0f, 0.0f, 0.0f));
 }
