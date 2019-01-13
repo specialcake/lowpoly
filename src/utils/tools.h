@@ -17,6 +17,7 @@ public:
     static GLfloat random_angle();
     static glm::vec2 random_vec2();
     static glm::vec3 random_vec3();
+    static GLfloat fmod(GLfloat a, GLfloat m);
     static GLfloat distance(glm::vec2 a, glm::vec2 b);
     static GLfloat distance(glm::vec3 a, glm::vec3 b);
     static GLfloat distance(glm::vec3 p, glm::vec3 a, glm::vec3 b, glm::vec3 c);

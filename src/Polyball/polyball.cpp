@@ -245,7 +245,8 @@ void Polyball::GetChunkMeshID(Scene* scene, GLint &cx, GLint &cz, GLint &mx, GLi
 
 //UpdatePosition => Process Speed
 void Polyball::UpdatePosition(float deltaTime, Scene* scene) {
-    if(ResourceManager::State == GAME_INITIAL) return ;
+    if(ResourceManager::State == GAME_INITIAL ||
+       ResourceManager::State == GAME_STARTING) return ;
     Position += Speed * deltaTime;
     if(ResourceManager::State != GAME_FINISH) {
         CollisionCheck(scene);
@@ -265,9 +266,10 @@ void Polyball::UpdatePosition(float deltaTime, Scene* scene) {
 
 //UpdateSpeed => Process Acceleration
 void Polyball::UpdateSpeed(float deltaTime) {
-    if(ResourceManager::State == GAME_INITIAL) return ;
+    if(ResourceManager::State == GAME_INITIAL ||
+       ResourceManager::State == GAME_STARTING) return ;
     if(ResourceManager::State == GAME_FINISH){
-        Speed = glm::normalize(Speed) * 0.01f;
+        Speed = glm::normalize(Speed) * 0.03f;
         wspeed = glm::length(Speed) / Radius;
         return ;
     }

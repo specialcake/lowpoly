@@ -25,6 +25,9 @@ glm::vec2 Tools::random_vec2() {
 glm::vec3 Tools::random_vec3() {
     return glm::normalize(glm::vec3(random01(), random01(), random01()));
 }
+GLfloat Tools::fmod(GLfloat a, GLfloat m) {
+    return a - (int)(a / m) * m;
+}
 GLfloat Tools::distance(glm::vec2 a, glm::vec2 b) {
     return sqrt((a.x - b.x) * (a.x - b.x) +
                 (a.y - b.y) * (a.y - b.y));

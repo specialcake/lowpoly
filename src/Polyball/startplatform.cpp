@@ -25,6 +25,7 @@ StartPlatform::StartPlatform(Model* model, Shader shader, glm::vec3 location) {
     w[3] = 2.0f;
     w[4] = 3.0f;
     w[5] = 4.0f;
+    stop[2] = stop[3] = stop[4] = stop[5] = false;
     limit[2] = glm::radians(100.0f);
     limit[3] = glm::radians(67.0f);
     limit[4] = glm::radians(26.0f);
@@ -53,15 +54,27 @@ void StartPlatform::Render(glm::mat4 PVMatrix, glm::mat4 lightSpaceMatrix, Textu
         modelptr->meshes[i].Draw(shader);
     }
     shader.setMat4("model", glm::mat4(1.0f));
-    static GLfloat cnt = 0.0f;
-    cnt += 1.0f;
     for(int i = 2; i < PartNumber; i++){
 //        shader.setVec4("RotQuat", glm::vec4(1.0f, 0.0f, 0.0f, 0.0f));
         GLfloat angle = glm::radians(w[i] * 40.0f * t);
+        if(ResourceManager::State == GAME_STARTING) {
+            if(stop[2] && stop[3] && stop[4] && stop[5]){
+                angle = limit[i];
+            }
+            else{
+                if(stop[i] == false){
+                    if(glm::abs(Tools::fmod(angle, PI) - limit[i]) < 0.05)
+                        stop[i] = true;
+                }
+                else{
+                    angle = limit[i];
+                }
+            }
+        }
         glm::quat rot = glm::quat(glm::cos(angle),
-                                  glm::sin(angle) * axis[i].x,
-                                  glm::sin(angle) * axis[i].y,
-                                  glm::sin(angle) * axis[i].z);
+                        glm::sin(angle) * axis[i].x,
+                        glm::sin(angle) * axis[i].y,
+                        glm::sin(angle) * axis[i].z);
         shader.setVec4("RotQuat", glm::vec4(rot.w, rot.x, rot.y, rot.z));
         modelptr->meshes[i].Draw(shader);
     }

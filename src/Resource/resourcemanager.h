@@ -16,8 +16,9 @@
 #include <fstream>
 
 enum GameState {
-    GAME_ACTIVE,
     GAME_INITIAL,
+    GAME_STARTING,
+    GAME_ACTIVE,
     GAME_FINISH
 };
 

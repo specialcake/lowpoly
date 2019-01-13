@@ -225,10 +225,10 @@ void Game::ProcessInput(GLfloat dt) {
         ResourceManager::followMode ^= 1;
     if(ResourceManager::Keys[GLFW_KEY_SPACE])
         start_signal = 1;
-    if(start_signal && accumulate_time < 1.0f){
-        
+    if(start_signal && accumulate_time < 2.0f){
+        ResourceManager::State = GAME_STARTING;
         accumulate_time += dt;
-        if(accumulate_time >= 1.0f)
+        if(accumulate_time >= 2.0f)
             ResourceManager::State = GAME_ACTIVE;
     }
     polyball->Cam.Front = ResourceManager::camera.Front;
@@ -265,7 +265,7 @@ void Game::Render() {
 //    SceneTexture->BeginRender();
 
     finishline->Render(PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
-    if(ResourceManager::State == GAME_INITIAL)
+    if(ResourceManager::State == GAME_INITIAL || ResourceManager::State == GAME_STARTING)
         startplatform->Render(PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
 
     scene->draw(view, PVMatrix, lightSpaceMatrix, shadowmap->DepthMap, shadowmap->BluredShadow);
