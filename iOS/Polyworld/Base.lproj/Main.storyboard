@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina4_7" orientation="landscape">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="Polyworld" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="667" height="375"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="f7Q-If-6RM">
+                                <rect key="frame" x="0.0" y="0.0" width="667" height="375"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fXe-eg-Jon">
+                                <rect key="frame" x="53" y="202" width="70" height="70"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" image="向上.png"/>
+                                <state key="highlighted" image="向上_按下.png"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8Fj-z6-2c0">
+                                <rect key="frame" x="53" y="277" width="70" height="70"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" image="向下.png"/>
+                                <state key="highlighted" image="向下_按下.png"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FTc-pg-Evq">
+                                <rect key="frame" x="491" y="280" width="70" height="70"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" image="向左.png"/>
+                                <state key="highlighted" image="向左_按下.png"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="c2z-O4-hxX">
+                                <rect key="frame" x="570" y="280" width="70" height="70"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" image="向右.png"/>
+                                <state key="highlighted" image="向右_按下.png"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4Oi-z9-eUW">
+                                <rect key="frame" x="530" y="212" width="70" height="70"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Jump" image="跳跃.png"/>
+                                <state key="highlighted" image="跳跃_按下.png"/>
+                            </button>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VAK-bP-GR2">
+                                <rect key="frame" x="570" y="7" width="40" height="40"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Screenshot" image="截屏.png"/>
+                                <state key="highlighted" image="截屏_按下.png"/>
+                                <connections>
+                                    <action selector="screenshotButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Wiq-qb-h0F"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Hea-eb-STL">
+                                <rect key="frame" x="620" y="7" width="40" height="40"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Follow" image="跟随.png"/>
+                                <state key="highlighted" image="跟随_按下.png"/>
+                                <connections>
+                                    <action selector="followButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="zkT-Rr-p6X"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="f7Q-If-6RM" secondAttribute="trailing" id="4sh-As-pmu"/>
+                            <constraint firstItem="f7Q-If-6RM" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="9KH-gv-qYl"/>
+                            <constraint firstItem="f7Q-If-6RM" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="LLk-gn-DLm"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="f7Q-If-6RM" secondAttribute="bottom" id="Wxa-Nv-q03"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="VSz-k0-QrD"/>
+                    <connections>
+                        <outlet property="backwardButton" destination="8Fj-z6-2c0" id="IlI-Sq-Kqo"/>
+                        <outlet property="followButton" destination="Hea-eb-STL" id="TGa-2O-VQ3"/>
+                        <outlet property="forwardButton" destination="fXe-eg-Jon" id="quR-HL-9ei"/>
+                        <outlet property="gameView" destination="f7Q-If-6RM" id="MTP-qK-kX9"/>
+                        <outlet property="jumpButton" destination="4Oi-z9-eUW" id="AAb-eH-FO1"/>
+                        <outlet property="leftButton" destination="FTc-pg-Evq" id="iXa-X6-5xy"/>
+                        <outlet property="rightButton" destination="c2z-O4-hxX" id="HhU-MV-WcY"/>
+                        <segue destination="Why-uw-92x" kind="show" identifier="ARmode" id="65F-wM-cMq"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="879.31034482758628" y="821.60000000000002"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="ABk-Yz-k3R">
+            <objects>
+                <viewController id="Why-uw-92x" customClass="ARViewController" customModule="Polyworld" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="f4u-HK-o9d">
+                        <rect key="frame" x="0.0" y="0.0" width="667" height="375"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <arscnView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WJC-8s-d5U">
+                                <rect key="frame" x="0.0" y="0.0" width="667" height="375"/>
+                            </arscnView>
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OeR-gi-efk">
+                                <rect key="frame" x="0.0" y="0.0" width="667" height="32"/>
+                                <items>
+                                    <navigationItem title="AR Polyball" id="Gsw-GB-3ae">
+                                        <barButtonItem key="leftBarButtonItem" systemItem="trash" id="D4Y-Qq-jZz">
+                                            <connections>
+                                                <action selector="deleteGeometry:" destination="Why-uw-92x" id="d7f-0E-COB"/>
+                                            </connections>
+                                        </barButtonItem>
+                                        <barButtonItem key="rightBarButtonItem" systemItem="refresh" id="QWf-Jv-gtV">
+                                            <connections>
+                                                <action selector="changeColor:" destination="Why-uw-92x" id="14n-sc-hs3"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="XG6-4u-Fgu" firstAttribute="bottom" secondItem="WJC-8s-d5U" secondAttribute="bottom" id="Kty-Ka-gQD"/>
+                            <constraint firstItem="XG6-4u-Fgu" firstAttribute="trailing" secondItem="WJC-8s-d5U" secondAttribute="trailing" id="aKk-y0-xeu"/>
+                            <constraint firstItem="OeR-gi-efk" firstAttribute="top" secondItem="XG6-4u-Fgu" secondAttribute="top" id="ccD-mZ-cY7"/>
+                            <constraint firstItem="OeR-gi-efk" firstAttribute="leading" secondItem="XG6-4u-Fgu" secondAttribute="leading" id="dq8-8C-48L"/>
+                            <constraint firstItem="OeR-gi-efk" firstAttribute="trailing" secondItem="XG6-4u-Fgu" secondAttribute="trailing" id="dqC-Th-25X"/>
+                            <constraint firstItem="WJC-8s-d5U" firstAttribute="top" secondItem="XG6-4u-Fgu" secondAttribute="top" id="kdx-gx-0wT"/>
+                            <constraint firstItem="WJC-8s-d5U" firstAttribute="leading" secondItem="XG6-4u-Fgu" secondAttribute="leading" id="mNb-UW-VEP"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="XG6-4u-Fgu"/>
+                    </view>
+                    <connections>
+                        <outlet property="sceneView" destination="WJC-8s-d5U" id="Y6b-ct-kIF"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2gV-yd-d6S" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="878.41079460269873" y="1884"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="向上.png" width="2062" height="2070"/>
+        <image name="向上_按下.png" width="2062" height="2070"/>
+        <image name="向下.png" width="2062" height="2070"/>
+        <image name="向下_按下.png" width="2062" height="2070"/>
+        <image name="向右.png" width="2062" height="2070"/>
+        <image name="向右_按下.png" width="2062" height="2070"/>
+        <image name="向左.png" width="2062" height="2070"/>
+        <image name="向左_按下.png" width="2062" height="2070"/>
+        <image name="截屏.png" width="2062" height="2070"/>
+        <image name="截屏_按下.png" width="2062" height="2070"/>
+        <image name="跟随.png" width="2062" height="2070"/>
+        <image name="跟随_按下.png" width="2062" height="2070"/>
+        <image name="跳跃.png" width="2062" height="2070"/>
+        <image name="跳跃_按下.png" width="2062" height="2070"/>
+    </resources>
+</document>

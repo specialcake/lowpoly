@@ -1,0 +1,901 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		900137A721DE2C4B004B4A8E /* SkymapShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 900137A621DE2C4B004B4A8E /* SkymapShader.metal */; };
+		901A7A7D21E7540100E8FD18 /* Explode.scnp in Resources */ = {isa = PBXBuildFile; fileRef = 901A7A7C21E7540100E8FD18 /* Explode.scnp */; };
+		901A7A8321E754CE00E8FD18 /* CircleParticle.png in Resources */ = {isa = PBXBuildFile; fileRef = 901A7A8221E754CE00E8FD18 /* CircleParticle.png */; };
+		901F2BA921EB542500D5E44C /* GaussblurShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 901F2BA821EB542500D5E44C /* GaussblurShader.metal */; };
+		901F2F7B21EBA4D600D5E44C /* PolyballShadowShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 901F2F7A21EBA4D600D5E44C /* PolyballShadowShader.metal */; };
+		905BA9E521E72ACF00E64755 /* ARpolyball.scn in Resources */ = {isa = PBXBuildFile; fileRef = 905BA9E421E729B200E64755 /* ARpolyball.scn */; };
+		905BA9E721E732E800E64755 /* moon.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 905BA9E621E732E800E64755 /* moon.jpg */; };
+		905BA9E921E7357D00E64755 /* mars.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 905BA9E821E7357D00E64755 /* mars.jpg */; };
+		905BA9EB21E7366E00E64755 /* sun.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 905BA9EA21E7366E00E64755 /* sun.jpg */; };
+		905BA9ED21E7368800E64755 /* venus.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 905BA9EC21E7368800E64755 /* venus.jpg */; };
+		9060E66C21DBD5D5004BFF6F /* WaterShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 9060E66B21DBD5D5004BFF6F /* WaterShader.metal */; };
+		9060E66E21DBD7A3004BFF6F /* Water.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9060E66D21DBD7A3004BFF6F /* Water.swift */; };
+		9061530B21E7BCD7004DD666 /* TimeStamp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9061530A21E7BCD7004DD666 /* TimeStamp.swift */; };
+		9068D66D21DD438200BAFA46 /* Skymap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9068D66C21DD438200BAFA46 /* Skymap.swift */; };
+		9068D66F21DD439400BAFA46 /* Skybox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9068D66E21DD439400BAFA46 /* Skybox.swift */; };
+		906C195E21E1E64F00A7FA14 /* Plane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 906C195C21E1E64F00A7FA14 /* Plane.swift */; };
+		906C195F21E1E64F00A7FA14 /* ARViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 906C195D21E1E64F00A7FA14 /* ARViewController.swift */; };
+		9075861121E88B6500375589 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9075861021E88B6500375589 /* Assets.xcassets */; };
+		9075861321E88C9B00375589 /* ShadowmapShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 9075861221E88C9B00375589 /* ShadowmapShader.metal */; };
+		907589BE21E8EBDC00375589 /* Polyball.swift in Sources */ = {isa = PBXBuildFile; fileRef = 907589BD21E8EBDC00375589 /* Polyball.swift */; };
+		907589C021E8ED9A00375589 /* PolyballShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 907589BF21E8ED9A00375589 /* PolyballShader.metal */; };
+		909A886721DB636900AE91DF /* up_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 909A885F21DB636900AE91DF /* up_normal.png */; };
+		909A886821DB636900AE91DF /* down_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 909A886021DB636900AE91DF /* down_normal.png */; };
+		909A886921DB636900AE91DF /* right_highlight.png in Resources */ = {isa = PBXBuildFile; fileRef = 909A886121DB636900AE91DF /* right_highlight.png */; };
+		909A886A21DB636900AE91DF /* left_highlight.png in Resources */ = {isa = PBXBuildFile; fileRef = 909A886221DB636900AE91DF /* left_highlight.png */; };
+		909A886B21DB636900AE91DF /* left_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 909A886321DB636900AE91DF /* left_normal.png */; };
+		909A886C21DB636900AE91DF /* down_highlight.png in Resources */ = {isa = PBXBuildFile; fileRef = 909A886421DB636900AE91DF /* down_highlight.png */; };
+		909A886D21DB636900AE91DF /* right_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 909A886521DB636900AE91DF /* right_normal.png */; };
+		909A886E21DB636900AE91DF /* up_highlight.png in Resources */ = {isa = PBXBuildFile; fileRef = 909A886621DB636900AE91DF /* up_highlight.png */; };
+		909A887021DBAB3800AE91DF /* ParallelLight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 909A886F21DBAB3800AE91DF /* ParallelLight.swift */; };
+		909DFF9921DA69B400241714 /* InstanceSceneShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 909DFF9821DA69B400241714 /* InstanceSceneShader.metal */; };
+		909DFF9B21DA8C5A00241714 /* MetalTexture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 909DFF9A21DA8C5A00241714 /* MetalTexture.swift */; };
+		909DFF9D21DAA2B000241714 /* ResourceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 909DFF9C21DAA2B000241714 /* ResourceManager.swift */; };
+		90AC44BD21E423B000AEB5CA /* Shadowmap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90AC44BC21E423B000AEB5CA /* Shadowmap.swift */; };
+		90B2AD2D21EA0CB1003330DE /* 跳跃.png in Resources */ = {isa = PBXBuildFile; fileRef = 90B2AD0B21EA0CB0003330DE /* 跳跃.png */; };
+		90B2AD2F21EA0CB1003330DE /* 跳跃_按下.png in Resources */ = {isa = PBXBuildFile; fileRef = 90B2AD0D21EA0CB0003330DE /* 跳跃_按下.png */; };
+		90B2AD3021EA0CB1003330DE /* 截屏_按下.png in Resources */ = {isa = PBXBuildFile; fileRef = 90B2AD0F21EA0CB0003330DE /* 截屏_按下.png */; };
+		90B2AD3421EA0CB1003330DE /* 截屏.png in Resources */ = {isa = PBXBuildFile; fileRef = 90B2AD1321EA0CB0003330DE /* 截屏.png */; };
+		90B2AD3521EA0CB1003330DE /* 跟随.png in Resources */ = {isa = PBXBuildFile; fileRef = 90B2AD1421EA0CB0003330DE /* 跟随.png */; };
+		90B2AD3621EA0CB1003330DE /* 不跟随.png in Resources */ = {isa = PBXBuildFile; fileRef = 90B2AD1521EA0CB0003330DE /* 不跟随.png */; };
+		90B2AD3721EA0CB1003330DE /* 不跟随_按下.png in Resources */ = {isa = PBXBuildFile; fileRef = 90B2AD1621EA0CB0003330DE /* 不跟随_按下.png */; };
+		90B2AD3B21EA0CB1003330DE /* 跟随_按下.png in Resources */ = {isa = PBXBuildFile; fileRef = 90B2AD1A21EA0CB0003330DE /* 跟随_按下.png */; };
+		90B2AD3C21EA0CB1003330DE /* 向右.png in Resources */ = {isa = PBXBuildFile; fileRef = 90B2AD1C21EA0CB1003330DE /* 向右.png */; };
+		90B2AD3E21EA0CB1003330DE /* 向上_按下.png in Resources */ = {isa = PBXBuildFile; fileRef = 90B2AD1E21EA0CB1003330DE /* 向上_按下.png */; };
+		90B2AD4521EA0CB1003330DE /* 向下_按下.png in Resources */ = {isa = PBXBuildFile; fileRef = 90B2AD2521EA0CB1003330DE /* 向下_按下.png */; };
+		90B2AD4621EA0CB1003330DE /* 向右_按下.png in Resources */ = {isa = PBXBuildFile; fileRef = 90B2AD2621EA0CB1003330DE /* 向右_按下.png */; };
+		90B2AD4721EA0CB1003330DE /* 向下.png in Resources */ = {isa = PBXBuildFile; fileRef = 90B2AD2721EA0CB1003330DE /* 向下.png */; };
+		90B2AD4821EA0CB1003330DE /* 向上.png in Resources */ = {isa = PBXBuildFile; fileRef = 90B2AD2821EA0CB1003330DE /* 向上.png */; };
+		90B2AD4921EA0CB1003330DE /* 向左.png in Resources */ = {isa = PBXBuildFile; fileRef = 90B2AD2921EA0CB1003330DE /* 向左.png */; };
+		90B2AD4B21EA0CB1003330DE /* 向左_按下.png in Resources */ = {isa = PBXBuildFile; fileRef = 90B2AD2B21EA0CB1003330DE /* 向左_按下.png */; };
+		90B4BE1C21CA572A008ECBB3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B4BE1B21CA572A008ECBB3 /* AppDelegate.swift */; };
+		90B4BE1E21CA572B008ECBB3 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B4BE1D21CA572B008ECBB3 /* ViewController.swift */; };
+		90B4BE2121CA572B008ECBB3 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 90B4BE1F21CA572B008ECBB3 /* Main.storyboard */; };
+		90B4BE2621CA572C008ECBB3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 90B4BE2421CA572C008ECBB3 /* LaunchScreen.storyboard */; };
+		90B4BE2E21CA57D8008ECBB3 /* MathUtilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B4BE2D21CA57D8008ECBB3 /* MathUtilities.swift */; };
+		90B4BE3021CA57F0008ECBB3 /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B4BE2F21CA57F0008ECBB3 /* CameraController.swift */; };
+		90B4C1A221CA5A91008ECBB3 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B4C1A121CA5A91008ECBB3 /* Config.swift */; };
+		90B4C1A521CA5BAB008ECBB3 /* Submesh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B4C1A421CA5BAB008ECBB3 /* Submesh.swift */; };
+		90B4C1A721CA5CAE008ECBB3 /* Chunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B4C1A621CA5CAE008ECBB3 /* Chunk.swift */; };
+		90B4C1A921CA6009008ECBB3 /* Scene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B4C1A821CA6009008ECBB3 /* Scene.swift */; };
+		90B4C1AB21CA6877008ECBB3 /* Noise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B4C1AA21CA6877008ECBB3 /* Noise.swift */; };
+		90B4C1AD21CA786E008ECBB3 /* SceneShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 90B4C1AC21CA786E008ECBB3 /* SceneShader.metal */; };
+		90C77A3621E7149000A8E31C /* polyball.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 90C77A3521E7149000A8E31C /* polyball.mtl */; };
+		90C77A3821E714B200A8E31C /* polyball.obj in Resources */ = {isa = PBXBuildFile; fileRef = 90C77A3721E714B200A8E31C /* polyball.obj */; };
+		90CFCD3921E11158001B4560 /* Sun.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90CFCD3721E11158001B4560 /* Sun.swift */; };
+		90CFCD3A21E11158001B4560 /* SunShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 90CFCD3821E11158001B4560 /* SunShader.metal */; };
+		90F7E44221E0797900246AFE /* SkyboxShader.metal in Sources */ = {isa = PBXBuildFile; fileRef = 90F7E44121E0797900246AFE /* SkyboxShader.metal */; };
+		90F7E48421E0F56100246AFE /* body_showroom_ddn.png in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E46F21E0F56100246AFE /* body_showroom_ddn.png */; };
+		90F7E48521E0F56100246AFE /* helmet_showroom_ddn.png in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E47021E0F56100246AFE /* helmet_showroom_ddn.png */; };
+		90F7E48621E0F56100246AFE /* arm_showroom_ddn.png in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E47121E0F56100246AFE /* arm_showroom_ddn.png */; };
+		90F7E48721E0F56100246AFE /* arm_showroom_spec.png in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E47221E0F56100246AFE /* arm_showroom_spec.png */; };
+		90F7E48821E0F56100246AFE /* leg_dif.png in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E47321E0F56100246AFE /* leg_dif.png */; };
+		90F7E48921E0F56100246AFE /* hand_showroom_spec.png in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E47421E0F56100246AFE /* hand_showroom_spec.png */; };
+		90F7E48A21E0F56100246AFE /* glass_ddn.png in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E47521E0F56100246AFE /* glass_ddn.png */; };
+		90F7E48B21E0F56100246AFE /* nanosuit.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E47621E0F56100246AFE /* nanosuit.mtl */; };
+		90F7E48C21E0F56100246AFE /* body_dif.png in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E47721E0F56100246AFE /* body_dif.png */; };
+		90F7E48D21E0F56100246AFE /* hand_showroom_ddn.png in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E47821E0F56100246AFE /* hand_showroom_ddn.png */; };
+		90F7E48E21E0F56100246AFE /* glass_dif.png in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E47921E0F56100246AFE /* glass_dif.png */; };
+		90F7E48F21E0F56100246AFE /* arm_dif.png in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E47A21E0F56100246AFE /* arm_dif.png */; };
+		90F7E49021E0F56100246AFE /* nanosuit.blend in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E47B21E0F56100246AFE /* nanosuit.blend */; };
+		90F7E49121E0F56100246AFE /* helmet_diff.png in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E47C21E0F56100246AFE /* helmet_diff.png */; };
+		90F7E49221E0F56100246AFE /* nanosuit.obj in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E47D21E0F56100246AFE /* nanosuit.obj */; };
+		90F7E49321E0F56100246AFE /* leg_showroom_ddn.png in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E47E21E0F56100246AFE /* leg_showroom_ddn.png */; };
+		90F7E49421E0F56100246AFE /* LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E47F21E0F56100246AFE /* LICENSE.txt */; };
+		90F7E49521E0F56100246AFE /* helmet_showroom_spec.png in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E48021E0F56100246AFE /* helmet_showroom_spec.png */; };
+		90F7E49621E0F56100246AFE /* leg_showroom_spec.png in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E48121E0F56100246AFE /* leg_showroom_spec.png */; };
+		90F7E49721E0F56100246AFE /* body_showroom_spec.png in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E48221E0F56100246AFE /* body_showroom_spec.png */; };
+		90F7E49821E0F56100246AFE /* hand_dif.png in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E48321E0F56100246AFE /* hand_dif.png */; };
+		90F7E4A621E102F500246AFE /* garage_pmrem.ktx in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E49C21E102F500246AFE /* garage_pmrem.ktx */; };
+		90F7E4A721E102F500246AFE /* helmet_normal.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E49D21E102F500246AFE /* helmet_normal.jpg */; };
+		90F7E4A821E102F500246AFE /* scene.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E49E21E102F500246AFE /* scene.mtl */; };
+		90F7E4A921E102F500246AFE /* helmet_roughness.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E49F21E102F500246AFE /* helmet_roughness.jpg */; };
+		90F7E4AA21E102F500246AFE /* scene.obj in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E4A021E102F500246AFE /* scene.obj */; };
+		90F7E4AB21E102F500246AFE /* helmet_baseColor.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E4A121E102F500246AFE /* helmet_baseColor.jpg */; };
+		90F7E4AC21E102F500246AFE /* helmet_baseColor.png in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E4A221E102F500246AFE /* helmet_baseColor.png */; };
+		90F7E4AD21E102F500246AFE /* loft_pmrem.ktx in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E4A321E102F500246AFE /* loft_pmrem.ktx */; };
+		90F7E4AE21E102F500246AFE /* helmet_metallicRoughness.png in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E4A421E102F500246AFE /* helmet_metallicRoughness.png */; };
+		90F7E4AF21E102F500246AFE /* helmet_metallic.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E4A521E102F500246AFE /* helmet_metallic.jpg */; };
+		90F7E85421E10D6100246AFE /* widetree.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E84921E10D6000246AFE /* widetree.mtl */; };
+		90F7E85521E10D6100246AFE /* widetree.obj in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E84A21E10D6000246AFE /* widetree.obj */; };
+		90F7E85621E10D6100246AFE /* bushytree.obj in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E84C21E10D6000246AFE /* bushytree.obj */; };
+		90F7E85721E10D6100246AFE /* bushytree.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E84D21E10D6000246AFE /* bushytree.mtl */; };
+		90F7E85A21E10D6100246AFE /* crystal.mtl in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E85221E10D6100246AFE /* crystal.mtl */; };
+		90F7E85B21E10D6100246AFE /* crystal.obj in Resources */ = {isa = PBXBuildFile; fileRef = 90F7E85321E10D6100246AFE /* crystal.obj */; };
+		90F7E85E21E1106800246AFE /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90F7E46C21E0F53100246AFE /* Renderer.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		900137A621DE2C4B004B4A8E /* SkymapShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = SkymapShader.metal; sourceTree = "<group>"; };
+		901A7A7C21E7540100E8FD18 /* Explode.scnp */ = {isa = PBXFileReference; lastKnownFileType = file.scp; path = Explode.scnp; sourceTree = "<group>"; };
+		901A7A8221E754CE00E8FD18 /* CircleParticle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = CircleParticle.png; sourceTree = "<group>"; };
+		901F2BA821EB542500D5E44C /* GaussblurShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = GaussblurShader.metal; sourceTree = "<group>"; };
+		901F2F7A21EBA4D600D5E44C /* PolyballShadowShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = PolyballShadowShader.metal; sourceTree = "<group>"; };
+		905BA9E421E729B200E64755 /* ARpolyball.scn */ = {isa = PBXFileReference; lastKnownFileType = file.bplist; path = ARpolyball.scn; sourceTree = "<group>"; };
+		905BA9E621E732E800E64755 /* moon.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = moon.jpg; sourceTree = "<group>"; };
+		905BA9E821E7357D00E64755 /* mars.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = mars.jpg; sourceTree = "<group>"; };
+		905BA9EA21E7366E00E64755 /* sun.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = sun.jpg; sourceTree = "<group>"; };
+		905BA9EC21E7368800E64755 /* venus.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = venus.jpg; sourceTree = "<group>"; };
+		9060E66B21DBD5D5004BFF6F /* WaterShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = WaterShader.metal; sourceTree = "<group>"; };
+		9060E66D21DBD7A3004BFF6F /* Water.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Water.swift; sourceTree = "<group>"; };
+		9061530A21E7BCD7004DD666 /* TimeStamp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeStamp.swift; sourceTree = "<group>"; };
+		9068D66C21DD438200BAFA46 /* Skymap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Skymap.swift; sourceTree = "<group>"; };
+		9068D66E21DD439400BAFA46 /* Skybox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Skybox.swift; sourceTree = "<group>"; };
+		906C195C21E1E64F00A7FA14 /* Plane.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Plane.swift; sourceTree = "<group>"; };
+		906C195D21E1E64F00A7FA14 /* ARViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ARViewController.swift; sourceTree = "<group>"; };
+		9075861021E88B6500375589 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		9075861221E88C9B00375589 /* ShadowmapShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = ShadowmapShader.metal; sourceTree = "<group>"; };
+		907589BD21E8EBDC00375589 /* Polyball.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Polyball.swift; sourceTree = "<group>"; };
+		907589BF21E8ED9A00375589 /* PolyballShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = PolyballShader.metal; sourceTree = "<group>"; };
+		909A885F21DB636900AE91DF /* up_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = up_normal.png; sourceTree = "<group>"; };
+		909A886021DB636900AE91DF /* down_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = down_normal.png; sourceTree = "<group>"; };
+		909A886121DB636900AE91DF /* right_highlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = right_highlight.png; sourceTree = "<group>"; };
+		909A886221DB636900AE91DF /* left_highlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = left_highlight.png; sourceTree = "<group>"; };
+		909A886321DB636900AE91DF /* left_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = left_normal.png; sourceTree = "<group>"; };
+		909A886421DB636900AE91DF /* down_highlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = down_highlight.png; sourceTree = "<group>"; };
+		909A886521DB636900AE91DF /* right_normal.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = right_normal.png; sourceTree = "<group>"; };
+		909A886621DB636900AE91DF /* up_highlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = up_highlight.png; sourceTree = "<group>"; };
+		909A886F21DBAB3800AE91DF /* ParallelLight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParallelLight.swift; sourceTree = "<group>"; };
+		909DFF9821DA69B400241714 /* InstanceSceneShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = InstanceSceneShader.metal; sourceTree = "<group>"; };
+		909DFF9A21DA8C5A00241714 /* MetalTexture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetalTexture.swift; sourceTree = "<group>"; };
+		909DFF9C21DAA2B000241714 /* ResourceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ResourceManager.swift; path = Polyworld/Tool/ResourceManager.swift; sourceTree = SOURCE_ROOT; };
+		90AC44BC21E423B000AEB5CA /* Shadowmap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shadowmap.swift; sourceTree = "<group>"; };
+		90B2AD0B21EA0CB0003330DE /* 跳跃.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "跳跃.png"; sourceTree = "<group>"; };
+		90B2AD0D21EA0CB0003330DE /* 跳跃_按下.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "跳跃_按下.png"; sourceTree = "<group>"; };
+		90B2AD0F21EA0CB0003330DE /* 截屏_按下.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "截屏_按下.png"; sourceTree = "<group>"; };
+		90B2AD1321EA0CB0003330DE /* 截屏.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "截屏.png"; sourceTree = "<group>"; };
+		90B2AD1421EA0CB0003330DE /* 跟随.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "跟随.png"; sourceTree = "<group>"; };
+		90B2AD1521EA0CB0003330DE /* 不跟随.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "不跟随.png"; sourceTree = "<group>"; };
+		90B2AD1621EA0CB0003330DE /* 不跟随_按下.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "不跟随_按下.png"; sourceTree = "<group>"; };
+		90B2AD1A21EA0CB0003330DE /* 跟随_按下.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "跟随_按下.png"; sourceTree = "<group>"; };
+		90B2AD1C21EA0CB1003330DE /* 向右.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "向右.png"; sourceTree = "<group>"; };
+		90B2AD1E21EA0CB1003330DE /* 向上_按下.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "向上_按下.png"; sourceTree = "<group>"; };
+		90B2AD2521EA0CB1003330DE /* 向下_按下.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "向下_按下.png"; sourceTree = "<group>"; };
+		90B2AD2621EA0CB1003330DE /* 向右_按下.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "向右_按下.png"; sourceTree = "<group>"; };
+		90B2AD2721EA0CB1003330DE /* 向下.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "向下.png"; sourceTree = "<group>"; };
+		90B2AD2821EA0CB1003330DE /* 向上.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "向上.png"; sourceTree = "<group>"; };
+		90B2AD2921EA0CB1003330DE /* 向左.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "向左.png"; sourceTree = "<group>"; };
+		90B2AD2B21EA0CB1003330DE /* 向左_按下.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "向左_按下.png"; sourceTree = "<group>"; };
+		90B4BE1821CA572A008ECBB3 /* Polyworld.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Polyworld.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		90B4BE1B21CA572A008ECBB3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		90B4BE1D21CA572B008ECBB3 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		90B4BE2021CA572B008ECBB3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		90B4BE2521CA572C008ECBB3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		90B4BE2721CA572C008ECBB3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		90B4BE2D21CA57D8008ECBB3 /* MathUtilities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MathUtilities.swift; sourceTree = "<group>"; };
+		90B4BE2F21CA57F0008ECBB3 /* CameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
+		90B4C1A121CA5A91008ECBB3 /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
+		90B4C1A421CA5BAB008ECBB3 /* Submesh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Submesh.swift; sourceTree = "<group>"; };
+		90B4C1A621CA5CAE008ECBB3 /* Chunk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chunk.swift; sourceTree = "<group>"; };
+		90B4C1A821CA6009008ECBB3 /* Scene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scene.swift; sourceTree = "<group>"; };
+		90B4C1AA21CA6877008ECBB3 /* Noise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Noise.swift; sourceTree = "<group>"; };
+		90B4C1AC21CA786E008ECBB3 /* SceneShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = SceneShader.metal; sourceTree = "<group>"; };
+		90C77A3521E7149000A8E31C /* polyball.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = polyball.mtl; sourceTree = "<group>"; };
+		90C77A3721E714B200A8E31C /* polyball.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = polyball.obj; sourceTree = "<group>"; };
+		90CFCD3721E11158001B4560 /* Sun.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sun.swift; sourceTree = "<group>"; };
+		90CFCD3821E11158001B4560 /* SunShader.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; path = SunShader.metal; sourceTree = "<group>"; };
+		90F7E44121E0797900246AFE /* SkyboxShader.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = SkyboxShader.metal; sourceTree = "<group>"; };
+		90F7E46C21E0F53100246AFE /* Renderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
+		90F7E46F21E0F56100246AFE /* body_showroom_ddn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = body_showroom_ddn.png; sourceTree = "<group>"; };
+		90F7E47021E0F56100246AFE /* helmet_showroom_ddn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = helmet_showroom_ddn.png; sourceTree = "<group>"; };
+		90F7E47121E0F56100246AFE /* arm_showroom_ddn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arm_showroom_ddn.png; sourceTree = "<group>"; };
+		90F7E47221E0F56100246AFE /* arm_showroom_spec.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arm_showroom_spec.png; sourceTree = "<group>"; };
+		90F7E47321E0F56100246AFE /* leg_dif.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = leg_dif.png; sourceTree = "<group>"; };
+		90F7E47421E0F56100246AFE /* hand_showroom_spec.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hand_showroom_spec.png; sourceTree = "<group>"; };
+		90F7E47521E0F56100246AFE /* glass_ddn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = glass_ddn.png; sourceTree = "<group>"; };
+		90F7E47621E0F56100246AFE /* nanosuit.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = nanosuit.mtl; sourceTree = "<group>"; };
+		90F7E47721E0F56100246AFE /* body_dif.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = body_dif.png; sourceTree = "<group>"; };
+		90F7E47821E0F56100246AFE /* hand_showroom_ddn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hand_showroom_ddn.png; sourceTree = "<group>"; };
+		90F7E47921E0F56100246AFE /* glass_dif.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = glass_dif.png; sourceTree = "<group>"; };
+		90F7E47A21E0F56100246AFE /* arm_dif.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arm_dif.png; sourceTree = "<group>"; };
+		90F7E47B21E0F56100246AFE /* nanosuit.blend */ = {isa = PBXFileReference; lastKnownFileType = file; path = nanosuit.blend; sourceTree = "<group>"; };
+		90F7E47C21E0F56100246AFE /* helmet_diff.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = helmet_diff.png; sourceTree = "<group>"; };
+		90F7E47D21E0F56100246AFE /* nanosuit.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = nanosuit.obj; sourceTree = "<group>"; };
+		90F7E47E21E0F56100246AFE /* leg_showroom_ddn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = leg_showroom_ddn.png; sourceTree = "<group>"; };
+		90F7E47F21E0F56100246AFE /* LICENSE.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE.txt; sourceTree = "<group>"; };
+		90F7E48021E0F56100246AFE /* helmet_showroom_spec.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = helmet_showroom_spec.png; sourceTree = "<group>"; };
+		90F7E48121E0F56100246AFE /* leg_showroom_spec.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = leg_showroom_spec.png; sourceTree = "<group>"; };
+		90F7E48221E0F56100246AFE /* body_showroom_spec.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = body_showroom_spec.png; sourceTree = "<group>"; };
+		90F7E48321E0F56100246AFE /* hand_dif.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = hand_dif.png; sourceTree = "<group>"; };
+		90F7E49C21E102F500246AFE /* garage_pmrem.ktx */ = {isa = PBXFileReference; lastKnownFileType = file; path = garage_pmrem.ktx; sourceTree = "<group>"; };
+		90F7E49D21E102F500246AFE /* helmet_normal.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = helmet_normal.jpg; sourceTree = "<group>"; };
+		90F7E49E21E102F500246AFE /* scene.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = scene.mtl; sourceTree = "<group>"; };
+		90F7E49F21E102F500246AFE /* helmet_roughness.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = helmet_roughness.jpg; sourceTree = "<group>"; };
+		90F7E4A021E102F500246AFE /* scene.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = scene.obj; sourceTree = "<group>"; };
+		90F7E4A121E102F500246AFE /* helmet_baseColor.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = helmet_baseColor.jpg; sourceTree = "<group>"; };
+		90F7E4A221E102F500246AFE /* helmet_baseColor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = helmet_baseColor.png; sourceTree = "<group>"; };
+		90F7E4A321E102F500246AFE /* loft_pmrem.ktx */ = {isa = PBXFileReference; lastKnownFileType = file; path = loft_pmrem.ktx; sourceTree = "<group>"; };
+		90F7E4A421E102F500246AFE /* helmet_metallicRoughness.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = helmet_metallicRoughness.png; sourceTree = "<group>"; };
+		90F7E4A521E102F500246AFE /* helmet_metallic.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = helmet_metallic.jpg; sourceTree = "<group>"; };
+		90F7E84921E10D6000246AFE /* widetree.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = widetree.mtl; sourceTree = "<group>"; };
+		90F7E84A21E10D6000246AFE /* widetree.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = widetree.obj; sourceTree = "<group>"; };
+		90F7E84C21E10D6000246AFE /* bushytree.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bushytree.obj; sourceTree = "<group>"; };
+		90F7E84D21E10D6000246AFE /* bushytree.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bushytree.mtl; sourceTree = "<group>"; };
+		90F7E85221E10D6100246AFE /* crystal.mtl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = crystal.mtl; sourceTree = "<group>"; };
+		90F7E85321E10D6100246AFE /* crystal.obj */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = crystal.obj; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		90B4BE1521CA572A008ECBB3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		9031781321DA1E4A00D18E39 /* Shader */ = {
+			isa = PBXGroup;
+			children = (
+				90B4C1AC21CA786E008ECBB3 /* SceneShader.metal */,
+				909DFF9821DA69B400241714 /* InstanceSceneShader.metal */,
+				9060E66B21DBD5D5004BFF6F /* WaterShader.metal */,
+				900137A621DE2C4B004B4A8E /* SkymapShader.metal */,
+				90F7E44121E0797900246AFE /* SkyboxShader.metal */,
+				90CFCD3821E11158001B4560 /* SunShader.metal */,
+				9075861221E88C9B00375589 /* ShadowmapShader.metal */,
+				901F2BA821EB542500D5E44C /* GaussblurShader.metal */,
+				907589BF21E8ED9A00375589 /* PolyballShader.metal */,
+				901F2F7A21EBA4D600D5E44C /* PolyballShadowShader.metal */,
+			);
+			path = Shader;
+			sourceTree = "<group>";
+		};
+		905A835C21E1F48C00A03EE9 /* AR */ = {
+			isa = PBXGroup;
+			children = (
+				906C195D21E1E64F00A7FA14 /* ARViewController.swift */,
+				906C195C21E1E64F00A7FA14 /* Plane.swift */,
+			);
+			path = AR;
+			sourceTree = "<group>";
+		};
+		905BA9EE21E736D800E64755 /* planet */ = {
+			isa = PBXGroup;
+			children = (
+				905BA9E621E732E800E64755 /* moon.jpg */,
+				905BA9E821E7357D00E64755 /* mars.jpg */,
+				905BA9EA21E7366E00E64755 /* sun.jpg */,
+				905BA9EC21E7368800E64755 /* venus.jpg */,
+			);
+			path = planet;
+			sourceTree = "<group>";
+		};
+		909A885E21DB636900AE91DF /* button */ = {
+			isa = PBXGroup;
+			children = (
+				90B2AD1B21EA0CB1003330DE /* 方向键 */,
+				90B2AD0E21EA0CB0003330DE /* 辅助功能 */,
+				90B2AD0921EA0CB0003330DE /* Jump */,
+				90B2AD4C21EA0CD9003330DE /* Temp */,
+			);
+			path = button;
+			sourceTree = "<group>";
+		};
+		90B2AD0921EA0CB0003330DE /* Jump */ = {
+			isa = PBXGroup;
+			children = (
+				90B2AD0B21EA0CB0003330DE /* 跳跃.png */,
+				90B2AD0D21EA0CB0003330DE /* 跳跃_按下.png */,
+			);
+			path = Jump;
+			sourceTree = "<group>";
+		};
+		90B2AD0E21EA0CB0003330DE /* 辅助功能 */ = {
+			isa = PBXGroup;
+			children = (
+				90B2AD0F21EA0CB0003330DE /* 截屏_按下.png */,
+				90B2AD1321EA0CB0003330DE /* 截屏.png */,
+				90B2AD1421EA0CB0003330DE /* 跟随.png */,
+				90B2AD1521EA0CB0003330DE /* 不跟随.png */,
+				90B2AD1621EA0CB0003330DE /* 不跟随_按下.png */,
+				90B2AD1A21EA0CB0003330DE /* 跟随_按下.png */,
+			);
+			path = "辅助功能";
+			sourceTree = "<group>";
+		};
+		90B2AD1B21EA0CB1003330DE /* 方向键 */ = {
+			isa = PBXGroup;
+			children = (
+				90B2AD1C21EA0CB1003330DE /* 向右.png */,
+				90B2AD1E21EA0CB1003330DE /* 向上_按下.png */,
+				90B2AD2521EA0CB1003330DE /* 向下_按下.png */,
+				90B2AD2621EA0CB1003330DE /* 向右_按下.png */,
+				90B2AD2721EA0CB1003330DE /* 向下.png */,
+				90B2AD2821EA0CB1003330DE /* 向上.png */,
+				90B2AD2921EA0CB1003330DE /* 向左.png */,
+				90B2AD2B21EA0CB1003330DE /* 向左_按下.png */,
+			);
+			path = "方向键";
+			sourceTree = "<group>";
+		};
+		90B2AD4C21EA0CD9003330DE /* Temp */ = {
+			isa = PBXGroup;
+			children = (
+				909A885F21DB636900AE91DF /* up_normal.png */,
+				909A886621DB636900AE91DF /* up_highlight.png */,
+				909A886021DB636900AE91DF /* down_normal.png */,
+				909A886421DB636900AE91DF /* down_highlight.png */,
+				909A886321DB636900AE91DF /* left_normal.png */,
+				909A886221DB636900AE91DF /* left_highlight.png */,
+				909A886521DB636900AE91DF /* right_normal.png */,
+				909A886121DB636900AE91DF /* right_highlight.png */,
+			);
+			path = Temp;
+			sourceTree = "<group>";
+		};
+		90B4BE0F21CA572A008ECBB3 = {
+			isa = PBXGroup;
+			children = (
+				90B4BE1A21CA572A008ECBB3 /* Polyworld */,
+				90B4BE1921CA572A008ECBB3 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		90B4BE1921CA572A008ECBB3 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				90B4BE1821CA572A008ECBB3 /* Polyworld.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		90B4BE1A21CA572A008ECBB3 /* Polyworld */ = {
+			isa = PBXGroup;
+			children = (
+				90B4C1A121CA5A91008ECBB3 /* Config.swift */,
+				90F7E49B21E102F500246AFE /* Resource */,
+				9031781321DA1E4A00D18E39 /* Shader */,
+				90F7E44321E0832100246AFE /* Skybox */,
+				90B4C1A321CA5B98008ECBB3 /* Scene */,
+				90F7E44421E0833C00246AFE /* Tool */,
+				90CFCD3B21E11AAC001B4560 /* Model */,
+				905A835C21E1F48C00A03EE9 /* AR */,
+				90B4BE1B21CA572A008ECBB3 /* AppDelegate.swift */,
+				90B4BE1D21CA572B008ECBB3 /* ViewController.swift */,
+				9075861021E88B6500375589 /* Assets.xcassets */,
+				90B4BE1F21CA572B008ECBB3 /* Main.storyboard */,
+				90B4BE2421CA572C008ECBB3 /* LaunchScreen.storyboard */,
+				90B4BE2721CA572C008ECBB3 /* Info.plist */,
+			);
+			path = Polyworld;
+			sourceTree = "<group>";
+		};
+		90B4C1A321CA5B98008ECBB3 /* Scene */ = {
+			isa = PBXGroup;
+			children = (
+				90B4C1AA21CA6877008ECBB3 /* Noise.swift */,
+				90B4C1A421CA5BAB008ECBB3 /* Submesh.swift */,
+				90B4C1A621CA5CAE008ECBB3 /* Chunk.swift */,
+				90B4C1A821CA6009008ECBB3 /* Scene.swift */,
+				9060E66D21DBD7A3004BFF6F /* Water.swift */,
+				90AC44BC21E423B000AEB5CA /* Shadowmap.swift */,
+			);
+			path = Scene;
+			sourceTree = "<group>";
+		};
+		90CFCD3B21E11AAC001B4560 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				909A886F21DBAB3800AE91DF /* ParallelLight.swift */,
+				90CFCD3721E11158001B4560 /* Sun.swift */,
+				907589BD21E8EBDC00375589 /* Polyball.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		90F7E44321E0832100246AFE /* Skybox */ = {
+			isa = PBXGroup;
+			children = (
+				9068D66C21DD438200BAFA46 /* Skymap.swift */,
+				9068D66E21DD439400BAFA46 /* Skybox.swift */,
+			);
+			path = Skybox;
+			sourceTree = "<group>";
+		};
+		90F7E44421E0833C00246AFE /* Tool */ = {
+			isa = PBXGroup;
+			children = (
+				9061530A21E7BCD7004DD666 /* TimeStamp.swift */,
+				90F7E46C21E0F53100246AFE /* Renderer.swift */,
+				90B4BE2D21CA57D8008ECBB3 /* MathUtilities.swift */,
+				909DFF9A21DA8C5A00241714 /* MetalTexture.swift */,
+				909DFF9C21DAA2B000241714 /* ResourceManager.swift */,
+				90B4BE2F21CA57F0008ECBB3 /* CameraController.swift */,
+			);
+			path = Tool;
+			sourceTree = "<group>";
+		};
+		90F7E46E21E0F56100246AFE /* nanosuit */ = {
+			isa = PBXGroup;
+			children = (
+				90F7E46F21E0F56100246AFE /* body_showroom_ddn.png */,
+				90F7E47021E0F56100246AFE /* helmet_showroom_ddn.png */,
+				90F7E47121E0F56100246AFE /* arm_showroom_ddn.png */,
+				90F7E47221E0F56100246AFE /* arm_showroom_spec.png */,
+				90F7E47321E0F56100246AFE /* leg_dif.png */,
+				90F7E47421E0F56100246AFE /* hand_showroom_spec.png */,
+				90F7E47521E0F56100246AFE /* glass_ddn.png */,
+				90F7E47621E0F56100246AFE /* nanosuit.mtl */,
+				90F7E47721E0F56100246AFE /* body_dif.png */,
+				90F7E47821E0F56100246AFE /* hand_showroom_ddn.png */,
+				90F7E47921E0F56100246AFE /* glass_dif.png */,
+				90F7E47A21E0F56100246AFE /* arm_dif.png */,
+				90F7E47B21E0F56100246AFE /* nanosuit.blend */,
+				90F7E47C21E0F56100246AFE /* helmet_diff.png */,
+				90F7E47D21E0F56100246AFE /* nanosuit.obj */,
+				90F7E47E21E0F56100246AFE /* leg_showroom_ddn.png */,
+				90F7E47F21E0F56100246AFE /* LICENSE.txt */,
+				90F7E48021E0F56100246AFE /* helmet_showroom_spec.png */,
+				90F7E48121E0F56100246AFE /* leg_showroom_spec.png */,
+				90F7E48221E0F56100246AFE /* body_showroom_spec.png */,
+				90F7E48321E0F56100246AFE /* hand_dif.png */,
+			);
+			path = nanosuit;
+			sourceTree = "<group>";
+		};
+		90F7E49B21E102F500246AFE /* Resource */ = {
+			isa = PBXGroup;
+			children = (
+				905BA9EE21E736D800E64755 /* planet */,
+				909A885E21DB636900AE91DF /* button */,
+				90F7E46E21E0F56100246AFE /* nanosuit */,
+				90F7E4B021E106E700246AFE /* helmet */,
+				90F7E84B21E10D6000246AFE /* bushytree */,
+				90F7E85121E10D6100246AFE /* crystal */,
+				90F7E84E21E10D6100246AFE /* polyball */,
+				90F7E84821E10D6000246AFE /* widetree */,
+			);
+			path = Resource;
+			sourceTree = "<group>";
+		};
+		90F7E4B021E106E700246AFE /* helmet */ = {
+			isa = PBXGroup;
+			children = (
+				90F7E49C21E102F500246AFE /* garage_pmrem.ktx */,
+				90F7E49D21E102F500246AFE /* helmet_normal.jpg */,
+				90F7E49E21E102F500246AFE /* scene.mtl */,
+				90F7E49F21E102F500246AFE /* helmet_roughness.jpg */,
+				90F7E4A021E102F500246AFE /* scene.obj */,
+				90F7E4A121E102F500246AFE /* helmet_baseColor.jpg */,
+				90F7E4A221E102F500246AFE /* helmet_baseColor.png */,
+				90F7E4A321E102F500246AFE /* loft_pmrem.ktx */,
+				90F7E4A421E102F500246AFE /* helmet_metallicRoughness.png */,
+				90F7E4A521E102F500246AFE /* helmet_metallic.jpg */,
+			);
+			path = helmet;
+			sourceTree = "<group>";
+		};
+		90F7E84821E10D6000246AFE /* widetree */ = {
+			isa = PBXGroup;
+			children = (
+				90F7E84921E10D6000246AFE /* widetree.mtl */,
+				90F7E84A21E10D6000246AFE /* widetree.obj */,
+			);
+			path = widetree;
+			sourceTree = "<group>";
+		};
+		90F7E84B21E10D6000246AFE /* bushytree */ = {
+			isa = PBXGroup;
+			children = (
+				90F7E84C21E10D6000246AFE /* bushytree.obj */,
+				90F7E84D21E10D6000246AFE /* bushytree.mtl */,
+			);
+			path = bushytree;
+			sourceTree = "<group>";
+		};
+		90F7E84E21E10D6100246AFE /* polyball */ = {
+			isa = PBXGroup;
+			children = (
+				90C77A3521E7149000A8E31C /* polyball.mtl */,
+				90C77A3721E714B200A8E31C /* polyball.obj */,
+				905BA9E421E729B200E64755 /* ARpolyball.scn */,
+				901A7A7C21E7540100E8FD18 /* Explode.scnp */,
+				901A7A8221E754CE00E8FD18 /* CircleParticle.png */,
+			);
+			path = polyball;
+			sourceTree = "<group>";
+		};
+		90F7E85121E10D6100246AFE /* crystal */ = {
+			isa = PBXGroup;
+			children = (
+				90F7E85221E10D6100246AFE /* crystal.mtl */,
+				90F7E85321E10D6100246AFE /* crystal.obj */,
+			);
+			path = crystal;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		90B4BE1721CA572A008ECBB3 /* Polyworld */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 90B4BE2A21CA572C008ECBB3 /* Build configuration list for PBXNativeTarget "Polyworld" */;
+			buildPhases = (
+				90B4BE1421CA572A008ECBB3 /* Sources */,
+				90B4BE1521CA572A008ECBB3 /* Frameworks */,
+				90B4BE1621CA572A008ECBB3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Polyworld;
+			productName = Polyworld;
+			productReference = 90B4BE1821CA572A008ECBB3 /* Polyworld.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		90B4BE1021CA572A008ECBB3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1010;
+				LastUpgradeCheck = 1010;
+				ORGANIZATIONNAME = Sxy;
+				TargetAttributes = {
+					90B4BE1721CA572A008ECBB3 = {
+						CreatedOnToolsVersion = 10.1;
+					};
+				};
+			};
+			buildConfigurationList = 90B4BE1321CA572A008ECBB3 /* Build configuration list for PBXProject "Polyworld" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 90B4BE0F21CA572A008ECBB3;
+			productRefGroup = 90B4BE1921CA572A008ECBB3 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				90B4BE1721CA572A008ECBB3 /* Polyworld */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		90B4BE1621CA572A008ECBB3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				90C77A3821E714B200A8E31C /* polyball.obj in Resources */,
+				90F7E4AD21E102F500246AFE /* loft_pmrem.ktx in Resources */,
+				90F7E48921E0F56100246AFE /* hand_showroom_spec.png in Resources */,
+				90F7E48B21E0F56100246AFE /* nanosuit.mtl in Resources */,
+				90F7E4AE21E102F500246AFE /* helmet_metallicRoughness.png in Resources */,
+				90F7E48521E0F56100246AFE /* helmet_showroom_ddn.png in Resources */,
+				909A886C21DB636900AE91DF /* down_highlight.png in Resources */,
+				90F7E49321E0F56100246AFE /* leg_showroom_ddn.png in Resources */,
+				90F7E49621E0F56100246AFE /* leg_showroom_spec.png in Resources */,
+				90F7E85B21E10D6100246AFE /* crystal.obj in Resources */,
+				90F7E4AC21E102F500246AFE /* helmet_baseColor.png in Resources */,
+				90B2AD3521EA0CB1003330DE /* 跟随.png in Resources */,
+				90F7E48E21E0F56100246AFE /* glass_dif.png in Resources */,
+				90F7E85521E10D6100246AFE /* widetree.obj in Resources */,
+				90F7E4A921E102F500246AFE /* helmet_roughness.jpg in Resources */,
+				90B4BE2621CA572C008ECBB3 /* LaunchScreen.storyboard in Resources */,
+				909A886821DB636900AE91DF /* down_normal.png in Resources */,
+				905BA9E921E7357D00E64755 /* mars.jpg in Resources */,
+				909A886D21DB636900AE91DF /* right_normal.png in Resources */,
+				90B2AD4521EA0CB1003330DE /* 向下_按下.png in Resources */,
+				905BA9EB21E7366E00E64755 /* sun.jpg in Resources */,
+				90F7E48D21E0F56100246AFE /* hand_showroom_ddn.png in Resources */,
+				90F7E48C21E0F56100246AFE /* body_dif.png in Resources */,
+				901A7A8321E754CE00E8FD18 /* CircleParticle.png in Resources */,
+				9075861121E88B6500375589 /* Assets.xcassets in Resources */,
+				90B2AD3721EA0CB1003330DE /* 不跟随_按下.png in Resources */,
+				90B2AD2D21EA0CB1003330DE /* 跳跃.png in Resources */,
+				90F7E49821E0F56100246AFE /* hand_dif.png in Resources */,
+				90F7E49021E0F56100246AFE /* nanosuit.blend in Resources */,
+				90B2AD4821EA0CB1003330DE /* 向上.png in Resources */,
+				909A886A21DB636900AE91DF /* left_highlight.png in Resources */,
+				90F7E4AF21E102F500246AFE /* helmet_metallic.jpg in Resources */,
+				90B2AD2F21EA0CB1003330DE /* 跳跃_按下.png in Resources */,
+				90B2AD3021EA0CB1003330DE /* 截屏_按下.png in Resources */,
+				909A886721DB636900AE91DF /* up_normal.png in Resources */,
+				905BA9E721E732E800E64755 /* moon.jpg in Resources */,
+				90F7E48721E0F56100246AFE /* arm_showroom_spec.png in Resources */,
+				90F7E4A821E102F500246AFE /* scene.mtl in Resources */,
+				90F7E4A621E102F500246AFE /* garage_pmrem.ktx in Resources */,
+				90F7E48821E0F56100246AFE /* leg_dif.png in Resources */,
+				90F7E85621E10D6100246AFE /* bushytree.obj in Resources */,
+				909A886921DB636900AE91DF /* right_highlight.png in Resources */,
+				90F7E49221E0F56100246AFE /* nanosuit.obj in Resources */,
+				90F7E85721E10D6100246AFE /* bushytree.mtl in Resources */,
+				90F7E4AB21E102F500246AFE /* helmet_baseColor.jpg in Resources */,
+				909A886B21DB636900AE91DF /* left_normal.png in Resources */,
+				90F7E4AA21E102F500246AFE /* scene.obj in Resources */,
+				90F7E48421E0F56100246AFE /* body_showroom_ddn.png in Resources */,
+				90F7E49421E0F56100246AFE /* LICENSE.txt in Resources */,
+				905BA9ED21E7368800E64755 /* venus.jpg in Resources */,
+				90B2AD4621EA0CB1003330DE /* 向右_按下.png in Resources */,
+				90F7E49521E0F56100246AFE /* helmet_showroom_spec.png in Resources */,
+				90B2AD4721EA0CB1003330DE /* 向下.png in Resources */,
+				90F7E48F21E0F56100246AFE /* arm_dif.png in Resources */,
+				90B2AD3C21EA0CB1003330DE /* 向右.png in Resources */,
+				905BA9E521E72ACF00E64755 /* ARpolyball.scn in Resources */,
+				90F7E48621E0F56100246AFE /* arm_showroom_ddn.png in Resources */,
+				90B2AD4B21EA0CB1003330DE /* 向左_按下.png in Resources */,
+				90C77A3621E7149000A8E31C /* polyball.mtl in Resources */,
+				901A7A7D21E7540100E8FD18 /* Explode.scnp in Resources */,
+				90B2AD3621EA0CB1003330DE /* 不跟随.png in Resources */,
+				90F7E49121E0F56100246AFE /* helmet_diff.png in Resources */,
+				90F7E48A21E0F56100246AFE /* glass_ddn.png in Resources */,
+				90F7E85A21E10D6100246AFE /* crystal.mtl in Resources */,
+				90B2AD4921EA0CB1003330DE /* 向左.png in Resources */,
+				90F7E85421E10D6100246AFE /* widetree.mtl in Resources */,
+				90B2AD3421EA0CB1003330DE /* 截屏.png in Resources */,
+				909A886E21DB636900AE91DF /* up_highlight.png in Resources */,
+				90B2AD3B21EA0CB1003330DE /* 跟随_按下.png in Resources */,
+				90F7E4A721E102F500246AFE /* helmet_normal.jpg in Resources */,
+				90B4BE2121CA572B008ECBB3 /* Main.storyboard in Resources */,
+				90B2AD3E21EA0CB1003330DE /* 向上_按下.png in Resources */,
+				90F7E49721E0F56100246AFE /* body_showroom_spec.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		90B4BE1421CA572A008ECBB3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				90B4BE1E21CA572B008ECBB3 /* ViewController.swift in Sources */,
+				90CFCD3921E11158001B4560 /* Sun.swift in Sources */,
+				9068D66F21DD439400BAFA46 /* Skybox.swift in Sources */,
+				900137A721DE2C4B004B4A8E /* SkymapShader.metal in Sources */,
+				909A887021DBAB3800AE91DF /* ParallelLight.swift in Sources */,
+				90CFCD3A21E11158001B4560 /* SunShader.metal in Sources */,
+				909DFF9B21DA8C5A00241714 /* MetalTexture.swift in Sources */,
+				907589C021E8ED9A00375589 /* PolyballShader.metal in Sources */,
+				907589BE21E8EBDC00375589 /* Polyball.swift in Sources */,
+				90F7E85E21E1106800246AFE /* Renderer.swift in Sources */,
+				9061530B21E7BCD7004DD666 /* TimeStamp.swift in Sources */,
+				90AC44BD21E423B000AEB5CA /* Shadowmap.swift in Sources */,
+				90B4BE2E21CA57D8008ECBB3 /* MathUtilities.swift in Sources */,
+				906C195F21E1E64F00A7FA14 /* ARViewController.swift in Sources */,
+				90B4C1A921CA6009008ECBB3 /* Scene.swift in Sources */,
+				901F2BA921EB542500D5E44C /* GaussblurShader.metal in Sources */,
+				90B4C1AB21CA6877008ECBB3 /* Noise.swift in Sources */,
+				90B4C1A721CA5CAE008ECBB3 /* Chunk.swift in Sources */,
+				90B4C1A221CA5A91008ECBB3 /* Config.swift in Sources */,
+				90F7E44221E0797900246AFE /* SkyboxShader.metal in Sources */,
+				9068D66D21DD438200BAFA46 /* Skymap.swift in Sources */,
+				90B4C1AD21CA786E008ECBB3 /* SceneShader.metal in Sources */,
+				9060E66E21DBD7A3004BFF6F /* Water.swift in Sources */,
+				901F2F7B21EBA4D600D5E44C /* PolyballShadowShader.metal in Sources */,
+				90B4BE3021CA57F0008ECBB3 /* CameraController.swift in Sources */,
+				90B4BE1C21CA572A008ECBB3 /* AppDelegate.swift in Sources */,
+				9060E66C21DBD5D5004BFF6F /* WaterShader.metal in Sources */,
+				909DFF9D21DAA2B000241714 /* ResourceManager.swift in Sources */,
+				909DFF9921DA69B400241714 /* InstanceSceneShader.metal in Sources */,
+				9075861321E88C9B00375589 /* ShadowmapShader.metal in Sources */,
+				906C195E21E1E64F00A7FA14 /* Plane.swift in Sources */,
+				90B4C1A521CA5BAB008ECBB3 /* Submesh.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		90B4BE1F21CA572B008ECBB3 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				90B4BE2021CA572B008ECBB3 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		90B4BE2421CA572C008ECBB3 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				90B4BE2521CA572C008ECBB3 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		90B4BE2821CA572C008ECBB3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		90B4BE2921CA572C008ECBB3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		90B4BE2B21CA572C008ECBB3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = CE83544H6Y;
+				INFOPLIST_FILE = Polyworld/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Polyworld/lowpoly/OpenGLStuff/lib",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.Sxy.Polyworld;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		90B4BE2C21CA572C008ECBB3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = CE83544H6Y;
+				INFOPLIST_FILE = Polyworld/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Polyworld/lowpoly/OpenGLStuff/lib",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.Sxy.Polyworld;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		90B4BE1321CA572A008ECBB3 /* Build configuration list for PBXProject "Polyworld" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				90B4BE2821CA572C008ECBB3 /* Debug */,
+				90B4BE2921CA572C008ECBB3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		90B4BE2A21CA572C008ECBB3 /* Build configuration list for PBXNativeTarget "Polyworld" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				90B4BE2B21CA572C008ECBB3 /* Debug */,
+				90B4BE2C21CA572C008ECBB3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 90B4BE1021CA572A008ECBB3 /* Project object */;
+}

@@ -1,0 +1,20 @@
+# 
+# Wavefront material file
+# Created with Kaydara FBX
+# 
+
+newmtl treetop_green_1
+Ka 0.000000 0.000000 0.000000
+Kd 0.199827 0.566176 0.199827
+Ks 0.000000 0.000000 0.000000
+illum 2
+Ns 0.000000
+Tr 1.000000
+
+newmtl tree_trunks
+Ka 0.000000 0.000000 0.000000
+Kd 0.477941 0.304204 0.080828
+Ks 0.000000 0.000000 0.000000
+illum 2
+Ns 0.000000
+Tr 1.000000

@@ -1,0 +1,20 @@
+# 
+# Wavefront material file
+# Created with Kaydara FBX
+# 
+
+newmtl 5_4_windswept_tree_A_leaves
+Ka 0.000000 0.000000 0.000000
+Kd 0.679310 0.453000 0.516000
+Ks 0.000000 0.000000 0.000000
+illum 2
+Ns 0.000000
+Tr 1.000000
+
+newmtl 5_4_windswept_tree_A_trunk
+Ka 0.000000 0.000000 0.000000
+Kd 0.631034 0.563451 0.477916
+Ks 0.000000 0.000000 0.000000
+illum 2
+Ns 0.000000
+Tr 1.000000
