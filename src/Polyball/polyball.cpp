@@ -253,7 +253,7 @@ void Polyball::UpdateSpeed(float deltaTime) {
             noKeyboard = false;
         }
         if(ResourceManager::Keys[GLFW_KEY_SPACE]){
-            delta_v += glm::vec3(0.0f, 3.0f, 0.0f);
+            delta_v += glm::vec3(0.0f, 2.0f, 0.0f);
         }
         //Sliding Friction
         glm::vec3 movXZ = Speed;

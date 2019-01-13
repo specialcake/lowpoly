@@ -9,6 +9,7 @@
 #include "Postprocess/postprocessor.h"
 #include "Postprocess/Bloom.h"
 #include "Polyball/polyball.h"
+#include "Polyball/startplatform.h"
 
 Scene* scene;
 SpriteRenderer* littlewindow;
@@ -17,6 +18,7 @@ Shadowmap* shadowmap;
 Skymap* skymap;
 PostProcessor* SceneTexture;
 Polyball* polyball;
+StartPlatform* startplatform;
 //SSR* SSReflect;
 //Terrian* plane;
 
@@ -46,6 +48,7 @@ void Game::Init() {
     ResourceManager::LoadShader("../src/shader/bloom.vert", "../src/shader/bloom.frag", NULL, "bloom");
     ResourceManager::LoadShader("../src/shader/polyball.vert", "../src/shader/polyball.frag", "../src/shader/polyball.geom", "polyball");
     ResourceManager::LoadShader("../src/shader/fontdisplay.vert", "../src/shader/fontdisplay.frag", NULL, "fontdisplay");
+    ResourceManager::LoadShader("../src/shader/startplatform.vert", "../src/shader/startplatform.frag", "../src/shader/startplatform.geom", "startplatform");
 
     ResourceManager::GetShader("sprite").use();
     ResourceManager::GetShader("sprite").setInt("image", 0);
@@ -97,11 +100,15 @@ void Game::Init() {
     ResourceManager::GetShader("fontdisplay").use();
     ResourceManager::GetShader("fontdisplay").setInt("text", 0);
 
+    ResourceManager::GetShader("startplatform").use();
+    ResourceManager::GetShader("startplatform").setInt("BlurShadow", 0);
+
     ResourceManager::LoadModel("../resource/model/tree/pine.obj", "pine");
     ResourceManager::LoadModel("../resource/model/tree/normaltree.obj", "normaltree");
     ResourceManager::LoadModel("../resource/model/polyball/polyball.obj", "polyball", false);
 //    ResourceManager::LoadModel("../resource/model/rock/bigrock.obj", "bigrock");
     ResourceManager::LoadModel("../resource/model/rock/stone2.obj", "smallrock", false);
+    ResourceManager::LoadModel("../resource/model/startplatform.obj", "startplatform");
     ResourceManager::GetModel("pine")->SetBias(0.0f, -0.9f, 0.0f);
 //    ResourceManager::GetModel("smallrock")->SetBias(0.0f, -0.1f, 0.0f);
 
@@ -136,6 +143,8 @@ void Game::Init() {
     Bloom::Blurer.Initialize(ResourceManager::GetShader("gaussblur"));
 
     polyball = new Polyball(ResourceManager::GetShader("polyball"));
+    startplatform = new StartPlatform(ResourceManager::GetModel("startplatform"),
+                                      ResourceManager::GetShader("startplatform"));
 
 //    SSReflect = new SSR(ResourceManager::GetShader("ssrscene"),
 //                        ResourceManager::GetShader("ssrscene"),
@@ -159,7 +168,6 @@ void Game::Update(GLfloat dt) {
         scene->CloudMap = scene->Generate_CloudMap();
         scene->Generate_Treeplace();
         for(int i = 0; i < TREENUMBER; i++) {
-            if(i == 2) printf("Rock model[][][][][]\n");
             scene->plant[i]->SetParam(scene->Treeplace[i]);
         }
 
@@ -220,7 +228,18 @@ void Game::Render() {
         glm::mat4 PVMatrix = projection * view;
         glm::mat4 lightSpaceMatrix = shadowmap->GetlightSpaceMatrix(scene);
 
-        SceneTexture->BeginRender();
+//        Model* test = ResourceManager::GetModel("startplatform");
+//        Shader modelshader = ResourceManager::GetShader("model");
+//        modelshader.use();
+//        glm::mat4 model = glm::mat4(1.0f);
+//        model = glm::translate(model, glm::vec3(0.0f, 0.0f, 2.0f));
+////        model = glm::scale(model, glm::vec3(1.0));
+//        modelshader.setMat4("model", model);
+//        modelshader.setMat4("PVMatrix", PVMatrix);
+//        test->Draw(modelshader);
+        startplatform->Render(PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
+
+//        SceneTexture->BeginRender();
 
         scene->draw(view, PVMatrix, lightSpaceMatrix, shadowmap->DepthMap, shadowmap->BluredShadow);
         for(int i = 0; i < 3; i++)
@@ -250,11 +269,13 @@ void Game::Render() {
 
         polyball->Render(view, PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
 
-        SceneTexture->EndRender();
+//        littlecube->DrawCube(PVMatrix, glm::vec3(0.1202f, 0.3625f, -0.1202 + 2.0f), glm::vec3(0.01f));
+
+//        SceneTexture->EndRender();
 //
-        Bloom::RenderBloom(SceneTexture);
+//        Bloom::RenderBloom(SceneTexture);
 //
-        Texture2D blurscene = Bloom::Blurer.GaussBlur(SceneTexture->BrightTexture);
+//        Texture2D blurscene = Bloom::Blurer.GaussBlur(SceneTexture->BrightTexture);
 //
 //        littlewindow->shader.use();
 //        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));

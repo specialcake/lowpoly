@@ -48,6 +48,15 @@ void Model::SetBias(GLfloat dx, GLfloat dy, GLfloat dz) {
 glm::vec3 Model::BiasVector() {
     return glm::vec3(delta_x, delta_y, delta_z);
 }
+glm::vec3 Model::GetCenter(std::string name) {
+    Mesh* meshptr = group[name];
+    glm::vec3 center = glm::vec3(0.0f);
+    for(int i = 0; i < meshptr->vertices.size(); i++){
+        center += meshptr->vertices[i].Position;
+    }
+    center /= glm::vec3(meshptr->vertices.size());
+    return center;
+}
 Trunk Model::GetTrunk(std::string name) {
     Mesh* trunk = group[name];
     Trunk ret = (Trunk){glm::vec3(0.0f), 0.0f, 0.0f};

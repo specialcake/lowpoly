@@ -41,6 +41,7 @@ public:
     Model(const char *path, bool center);
     void SetBias(GLfloat dx, GLfloat dy, GLfloat dz);
     glm::vec3 BiasVector();
+    glm::vec3 GetCenter(std::string name);
     Trunk GetTrunk(std::string name);
     BoundBox GetBoundBox();
     void Draw(Shader shader);

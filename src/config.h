@@ -97,7 +97,7 @@ enum Direction{
 #define MAX_ZOOM 45.0f
 
 #ifndef lightview
-#define default_position glm::vec3(0.0f, 3.0f, 3.0f)
+#define default_position glm::vec3(0.0f, 1.0f, 3.0f)
 #else //lightview
 #define default_position glm::vec3(0.0f, 13.0f, -27.0f)
 #endif //lightview
