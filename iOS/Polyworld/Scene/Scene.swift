@@ -543,7 +543,12 @@ public
     
     func Gaussblur() {
         var tempTexture = ResourceManager.shadowmapDepthTexture
+        let gaussblurCommandBuffer = ResourceManager.commandQueue.makeCommandBuffer()!
         var horizontal: Bool = true
+        let sizeOfUniformsBuffer = MemoryLayout<Bool>.size
+        let gaussblurFragmentUniformBuffer = ResourceManager.device.makeBuffer(length: sizeOfUniformsBuffer, options: [])!
+        let bufferPointer = gaussblurFragmentUniformBuffer.contents()
+        
         for _ in 1...6 {
             let white = MTLClearColor(red: 1, green: 1, blue: 1, alpha: 1)
             let renderPassDescriptor = MTLRenderPassDescriptor()
@@ -553,12 +558,7 @@ public
             renderPassDescriptor.colorAttachments[0].clearColor = white
             renderPassDescriptor.colorAttachments[0].storeAction = .store
             
-            let gaussblurCommandBuffer = ResourceManager.commandQueue.makeCommandBuffer()!
             let renderEncoder = gaussblurCommandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
-            
-            let sizeOfUniformsBuffer = MemoryLayout<Bool>.size
-            let gaussblurFragmentUniformBuffer = ResourceManager.device.makeBuffer(length: sizeOfUniformsBuffer, options: [])!
-            let bufferPointer = gaussblurFragmentUniformBuffer.contents()
             
             memcpy(bufferPointer, &horizontal, MemoryLayout<Bool>.size)
             
@@ -571,11 +571,10 @@ public
             renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6)
             renderEncoder.endEncoding()
             
-            gaussblurCommandBuffer.commit()
             tempTexture = ResourceManager.shadowmapBluredTexture
             horizontal = !horizontal
         }
-       
+        gaussblurCommandBuffer.commit()
     }
     
     func defaultSampler(device: MTLDevice) -> MTLSamplerState {

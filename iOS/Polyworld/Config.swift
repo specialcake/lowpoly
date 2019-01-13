@@ -18,8 +18,8 @@ let FAR_PLANE: Float = 150.0
 // Scene
 let SCENE_LENGTH: Float = 53.0 / 3 * 5
 
-let CHUNK_SIZE = 3 // Scene含有的Chunk个数
-let CHUNK_RADIUS = 1
+let CHUNK_SIZE = 5 // Scene含有的Chunk个数
+let CHUNK_RADIUS = 2
 let CHUNK_LENGTH = SCENE_LENGTH / Float(CHUNK_SIZE)
 
 let MESH_SIZE = 21 // Chunk含有的Mesh个数
@@ -43,7 +43,7 @@ enum Direction {
 
 // Water
 let NUMOFWATER = 4
-let SEA_LEVEL: Float = 0.50
+let SEA_LEVEL: Float = 0.1
 let CONSTQ: Float = 0.5
 
 // Light

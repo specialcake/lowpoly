@@ -71,6 +71,8 @@ vertex InstanceSceneVertexOut instanceSceneVertex(constant InstanceSceneVertexIn
     pos.y = height[index];
 
     pos.y = pos.y * 10.0f;
+    
+    if (pos.y < 0.1) pos.y = -0.5;
 
     out.position = uniforms.PVMatrix * float4(pos + uniforms.scene_offset, 1.0f);
     out.fragPosition = pos + uniforms.scene_offset;

@@ -105,8 +105,7 @@ class ViewController: UIViewController {
         let sunModel = float4x4(translationBy: -8.0 * PARLIGHT_DIR) * float4x4(scaleBy: 25.0)
         sun = Sun(device: ResourceManager.device, modelMatrix: sunModel, forResourse: "polyball", withExtension: "obj")
         
-        let polyballModel = float4x4(translationBy: float3(0.0, 0.4, 4.0))
-        ResourceManager.polyball = Polyball(device: ResourceManager.device, modelMatrix: polyballModel, forResourse: "polyball", withExtension: "obj")
+        ResourceManager.polyball = Polyball(device: ResourceManager.device, forResourse: "polyball", withExtension: "obj")
         
         // Rendering
         timer = CADisplayLink(target: self, selector: #selector(ViewController.newFrame(displayLink:)))
@@ -152,13 +151,12 @@ class ViewController: UIViewController {
         if (ResourceManager.dir != .ORIGIN_POS || first) {
             scene.Generate_HeightBuffer()
             shadowmap.updateFrustum(scene: scene)
-            
-            lightSpaceMatrix = shadowmap.getlightSpaceMatrix(scene: scene)
-            scene.Generate_ShadowMap(lightSpaceMatrix: lightSpaceMatrix)
-            scene.Gaussblur()
-            
             first = false
         }
+        
+        lightSpaceMatrix = shadowmap.getlightSpaceMatrix(scene: scene)
+        scene.Generate_ShadowMap(lightSpaceMatrix: lightSpaceMatrix)
+        scene.Gaussblur()
         
         handleButtonAction()
         
