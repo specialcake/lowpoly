@@ -4,7 +4,7 @@
 
 #include "startplatform.h"
 
-StartPlatform::StartPlatform(Model* model, Shader shader) {
+StartPlatform::StartPlatform(Model* model, Shader shader, glm::vec3 location) {
     PartNumber = 7;
     modelptr = model;
     this->shader = shader;
@@ -16,7 +16,7 @@ StartPlatform::StartPlatform(Model* model, Shader shader) {
     groupName[5] = "RIng_4_0";
     groupName[6] = "Sphere_0";
     center = glm::vec3(0.0f, 0.36f, 0.0f);
-    offset = glm::vec3(0.0f, 0.0f, 2.0f);
+    offset = location;
     axis[2] = glm::normalize(glm::vec3(1.0f, 0.0f, -1.0f));
     axis[3] = -glm::normalize(glm::vec3(1.0f, 0.0f, -1.0f));
     axis[4] = glm::normalize(glm::vec3(1.0f, 0.0f, 0.0f));

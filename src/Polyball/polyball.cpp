@@ -4,12 +4,12 @@
 
 #include "polyball.h"
 
-Polyball::Polyball(Shader shader) {
-    Speed = glm::vec3(0.0f, 0.0f, 0.0f);
+Polyball::Polyball(Shader shader, glm::vec3 location) {
+    Speed = glm::vec3(0.0f, 2.0f, 0.0f);
     SpeedLimit = glm::vec3(0.0f);
     Acceleration = glm::vec3(2.0f, 0.0f, 2.0f);
     Resistance = glm::vec3(1.0f, 3.0f, 1.0f);
-    Position = glm::vec3(0.0f, 2.0f, 5.0f);
+    Position = location;
     Radius = 0.5f * 0.3f;
     Mov.Front = glm::vec3(1.0f, 0.0f, 0.0f);
     Mov.Right = glm::vec3(0.0f, 0.0f, 1.0f);
@@ -182,22 +182,38 @@ void Polyball::CollisionCheck(Scene* scene) {
         collision.Normal = glm::normalize(collision.Normal);
 }
 bool Polyball::CollisionFinish() {
-    static glm::vec3 finish_center = glm::vec3(0.0f, 0.2f, 3.0f);
+    static glm::vec3 finish_center = ResourceManager::FinishLocation;
     static glm::vec3 len = glm::vec3(0.5f, 0.2f, 0.0f);
     static glm::vec3 a = finish_center + glm::vec3( len.x,  len.y, len.z);
     static glm::vec3 b = finish_center + glm::vec3( len.x, -len.y, len.z);
     static glm::vec3 c = finish_center + glm::vec3(-len.x,  len.y, len.z);
     static glm::vec3 d = finish_center + glm::vec3(-len.x, -len.y, len.z);
     GLfloat dist1 = Tools::distance(Position, a, b, c);
-    GLfloat dist2 = Tools::distance(Position, b, c, d);
+    GLfloat dist2 = Tools::distance(Position, b, d, c);
     if(dist1 <= Radius){
         glm::vec3 normal = glm::normalize(glm::cross(c - a, b - a));
         if(Position.z < finish_center.z) normal = -normal;
+        ResourceManager::FinishNormal = normal;
+
+        GLfloat V = glm::abs(glm::dot(glm::cross(a - Position, b - Position), c - Position)) / 6.0;
+        GLfloat S = glm::length(glm::cross(a - c, b - c)) / 2.0;
+        GLfloat h = V / S * 3.0;
+        glm::vec3 Normal = glm::normalize(glm::cross(c - a, b - a));
+        ResourceManager::FinishPos = Position - Normal * h;
+        Tools::PrintVec3(ResourceManager::FinishPos);
         return true;
     }
     if(dist2 <= Radius){
         glm::vec3 normal = glm::normalize(glm::cross(b - d, c - d));
         if(Position.z < finish_center.z) normal = -normal;
+        ResourceManager::FinishNormal = normal;
+
+        GLfloat V = glm::abs(glm::dot(glm::cross(d - Position, b - Position), c - Position)) / 6.0;
+        GLfloat S = glm::length(glm::cross(d - c, b - c)) / 2.0;
+        GLfloat h = V / S * 3.0;
+        glm::vec3 Normal = glm::normalize(glm::cross(c - b, d - b));
+        ResourceManager::FinishPos = Position - Normal * h;
+        Tools::PrintVec3(ResourceManager::FinishPos);
         return true;
     }
     return false;
@@ -242,7 +258,7 @@ void Polyball::UpdatePosition(float deltaTime, Scene* scene) {
                     glm::sin(angle) * rotate_axis.z);
     rotate_state = rot * rotate_state;
 
-    if(CollisionFinish()){
+    if(ResourceManager::State != GAME_FINISH && CollisionFinish()){
         ResourceManager::State = GAME_FINISH;
     }
 }

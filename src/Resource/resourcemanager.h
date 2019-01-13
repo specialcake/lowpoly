@@ -38,6 +38,8 @@ public:
     static Fontdisplay fontdisplay;
 
     static GameState State;
+    static glm::vec3 FinishNormal, FinishPos;
+    static glm::vec3 FinishLocation, StartLocation;
 
 //    ResourceManager();
 

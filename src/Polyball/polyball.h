@@ -46,7 +46,7 @@ public:
 
     GLint dcx,dcy,dmx,dmy;
 
-    Polyball(Shader shader);
+    Polyball(Shader shader, glm::vec3 location = glm::vec3(0.0f, 2.0f, 5.0f));
     ~Polyball();
     void Initialize();
     glm::vec3 GenCameraPosition();

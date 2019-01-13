@@ -56,6 +56,8 @@ public:
     void UpdateNeighbor(GLint x, GLint y);
     void GetLocationbyCamera(glm::vec3 Position, GLint& cx, GLint& cz, GLint& ms, GLint& mz);
     void UpdateTreeplace();
+    bool ValidPlace(int cx, int cz, int mx, int mz);
+    glm::vec3 FindStartFinishLocation(int type);
 
     Texture2D Generate_HeightMap();
     Texture2D Generate_CloudMap();

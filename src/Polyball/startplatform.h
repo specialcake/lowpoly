@@ -23,7 +23,7 @@ public:
     GLfloat limit[7], w[7];
     glm::vec3 offset, center;
 
-    StartPlatform(Model* model, Shader shader);
+    StartPlatform(Model* model, Shader shader, glm::vec3 location = glm::vec3(0.0f, 0.0f, 2.0f));
     ~StartPlatform();
     void Render(glm::mat4 PVMatrix, glm::mat4 lightSpaceMatrix, Texture2D BluredShadow);
 };

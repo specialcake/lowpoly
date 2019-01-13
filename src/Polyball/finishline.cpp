@@ -6,7 +6,6 @@
 
 FinishLine::FinishLine(Model *model, Shader shader, glm::vec3 location) {
     PartNumber = model->meshes.size();
-    std::cout << "======" << PartNumber << std::endl;
     modelptr = model;
     this->shader = shader;
     offset = location;
@@ -32,25 +31,29 @@ void FinishLine::Render(glm::mat4 PVMatrix, glm::mat4 lightSpaceMatrix, Texture2
         shader.setMat4("model", model);
         modelptr->meshes[i].Draw(shader);
     }
-//    for(int i = 2; i < PartNumber; i++){
-//        glm::mat4 model = glm::mat4(1.0f);
-//        model = glm::scale(model, glm::vec3(0.3f));
-//        shader.setMat4("model", model);
-//        modelptr->meshes[i].Draw(shader);
-//    }
-
-    glm::vec3 Point = glm::vec3(0.4f, 0.2f, 0.0f);
-    glm::vec3 normal = glm::vec3(0.0f, 0.0f, 1.0f);
-    for(int i = 2; i < PartNumber; i++){
-        glm::vec3 dir = center[i] - Point;
-        GLfloat dist = glm::length(dir) * 5.0f;
+    if(ResourceManager::State != GAME_FINISH) {
+        for (int i = 2; i < PartNumber; i++) {
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::scale(model, glm::vec3(0.3f));
+            shader.setMat4("model", model);
+            modelptr->meshes[i].Draw(shader);
+        }
+    }
+    else {
+        static GLfloat curTime = (GLfloat)glfwGetTime();
+        glm::vec3 Point = ResourceManager::FinishPos - ResourceManager::FinishLocation;
+        glm::vec3 normal = ResourceManager::FinishNormal;
+        for (int i = 2; i < PartNumber; i++) {
+            glm::vec3 dir = center[i] - Point;
+            GLfloat dist = glm::length(dir) * 5.0f;
 //        dir = glm::normalize(dir);
-        dir = glm::normalize(normal + dir);
+            dir = glm::normalize(-normal * glm::length(dir) + dir);
 
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, (GLfloat)(glfwGetTime() / 10.0f) * dir / dist);
-        model = glm::scale(model, glm::vec3(0.3f));
-        shader.setMat4("model", model);
-        modelptr->meshes[i].Draw(shader);
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, (GLfloat) ((glfwGetTime() - curTime) / 10.0f) * dir / dist);
+            model = glm::scale(model, glm::vec3(0.3f));
+            shader.setMat4("model", model);
+            modelptr->meshes[i].Draw(shader);
+        }
     }
 }

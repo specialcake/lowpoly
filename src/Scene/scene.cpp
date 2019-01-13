@@ -345,10 +345,10 @@ void Scene::UpdateNeighbor(GLint x, GLint y) {
 }
 
 void Scene::GetLocationbyCamera(glm::vec3 Position, GLint &cx, GLint &cz, GLint &mx, GLint &mz) {
-    glm::vec3 position = ResourceManager::camera.Position -
+    glm::vec3 position = Position -
                          chunk[CHUNK_RADIUS][CHUNK_RADIUS]->submesh[MESH_RADIUS][MESH_RADIUS]->get_Position() -
                          glm::vec3(MESH_LENGTH / 2.0f, 0.0f, MESH_LENGTH / 2.0f);
-    position = Position -
+    position = glm::vec3(0.0f) -
                chunk[CHUNK_RADIUS][CHUNK_RADIUS]->submesh[MESH_RADIUS][MESH_RADIUS]->get_Position() -
                glm::vec3(MESH_LENGTH / 2.0f, 0.0f, MESH_LENGTH / 2.0f);
 //    printf("camera position = ");
@@ -374,6 +374,41 @@ void Scene::GetLocationbyCamera(glm::vec3 Position, GLint &cx, GLint &cz, GLint 
         mz = static_cast<GLint>(position.z / MESH_LENGTH + 0.5f) + MESH_RADIUS;
     else
         mz = static_cast<GLint>(position.z / MESH_LENGTH - 0.5f) + MESH_RADIUS;
+}
+bool Scene::ValidPlace(int cx, int cz, int mx, int mz){
+    static int Radius = 2;
+    for(int i = -Radius; i <= Radius; i++){
+        for(int j = -Radius; j <= Radius; j++){
+            int tx = cx, tz = cz, hx = mx + i, hz = mz + j;
+            if(hx < 0) tx--, hx = MESH_SIZE - hx;
+            else if(hx >= MESH_SIZE) tx++, hx += MESH_SIZE;
+            if(hz < 0) tz--, hz = MESH_SIZE - hz;
+            else if(hz >= MESH_SIZE) tz++, hz += MESH_SIZE;
+            if(chunk[tx][tz]->height[hx][hz] >= 0.1) return false;
+        }
+    }
+    return true;
+}
+glm::vec3 Scene::FindStartFinishLocation(int type) {
+    if(type == 0){
+        for(int k = 0; k < MESH_SIZE; k++)
+            for(int h = 0; h < MESH_SIZE; h++){
+                int cx = CHUNK_RADIUS, cz = CHUNK_RADIUS;
+                if(ValidPlace(cx, cz, k, h))
+                    return this->offset + this->chunk_offset[cx][cz] + this->mesh_offset[k][h];
+            }
+        printf("Can't Generate Start Platform.\n");
+        return glm::vec3(100.0f);
+    }
+    for(int i = 1; i < CHUNK_SIZE - 1; i++)
+        for(int j = 1; j < CHUNK_SIZE - 1; j++)
+            for(int k = 0; k < MESH_SIZE; k++)
+                for(int h = 0; h < MESH_SIZE; h++){
+                    int cx = type ? CHUNK_SIZE - i - 1 : i;
+                    int cz = type ? CHUNK_SIZE - j - 1 : j;
+                    if(ValidPlace(cx, cz, k, h))
+                        return this->offset + this->chunk_offset[cx][cz] + this->mesh_offset[k][h];
+                }
 }
 
 int Scene::PlaceEnable(int i, int j, int k, int h, bool insea){

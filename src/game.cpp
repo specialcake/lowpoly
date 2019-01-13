@@ -147,11 +147,19 @@ void Game::Init() {
     Bloom::Initialize(ResourceManager::GetShader("bloom"));
     Bloom::Blurer.Initialize(ResourceManager::GetShader("gaussblur"));
 
-    polyball = new Polyball(ResourceManager::GetShader("polyball"));
+    ResourceManager::StartLocation  = scene->FindStartFinishLocation(0);
+    ResourceManager::FinishLocation = scene->FindStartFinishLocation(1);
+    printf("Start Position: ");
+    Tools::PrintVec3(ResourceManager::StartLocation);
+    printf("Finish Position: ");
+    Tools::PrintVec3(ResourceManager::FinishLocation);
+    polyball = new Polyball(ResourceManager::GetShader("polyball"), ResourceManager::StartLocation + glm::vec3(0.0f, 0.36f, 0.0f));
     startplatform = new StartPlatform(ResourceManager::GetModel("startplatform"),
-                                      ResourceManager::GetShader("startplatform"));
+                                      ResourceManager::GetShader("startplatform"),
+                                      ResourceManager::StartLocation);
     finishline = new FinishLine(ResourceManager::GetModel("finishline"),
-                                ResourceManager::GetShader("model"));
+                                ResourceManager::GetShader("model"),
+                                ResourceManager::FinishLocation);
 
 //    SSReflect = new SSR(ResourceManager::GetShader("ssrscene"),
 //                        ResourceManager::GetShader("ssrscene"),
@@ -218,6 +226,7 @@ void Game::ProcessInput(GLfloat dt) {
     if(ResourceManager::Keys[GLFW_KEY_SPACE])
         start_signal = 1;
     if(start_signal && accumulate_time < 1.0f){
+        
         accumulate_time += dt;
         if(accumulate_time >= 1.0f)
             ResourceManager::State = GAME_ACTIVE;
@@ -252,15 +261,16 @@ void Game::Render() {
 //        modelshader.setMat4("model", model);
 //        modelshader.setMat4("PVMatrix", PVMatrix);
 //        test->Draw(modelshader);
+
+//    SceneTexture->BeginRender();
+
     finishline->Render(PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
-
-//        SceneTexture->BeginRender();
-
-//        startplatform->Render(PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
+    if(ResourceManager::State == GAME_INITIAL)
+        startplatform->Render(PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
 
     scene->draw(view, PVMatrix, lightSpaceMatrix, shadowmap->DepthMap, shadowmap->BluredShadow);
-    for(int i = 0; i < 3; i++)
-        scene->plant[i]->Draw(view, PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
+//    for(int i = 0; i < 3; i++)
+//        scene->plant[i]->Draw(view, PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
 
     glDepthFunc(GL_LEQUAL);
     ResourceManager::skybox->shader.use();
@@ -286,13 +296,13 @@ void Game::Render() {
 
     polyball->Render(view, PVMatrix, lightSpaceMatrix, shadowmap->BluredShadow);
 
-    littlecube->DrawCube(PVMatrix, glm::vec3(0.0f, 0.2f, 3.0f), glm::vec3(0.05f));
-
-//        SceneTexture->EndRender();
+//    littlecube->DrawCube(PVMatrix, glm::vec3(0.0f, 0.2f, 3.0f), glm::vec3(0.05f));
 //
-//        Bloom::RenderBloom(SceneTexture);
+//    SceneTexture->EndRender();
 //
-//        Texture2D blurscene = Bloom::Blurer.GaussBlur(SceneTexture->BrightTexture);
+//    Bloom::RenderBloom(SceneTexture);
+//
+//    Texture2D blurscene = Bloom::Blurer.GaussBlur(SceneTexture->BrightTexture);
 //
 //        littlewindow->shader.use();
 //        littlewindow->shader.setMat4("PVMatrix", glm::mat4(1.0f));
