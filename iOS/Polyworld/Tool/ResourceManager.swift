@@ -29,6 +29,7 @@ class ResourceManager {
     static var waterPipelineState: MTLRenderPipelineState!
     static var skyboxPipelineState: MTLRenderPipelineState!
     static var shadowmapPipelineState: MTLRenderPipelineState!
+    static var gaussblurPipelineState: MTLRenderPipelineState!
     
     // computePipelineState
     static var skymapPipelineState: MTLComputePipelineState!
@@ -37,9 +38,6 @@ class ResourceManager {
     
     static var depthBufferDescriptor: MTLTextureDescriptor!
     static var depthTexture: MTLTexture!
-    
-    // shadow
-    static var shadowmapBufferDescriptor: MTLTextureDescriptor!
     static var shadowmapDepthTexture: MTLTexture!
     static var shadowmapBluredTexture: MTLTexture!
     

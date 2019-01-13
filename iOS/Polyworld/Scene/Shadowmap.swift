@@ -14,7 +14,7 @@ class Shadowmap {
 
     var near, far, left, right, top, bottom: Float!
     
-    func updateFrustum(scene: Scene){
+    func updateFrustum(scene: Scene) {
         let lightviewmat = lookAt(PARLIGHT_POSITION + scene.offset, PARLIGHT_POSITION + scene.offset + PARLIGHT_DIR, float3(0.0, 1.0, 0.0))
         near = 200000
         left = 200000
@@ -54,4 +54,5 @@ class Shadowmap {
         let lightSpaceMatrix = lightProjection * lightviewmat
         return lightSpaceMatrix
     }
+
 }

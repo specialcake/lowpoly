@@ -36,8 +36,8 @@ public
     var instanceHeightBuffer: MTLBuffer! = nil
     var vertexUniformBuffer: MTLBuffer! = nil
     var fragmentUniformBuffer: MTLBuffer! = nil
-    
-    var vertices: [Float] = []
+    var gaussblurVertexBuffer: MTLBuffer! = nil
+
     var water: Water
     var timeInterval: CFTimeInterval
     
@@ -94,7 +94,7 @@ public
     
     func initBuffer() {
         
-        vertices = [
+        let vertices: [Float] = [
             // Pos
             1.0, 1.0,
             1.0, 0.0,
@@ -118,6 +118,20 @@ public
         ]
         
         instanceVertexBuffer = ResourceManager.device.makeBuffer(bytes: instance_vertices, length: MemoryLayout<Float>.size * instance_vertices.count, options:[])
+        
+        let gaussblur_vertices: [Float] = [
+            // Pos        // Tex
+            -1.0, -1.0, 0.0, 0.0,
+            1.0,  1.0, 1.0, 1.0,
+            -1.0,  1.0, 0.0, 1.0,
+            
+            -1.0, -1.0, 0.0, 0.0,
+            1.0, -1.0, 1.0, 0.0,
+            1.0,  1.0, 1.0, 1.0
+        ]
+        
+        gaussblurVertexBuffer = ResourceManager.device.makeBuffer(bytes: gaussblur_vertices, length: MemoryLayout<Float>.size * gaussblur_vertices.count, options:[])
+        
         
     }
     
@@ -256,7 +270,6 @@ public
         renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6, instanceCount: MESH_SIZE * MESH_SIZE * CHUNK_SIZE * CHUNK_SIZE)
 
         renderEncoder.endEncoding()
- 
     }
     
     func generate_scene() {
@@ -527,11 +540,48 @@ public
         shadowmapCommandBuffer.commit()
     }
     
+    func Gaussblur() {
+        var tempTexture = ResourceManager.shadowmapDepthTexture
+        var horizontal: Bool = true
+        for _ in 1...10 {
+            let white = MTLClearColor(red: 1, green: 1, blue: 1, alpha: 1)
+            let renderPassDescriptor = MTLRenderPassDescriptor()
+            
+            renderPassDescriptor.colorAttachments[0].texture = ResourceManager.shadowmapBluredTexture
+            renderPassDescriptor.colorAttachments[0].loadAction = .clear
+            renderPassDescriptor.colorAttachments[0].clearColor = white
+            renderPassDescriptor.colorAttachments[0].storeAction = .store
+            
+            let gaussblurCommandBuffer = ResourceManager.commandQueue.makeCommandBuffer()!
+            let renderEncoder = gaussblurCommandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)!
+            
+            let sizeOfUniformsBuffer = MemoryLayout<Bool>.size
+            let gaussblurFragmentUniformBuffer = ResourceManager.device.makeBuffer(length: sizeOfUniformsBuffer, options: [])!
+            let bufferPointer = gaussblurFragmentUniformBuffer.contents()
+            
+            memcpy(bufferPointer, &horizontal, MemoryLayout<Bool>.size)
+            
+            renderEncoder.setRenderPipelineState(ResourceManager.gaussblurPipelineState)
+            renderEncoder.setVertexBuffer(gaussblurVertexBuffer, offset: 0, index: 0)
+            renderEncoder.setFragmentBuffer(gaussblurFragmentUniformBuffer, offset: 0, index: 0)
+            renderEncoder.setFragmentTexture(tempTexture, index: 0)
+            renderEncoder.setFragmentSamplerState(samplerState, index: 0)
+            
+            renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6)
+            renderEncoder.endEncoding()
+            
+            gaussblurCommandBuffer.commit()
+            tempTexture = ResourceManager.shadowmapBluredTexture
+            horizontal = !horizontal
+        }
+       
+    }
+    
     func defaultSampler(device: MTLDevice) -> MTLSamplerState {
         let sampler = MTLSamplerDescriptor()
-        sampler.minFilter             = MTLSamplerMinMagFilter.nearest
-        sampler.magFilter             = MTLSamplerMinMagFilter.nearest
-        sampler.mipFilter             = MTLSamplerMipFilter.nearest
+        sampler.minFilter             = MTLSamplerMinMagFilter.linear
+        sampler.magFilter             = MTLSamplerMinMagFilter.linear
+        sampler.mipFilter             = MTLSamplerMipFilter.linear
         sampler.maxAnisotropy         = 1
         sampler.sAddressMode          = MTLSamplerAddressMode.clampToEdge
         sampler.tAddressMode          = MTLSamplerAddressMode.clampToEdge

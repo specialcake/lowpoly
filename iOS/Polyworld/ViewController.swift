@@ -71,14 +71,12 @@ class ViewController: UIViewController {
         ResourceManager.depthBufferDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: textureWidth, height: textureHeight, mipmapped: false)
         ResourceManager.depthBufferDescriptor.usage = [.shaderRead, .shaderWrite, .renderTarget]
         ResourceManager.depthTexture = ResourceManager.device.makeTexture(descriptor: ResourceManager.depthBufferDescriptor)
-        
-        ResourceManager.shadowmapBufferDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .depth32Float, width: textureWidth, height: textureHeight, mipmapped: false)
-        ResourceManager.shadowmapBufferDescriptor.usage = [.shaderRead, .shaderWrite, .renderTarget]
-        ResourceManager.shadowmapDepthTexture = ResourceManager.device.makeTexture(descriptor: ResourceManager.shadowmapBufferDescriptor)!
+        ResourceManager.shadowmapDepthTexture = ResourceManager.device.makeTexture(descriptor: ResourceManager.depthBufferDescriptor)
         
         ResourceManager.textureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: textureWidth, height: textureHeight, mipmapped: false)
         ResourceManager.textureDescriptor.usage = [.shaderRead, .shaderWrite, .renderTarget]
         ResourceManager.textureLoader = MTKTextureLoader(device: ResourceManager.device)
+        ResourceManager.shadowmapBluredTexture = ResourceManager.device.makeTexture(descriptor: ResourceManager.textureDescriptor)
         
         ResourceManager.camera = CameraController()
         
@@ -149,6 +147,7 @@ class ViewController: UIViewController {
         
         lightSpaceMatrix = shadowmap.getlightSpaceMatrix(scene: scene)
         scene.Generate_ShadowMap(lightSpaceMatrix: lightSpaceMatrix)
+        scene.Gaussblur()
         
         handleButtonAction()
         
@@ -174,8 +173,8 @@ class ViewController: UIViewController {
 
         skybox.draw(drawable: drawable, skymap: skymap, viewMatrix: ResourceManager.camera.viewMatrix, projectionMatrix: ResourceManager.projectionMatrix)
         sun.draw(drawable: drawable)
-        scene.draw(drawable: drawable, viewMatrix: ResourceManager.camera.viewMatrix, projectionMatrix: ResourceManager.projectionMatrix, lightSpaceMatrix: lightSpaceMatrix, shadowmap: ResourceManager.shadowmapDepthTexture)
-        //polyball.draw(drawable: drawable)
+        scene.draw(drawable: drawable, viewMatrix: ResourceManager.camera.viewMatrix, projectionMatrix: ResourceManager.projectionMatrix, lightSpaceMatrix: lightSpaceMatrix, shadowmap: ResourceManager.shadowmapBluredTexture)
+        polyball.draw(drawable: drawable)
         
         ResourceManager.commandBuffer.present(drawable)
         ResourceManager.commandBuffer.commit()
@@ -192,6 +191,7 @@ class ViewController: UIViewController {
         
         ResourceManager.skyboxPipelineState = buildShaders(vertexFunction: "skyboxVertex", fragmentFunction: "skyboxFragment", depth: false, blend: false)
         ResourceManager.shadowmapPipelineState = buildShaders(vertexFunction: "shadowmapVertex", fragmentFunction: "shadowmapFragment", depth: true, blend: false)
+        ResourceManager.gaussblurPipelineState = buildShaders(vertexFunction: "gaussblurVertex", fragmentFunction: "gaussblurFragment", depth: false, blend: false)
     }
     
     func buildShaders(vertexFunction: String, fragmentFunction: String, depth: Bool, blend: Bool) -> MTLRenderPipelineState {
