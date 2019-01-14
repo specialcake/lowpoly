@@ -6,7 +6,7 @@
 #define CGFRAME_CONFIG_H
 
 //#define lightview
-//#define ANTIALIASING
+#define ANTIALIASING
 
 //Screen
 #define WINDOW_NAME "CGFrame"

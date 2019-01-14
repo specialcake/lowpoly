@@ -461,8 +461,8 @@ void Scene::Generate_Treeplace() {
 //    GLuint length = MESH_SIZE * CHUNK_SIZE;
     for(int i = 0; i < TREENUMBER; i++)
         Treeplace[i].clear();
-    static Trunk tmptrunk0 = this->plant[0]->modelptr->GetTrunk("Trunk_0");
-    static Trunk tmptrunk1 = this->plant[1]->modelptr->GetTrunk("trunk_0");
+    static Trunk tmptrunk0 = this->plant[0]->modelptr->GetTrunk(1);
+    static Trunk tmptrunk1 = this->plant[1]->modelptr->GetTrunk(1);
     static BoundBox tmpbox2 = this->plant[2]->modelptr->GetBoundBox();
     for(int i = 1; i < CHUNK_SIZE - 1; i++)
         for(int j = 1; j < CHUNK_SIZE - 1; j++)

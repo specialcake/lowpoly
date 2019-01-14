@@ -58,8 +58,8 @@ glm::vec3 Model::GetCenter(std::string name) {
     center /= glm::vec3(meshptr->vertices.size());
     return center;
 }
-Trunk Model::GetTrunk(std::string name) {
-    Mesh* trunk = group[name];
+Trunk Model::GetTrunk(int num) {
+    Mesh* trunk = &meshes[num];
     Trunk ret = (Trunk){glm::vec3(0.0f), 0.0f, 0.0f};
     glm::vec3 center = glm::vec3(0.0f);
     GLfloat miny = 20000.0f, maxy = -20000.0f;

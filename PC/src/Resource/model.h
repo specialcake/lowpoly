@@ -42,7 +42,7 @@ public:
     void SetBias(GLfloat dx, GLfloat dy, GLfloat dz);
     glm::vec3 BiasVector();
     glm::vec3 GetCenter(std::string name);
-    Trunk GetTrunk(std::string name);
+    Trunk GetTrunk(int num);
     BoundBox GetBoundBox();
     void Draw(Shader shader);
 private:
