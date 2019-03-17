@@ -8,6 +8,8 @@ Avaliable on PC and iOS platform.
 
 ## Example
 
+PC Platform Video: [click me.](https://mega.nz/#!s6RiVADJ!61zPSIgOiLi4FjmNdk8foGUnIjjIxsgmtq4doSUvBSo)
+
 ### Scene
 
 ![](img/scene1.png)
